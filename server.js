@@ -1,3 +1,4 @@
+// Load in necessary packages
 const express = require('express');
 const cors = require('cors');
 const mariadb = require('mariadb');
@@ -17,6 +18,7 @@ app.set('views', path.join(__dirname, 'frontend/Public/Views'));
 // Serve static files from the "public" directory
 app.use(express.static('public'));
 
+// Load in environmental variables for database
 console.log("DB_USER:", process.env.DB_USER);
 console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
 const pool = mariadb.createPool({
@@ -27,7 +29,7 @@ const pool = mariadb.createPool({
   connectionLimit: 5,
 });
 
-// Test DB Connection
+// Test & Connect to database
 pool.getConnection()
   .then(conn => {
     console.log("Connected to database");
