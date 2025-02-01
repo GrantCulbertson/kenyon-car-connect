@@ -1,36 +1,26 @@
 // Load in necessary packages
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mariadb = require('mariadb');
-const dotenv = require('dotenv');
 const path = require('path');
 
-dotenv.config();
+const db = require('./db');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Set the view engine to EJS
+// Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'frontend/Public/Views'));
 
-// Serve static files from the "public" directory
+// Setup static files to be served from the "public" directory
 app.use(express.static('public'));
 
-// Load in environmental variables for database
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
-const pool = mariadb.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  connectionLimit: 5,
-});
 
-// Test & Connect to database
-pool.getConnection()
+// Test Connection to database
+db.pool.getConnection()
   .then(conn => {
     console.log("Connected to database");
     conn.release();
