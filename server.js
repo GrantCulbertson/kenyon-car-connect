@@ -22,12 +22,22 @@ app.use(express.static('public'));
 // Test Connection to database
 db.pool.getConnection()
   .then(conn => {
-    console.log("Connected to database");
+    console.log("Connected to database... nice!");
     conn.release();
   })
-  .catch(err => console.error("Database connection failed:", err));
+  .catch(err => console.error("Database connection failed... not so nice :( ):", err));
 
-// Route to render homepage.ejs
+//Define route directories:
+const userRoutes = require('./backend/routes/userRoutes');
+
+
+//Routes:
+app.use('/user', userRoutes);
+
+
+
+
+// Serving the webpage
 app.get('/', (req, res) => {
   res.render('homepage');
 });
