@@ -32,7 +32,7 @@ const userRoutes = require('./backend/routes/userRoutes');
 
 
 //Routes:
-app.use('/user', userRoutes);
+app.use('/User', userRoutes);
 
 
 

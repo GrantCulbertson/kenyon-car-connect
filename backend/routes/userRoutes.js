@@ -8,6 +8,10 @@ router.get("/" , (req, res) => {
     res.send("Testing Users Route")
 })
 
+router.get("/CreateUser", (req,res) => {
+    console.log("User attemping to be created...")
+})
+
 
 
 

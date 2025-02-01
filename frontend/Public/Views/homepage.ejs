@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>Kenyon Car Connect</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">Kenyon Car Connect</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Features</a>
@@ -27,6 +27,7 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
+            <button class="btn btn-primary ms-auto" data-toggle = "modal" data-target = #Sign-up-Modal >Sign up</button>
         </div>
     </nav>
 
@@ -34,8 +35,98 @@
         <h1>Hello, World!</h1>
     </div>
 
+
+
+
+
+<!-- Sign Up Modal & Form Information -->
+<div class="modal fade" id="Sign-up-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Kenyon Car Connect Sign up</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="/User/CreateUser" method="POST">
+                <div class="mb-3">
+                  <label for="name" class="form-label">First Name</label>
+                  <input type="text" name="name" id="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Last Name</label>
+                    <input type="text" name="name" id="username" class="form-control" required>
+                  </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Student Email</label>
+                  <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@kenyon\.edu$" required>
+                  <div class="invalid-feedback">
+                    Please enter a valid Kenyon College email address.
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="age" class="form-label">Age</label>
+                  <input type="number" name="age" id="age" class="form-control" min="19" required>
+                  <div class="invalid-feedback">
+                    You must be over 18 years old.
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="gender" class="form-label">Gender</label>
+                    <select name="gender" id="gender" class="form-control" required>
+                      <option>Female</option>
+                      <option>Male</option>
+                      <option>Other</option>
+                      <option>Prefer not to say</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="driver_status" class="form-label">Do you have a car on campus?</label>
+                      <select name="driver_status" id="driver_status" class="form-control" required>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                      </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+        </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Awesome scripts for making this page dynamic-->
+<script>
+    // Custom validation for email
+    document.getElementById('email').addEventListener('input', function() {
+      if (this.validity.patternMismatch || !this.value.endsWith('@kenyon.edu')) {
+        this.setCustomValidity('Please enter a valid Kenyon College email address.');
+      } else {
+        this.setCustomValidity('');
+      }
+    });
+
+    // Custom validation for age
+    document.getElementById('age').addEventListener('input', function() {
+        if (this.validity.rangeUnderflow) {
+          this.setCustomValidity('You must be over 18 years old.');
+        } else {
+          this.setCustomValidity('');
+        }
+    });
+
+        // Prevent form submission if email is not valid
+        document.querySelector('form').addEventListener('submit', function(event) {
+      var emailInput = document.getElementById('email');
+      if (!emailInput.value.endsWith('@kenyon.edu')) {
+        emailInput.setCustomValidity('Please enter a valid Kenyon College email address.');
+        emailInput.reportValidity();
+        event.preventDefault();
+      }
+    });
+</script>
+
 </body>
 </html>
