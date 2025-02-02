@@ -1,7 +1,7 @@
 // /backend/models/userModel.js
 
 //Load in database
-let db = require('../db');
+let db = require('../../db');
 
 // ----------------------- DEFINE USER CLASS ------------------------//
 class user {
@@ -13,4 +13,17 @@ class user {
         this.gender = gender;
         this.has_car = has_car;
     }
+
+//Function to add a user to the database after they have signed up
+    static addUser(userData){
+        try{
+
+        } 
+        catch(error){
+            console.log(error in addUser);
+            throw error;
+    }
+    }
+
+
 }
