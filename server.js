@@ -4,12 +4,20 @@ const express = require('express');
 const cors = require('cors');
 const mariadb = require('mariadb');
 const path = require('path');
+const cookieParser = require('cookie-parser');
+const fs = require('fs');
+const jwt = require('jsonwebtoken');
 
 const db = require('./db');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Body parser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
 
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
