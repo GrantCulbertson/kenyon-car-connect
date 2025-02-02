@@ -27,7 +27,7 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <button class="btn btn-primary ms-auto" data-toggle = "modal" data-target = #Sign-up-Modal >Sign up</button>
+            <a href="/User/UserSignup" class="btn btn-info" role="button">Sign Up</a>
         </div>
     </nav>
 
@@ -37,68 +37,7 @@
 
 
 
-
-
-<!-- Sign Up Modal & Form Information -->
-<div class="modal fade" id="Sign-up-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Kenyon Car Connect Sign up</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <form action="/User/CreateUser" method="POST">
-                <div class="mb-3">
-                  <label for="name" class="form-label">First Name</label>
-                  <input type="text" name="firstName" id="firstName" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="name" class="form-label">Last Name</label>
-                    <input type="text" name="lastName" id="lastName" class="form-control" required>
-                  </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label">Student Email</label>
-                  <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@kenyon\.edu$" required>
-                  <div class="invalid-feedback">
-                    Please enter a valid Kenyon College email address.
-                  </div>
-                  <div class="mb-3">
-                    <label for="password" class="form-label">Set Password</label>
-                    <input type="password" name="password" id="password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$" required>
-                    <div class="invalid-feedback">
-                      Password must contain at least one uppercase letter, one lowercase letter, and one number.
-                    </div>
-                </div>
-                <div class="mb-3">
-                  <label for="age" class="form-label">Age</label>
-                  <input type="number" name="age" id="age" class="form-control" min="19" required>
-                  <div class="invalid-feedback">
-                    You must be over 18 years old.
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label for="gender" class="form-label">Gender</label>
-                    <select name="gender" id="gender" class="form-control" required>
-                      <option>Female</option>
-                      <option>Male</option>
-                      <option>Other</option>
-                      <option>Prefer not to say</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="has_car" class="form-label">Do you have a car on campus?</label>
-                      <select name="has_car" id="has_car" class="form-control" required>
-                        <option value="no">No</option>
-                        <option value="yes">Yes</option>
-                      </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-        </div>
-
+<!-- Scripts for page necessities -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
