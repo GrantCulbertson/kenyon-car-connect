@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-//----------------------- DEFINE USER ROUTES ------------------------//
+//----------------------- ROUTES TO RENDER PAGES ------------------------//
 
 
 //Route to signup page
@@ -12,11 +12,22 @@ router.get("/UserSignup", (req, res) => {
     res.render("signup");
 });
 
+//Route to render email verification page
+router.get("/VerifyEmailPage", (req, res) => {
+    res.render("verifyemail");
+});
+
+//----------------------- ROUTES TO HANDLE USER DATA ------------------------//
+
 //Route to create a user
 router.post("/CreateUser", userController.addUser);
 
-//Route to verify email
-router.post("/VerifyEmail", userController.verifyEmail);
+//Route for user to validate their email
+//router.post("/VerifyEmail", userController.verifyEmail);
+
+
+
+
 
 
 

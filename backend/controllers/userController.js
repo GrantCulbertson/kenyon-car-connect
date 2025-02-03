@@ -13,17 +13,19 @@ exports.addUser = async (req, res) => {
 
         if (user instanceof User) {
             // Generate a token (e.g., user ID encrypted)
-            const token = jwt.sign({ userId: user.id, email: user.email }, "your_secret_key", { expiresIn: "7d" });
+            const token = jwt.sign(JSON.stringify(user), process.env.JWT_SECRET);
 
             // Set the cookie
             res.cookie("auth_token", token, {
                 httpOnly: true, // Prevents JavaScript access (security best practice)
                 secure: process.env.NODE_ENV === "production", // Set to true in production
-                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days expiration
+                maxAge: 1.08e7, // Very long expiration time
                 sameSite: "Strict" // Prevents CSRF attacks
             });
+            //Log that a user has been added to verify process is working:
             console.log("Cookies added for user with ID:", user.id);
-            return res.redirect("/verifyemail");
+            //Send user to page to verify their email
+            return res.redirect("/user/VerifyEmailPage");
         } else {
             return res.redirect("/");
         }
@@ -33,7 +35,4 @@ exports.addUser = async (req, res) => {
     }
 };
 
-exports.verifyEmail = async (req, res) => {
-
-}
 

@@ -21,11 +21,10 @@ class User {
     static async addUser(userData){
         try{
 
-            const ID = await User.createID();
             const emailValidationCode = await User.generateEmailVerificationCode();
             console.log("userModel... addUser... running");
-            const sql = 'INSERT INTO userData (ID, firstName, lastName, Email, Password, Age, Gender, has_car, emailValidationCode, verificationStatus) VALUES (?,?,?,?,?,?,?,?,?,?)';
-            const params = [ID, userData.firstName, userData.lastName, userData.email, userData.password, userData.age, userData.gender, userData.has_car, emailValidationCode];
+            const sql = 'INSERT INTO userData (firstName, lastName, Email, Password, Age, Gender, has_car, emailValidationCode) VALUES (?,?,?,?,?,?,?,?)';
+            const params = [userData.firstName, userData.lastName, userData.email, userData.password, userData.age, userData.gender, userData.has_car, emailValidationCode];
             const user = await User.getUserByEmail(userData.email);
             console.log(userData);
 
@@ -45,7 +44,7 @@ class User {
     }
 
 
-    //Function to create a unique random user ID:
+    //Function to create a unique random user ID (will not produce an ID already in the database):
     static async createID() {
         while (true) { // Loop until we find a unique ID
             let randomID = Math.floor(Math.random() * 1000000);
@@ -83,7 +82,7 @@ class User {
 		try {
 			const rows = await db.query(`SELECT * FROM userData WHERE email = ?`, [email]);
 			if (rows.length > 0) {
-                console.log("User data fetched:", rows[0]);
+                console.log("User data fetched... getUserByEmail");
 				return new User(rows[0]);
 			} else {
 				return null;
