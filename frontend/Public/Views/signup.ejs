@@ -7,60 +7,64 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container-md mt-5 justify-content-center text-center">
         <h1>Welcome to Kenyon Car Connect!</h1>
+        <p>Enter your information below to sign up and get started</p>
     </div>
 
 
 <!-- Sign up form Information -->
-<form action="/User/CreateUser" method="POST">
-    <div class="mb-3">
-        <label for="name" class="form-label">First Name</label>
-        <input type="text" name="firstName" id="firstName" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label for="name" class="form-label">Last Name</label>
-        <input type="text" name="lastName" id="lastName" class="form-control" required>
-        </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Student Email</label>
-        <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@kenyon\.edu$" required>
-        <div class="invalid-feedback">
-        Please enter a valid Kenyon College email address.
+ <div class = "container-md justify-content-center">
+    <form action="/User/CreateUser" method="POST">
+        <div class="mb-3 mt-5">
+            <label for="name" class="form-label">First Name</label>
+            <input type="text" name="firstName" id="firstName" class="form-control" required>
         </div>
         <div class="mb-3">
-        <label for="password" class="form-label">Set Password</label>
-        <input type="password" name="password" id="password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$" required>
-        <div class="invalid-feedback">
-            Password must contain at least one uppercase letter, one lowercase letter, and one number.
+            <label for="name" class="form-label">Last Name</label>
+            <input type="text" name="lastName" id="lastName" class="form-control" required>
+            </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Student Email</label>
+            <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@kenyon\.edu$" required>
+            <div class="invalid-feedback">
+            Please enter a valid Kenyon College email address.
+            </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Set Password</label>
+            <input type="password" name="password" id="password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$" required>
+            <div class="invalid-feedback">
+                Password must contain at least one uppercase letter, one lowercase letter, and one number.
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <label for="age" class="form-label">Age</label>
-        <input type="number" name="age" id="age" class="form-control" min="19" required>
-        <div class="invalid-feedback">
-        You must be over 18 years old.
+        <div class="mb-3">
+            <label for="age" class="form-label">Age</label>
+            <input type="number" name="age" id="age" class="form-control" min="19" required>
+            <div class="invalid-feedback">
+            You must be over 18 years old.
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <label for="gender" class="form-label">Gender</label>
-        <select name="gender" id="gender" class="form-control" required>
-            <option>Female</option>
-            <option>Male</option>
-            <option>Other</option>
-            <option>Prefer not to say</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label for="has_car" class="form-label">Do you have a car on campus?</label>
-            <select name="has_car" id="has_car" class="form-control" required>
-            <option value="no">No</option>
-            <option value="yes">Yes</option>
+        <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select name="gender" id="gender" class="form-control" required>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Other</option>
+                <option>Prefer not to say</option>
             </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="mb-3">
+            <label for="has_car" class="form-label">Do you have a car on campus?</label>
+                <select name="has_car" id="has_car" class="form-control" required>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+                </select>
+        </div>
+        <div class = "mt-5 text-center">
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+        </div>
     </form>
-
+</div>
 
 <!-- Scripts for adding page necessities -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

@@ -28,6 +28,7 @@
                 </li>
             </ul>
             <a href="/User/UserSignup" class="btn btn-info" role="button">Sign Up</a>
+            <a href="/" class="btn btn-info" role="button">Login</a>
         </div>
     </nav>
 
@@ -43,35 +44,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Awesome scripts for making this page dynamic-->
-<script>
-    // Custom validation for email
-    document.getElementById('email').addEventListener('input', function() {
-      if (this.validity.patternMismatch || !this.value.endsWith('@kenyon.edu')) {
-        this.setCustomValidity('Please enter a valid Kenyon College email address.');
-      } else {
-        this.setCustomValidity('');
-      }
-    });
 
-    // Custom validation for age
-    document.getElementById('age').addEventListener('input', function() {
-        if (this.validity.rangeUnderflow) {
-          this.setCustomValidity('You must be over 18 years old.');
-        } else {
-          this.setCustomValidity('');
-        }
-    });
-
-        // Prevent form submission if email is not valid
-        document.querySelector('form').addEventListener('submit', function(event) {
-      var emailInput = document.getElementById('email');
-      if (!emailInput.value.endsWith('@kenyon.edu')) {
-        emailInput.setCustomValidity('Please enter a valid Kenyon College email address.');
-        emailInput.reportValidity();
-        event.preventDefault();
-      }
-    });
-</script>
 
 </body>
 </html>

@@ -15,6 +15,9 @@ router.get("/UserSignup", (req, res) => {
 //Route to create a user
 router.post("/CreateUser", userController.addUser);
 
+//Route to verify email
+router.post("/VerifyEmail", userController.verifyEmail);
+
 
 
 
