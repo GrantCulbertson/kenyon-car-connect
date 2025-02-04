@@ -23,7 +23,7 @@ router.get("/VerifyEmailPage", (req, res) => {
 router.post("/CreateUser", userController.addUser);
 
 //Route for user to validate their email
-//router.post("/VerifyEmail", userController.verifyEmail);
+router.post("/VerifyEmail", userController.verifyEmail);
 
 
 

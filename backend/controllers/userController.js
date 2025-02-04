@@ -35,4 +35,8 @@ exports.addUser = async (req, res) => {
     }
 };
 
+exports.verifyEmail = async (req, res) => {
+    
+};
+
 
