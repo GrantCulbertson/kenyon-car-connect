@@ -8,23 +8,21 @@
 </head>
 <body>
     <div class="container-md mt-5 justify-content-center text-center">
-        <h1>One last thing...</h1>
+        <h1>Welcome, <%= user.firstName %>!</h1>
+        <h2>One last thing...</h2>
         <p>Please input the verification code just sent to your school email</p>
     </div>
 
-
-<!-- Sign up form Information -->
- <div class = "container-md justify-content-center">
-    <form action="/User/VerifyEmail" method="POST">
-        <div class="mb-3 mt-5">
-            <label for="verificationCode" class="form-label">Input Verification Code</label>
-            <input type="text" name="verificationCode" id="verificationCode" class="form-control" required>
-        </div>
-        <div class = "mt-5 text-center">
-        <button type="submit" class="btn btn-primary btn-block">Submit</button>
-        </div>
-    </form>
-</div>
+    <!-- Sign up form Information -->
+    <div class="container-md justify-content-center">
+        <form action="/User/VerifyEmail" method="POST">
+            <div class="mb-3 mt-5">
+                <label for="verificationCode" class="form-label">Input Verification Code</label>
+                <input type="text" name="verificationCode" id="verificationCode" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
 <!-- Scripts for adding page necessities -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

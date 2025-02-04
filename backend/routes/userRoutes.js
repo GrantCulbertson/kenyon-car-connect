@@ -13,9 +13,7 @@ router.get("/UserSignup", (req, res) => {
 });
 
 //Route to render email verification page
-router.get("/VerifyEmailPage", (req, res) => {
-    res.render("verifyemail");
-});
+router.get("/VerifyEmailPage", userController.verifyEmailPage);
 
 //----------------------- ROUTES TO HANDLE USER DATA ------------------------//
 

@@ -34,6 +34,7 @@ class User {
             }else{
                 const insert = await db.query(sql, params);
                 const user = await User.getUserByEmail(userData.email);
+                console.log(user)
                 return user;
             }
         } 
@@ -80,7 +81,8 @@ class User {
     //Function to get user by email:
 	static async getUserByEmail(email) {
 		try {
-			const rows = await db.query(`SELECT * FROM userData WHERE email = ?`, [email]);
+            const query = `SELECT * FROM userData WHERE email = ?`;
+			const rows = await db.query(query , [email]);
 			if (rows.length > 0) {
                 console.log("User data fetched... getUserByEmail");
 				return new User(rows[0]);
@@ -93,8 +95,26 @@ class User {
 		}
     }
 
-}
+    static async verifyEmail(email, inputCode){
+        try{
+            const query = `SELECT emailValidationCode FROM userData WHERE email = ?`;
+            const emailValidationCode = await db.query(query, [email]);
+            console.log(emailValidationCode);
+            if (emailValidationCode === inputCode){
+                console.log("Email verified!");
+                return true;
+        }else{
+            return false;
+        }
+    }catch(error){
+        console.log("Error in verifyEmail:", error);
+        throw error;
+    }
+    }
 
+
+//Bottom of user class here:
+}
 
 
 

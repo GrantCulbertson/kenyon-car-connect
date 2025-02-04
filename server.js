@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'frontend/Public/Views'));
