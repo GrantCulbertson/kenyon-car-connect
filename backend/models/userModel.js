@@ -2,6 +2,7 @@
 
 //Load in database
 let db = require('../../db');
+let emailServices = require('../../email');
 
 // ----------------------- DEFINE USER CLASS ------------------------//
 class User {
@@ -23,10 +24,9 @@ class User {
 
             const emailValidationCode = await User.generateEmailVerificationCode();
             console.log("userModel... addUser... running");
-            const sql = 'INSERT INTO userData (firstName, lastName, Email, Password, Age, Gender, has_car, emailValidationCode) VALUES (?,?,?,?,?,?,?,?)';
+            const sql = 'INSERT INTO userData (firstName, lastName, email, password, age, gender, has_car, emailValidationCode) VALUES (?,?,?,?,?,?,?,?)';
             const params = [userData.firstName, userData.lastName, userData.email, userData.password, userData.age, userData.gender, userData.has_car, emailValidationCode];
             const user = await User.getUserByEmail(userData.email);
-            console.log(userData);
 
             if (user instanceof User){
                 console.log("Email:", userData.email,"already exists in database... exiting addUser");
@@ -34,7 +34,8 @@ class User {
             }else{
                 const insert = await db.query(sql, params);
                 const user = await User.getUserByEmail(userData.email);
-                console.log(user)
+                const sendEmail = await emailServices.sendVerificationEmail(userData.email, emailValidationCode); // Send email verification code to user after they sign up.
+                console.log("New user:", userData.email, "added to database!");
                 return user;
             }
         } 
@@ -68,7 +69,7 @@ class User {
     //Function to get user by unique ID:
     static async getUserByID(ID){
         try{
-            const sql = 'SELECT * FROM userData WHERE ID = ?';
+            const sql = 'SELECT * FROM userData WHERE id = ?';
             const params = [ID];
             const user = await db.query(sql, params);
             return user;
@@ -98,10 +99,12 @@ class User {
     static async verifyEmail(email, inputCode){
         try{
             const query = `SELECT emailValidationCode FROM userData WHERE email = ?`;
-            const emailValidationCode = await db.query(query, [email]);
-            console.log(emailValidationCode);
-            if (emailValidationCode === inputCode){
-                console.log("Email verified!");
+            const rows = await db.query(query, [email]);
+            if (rows[0].emailValidationCode == inputCode){
+                //Update user verification status in database
+                const sql = "UPDATE userData SET verificationStatus = 'Yes' WHERE email = ?";
+                const insert = await db.query(sql, [email]);
+                console.log(email,"verified & Database Updated!");
                 return true;
         }else{
             return false;
@@ -111,6 +114,7 @@ class User {
         throw error;
     }
     }
+
 
 
 //Bottom of user class here:

@@ -7,7 +7,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require("nodemailer");
 const db = require('./db');
 
 const app = express();
@@ -19,6 +19,23 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+// Middleware to make cookies available to views
+app.use((req, res, next) => {
+  if (req.cookies.auth_token) {
+      try {
+          const decoded = jwt.verify(req.cookies.auth_token, process.env.JWT_SECRET);
+          res.locals.user = decoded;
+          res.locals.isUser = true;
+      } catch (error) {
+          res.locals.user = null;
+          res.locals.isUser = false;
+      }
+  } else {
+      res.locals.user = null;
+      res.locals.isUser = false;
+  }
+  next();
+});
 
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
