@@ -5,21 +5,16 @@ const cors = require('cors');
 const mariadb = require('mariadb');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require("nodemailer");
 const db = require('./db');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-// Body parser
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(cookieParser());
 
-// Middleware to make cookies available to views
+// Middleware to make cookies available to all views (webpages)
 app.use((req, res, next) => {
   if (req.cookies.auth_token) {
       try {
@@ -44,7 +39,6 @@ app.set('views', path.join(__dirname, 'frontend/Public/Views'));
 // Setup static files to be served from the "public" directory
 app.use(express.static('public'));
 
-
 // Test Connection to database
 db.pool.getConnection()
   .then(conn => {
@@ -56,12 +50,8 @@ db.pool.getConnection()
 //Define route directories:
 const userRoutes = require('./backend/routes/userRoutes');
 
-
 //Routes:
 app.use('/User', userRoutes);
-
-
-
 
 // Serving the webpage
 app.get('/', (req, res) => {

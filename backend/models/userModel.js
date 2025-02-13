@@ -118,7 +118,7 @@ class User {
 
 
     //Function to login user:
-    static async loginUser(email,password){
+    static async logInUser(email,password){
         try{
             const query = 'SELECT * FROM userData WHERE email = ? AND password =?';
             const params = [email, password];
@@ -133,6 +133,8 @@ class User {
             throw error;
         }
     }
+
+    
 //Bottom of user class here:
 }
 

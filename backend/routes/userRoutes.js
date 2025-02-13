@@ -18,6 +18,9 @@ router.get("/UserLoginPage", userController.loginPage);
 //Route to render email verification page
 router.get("/VerifyEmailPage", userController.verifyEmailPage);
 
+//Route for user to logout
+router.get("/LogoutUser", userController.logoutUser);
+
 //----------------------- ROUTES TO HANDLE USER DATA ------------------------//
 
 //Route to create a user
@@ -28,6 +31,8 @@ router.post("/VerifyEmail", userController.verifyEmail);
 
 //Route for user to login
 router.post("/LoginUser", userController.loginUser);
+
+
 
 
 

@@ -13,7 +13,7 @@ exports.addUser = async (req, res) => {
 
         if (user instanceof User) {
             // Generate a token (e.g., user ID encrypted)
-            const token = jwt.sign({ id: user.id, email: user.email, verificationStatus: user.verificationStatus}, 
+            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, verificationStatus: user.verificationStatus}, 
                                      process.env.JWT_SECRET,
                                      { expiresIn: "1d" });
                         // Cookie options
@@ -77,7 +77,7 @@ exports.verifyEmail = async (req, res) => {
         const verificationStatus = await User.verifyEmail(decoded.email, inputCode); //Function returns true if user gets verified and vice versa
         if (verificationStatus){
             //Update user verification status in cookie
-            const newToken = jwt.sign({ id: decoded.id, email: decoded.email, verificationStatus: "Yes" }, 
+            const newToken = jwt.sign({ id: decoded.id, firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.email, verificationStatus: "Yes" }, 
                                         process.env.JWT_SECRET, 
                                         { expiresIn: "1d" });
 
@@ -112,10 +112,10 @@ exports.loginPage = async (req, res) => {
 exports.loginUser = async (req, res) => {
     const {email, password} = req.body;
     try {
-        const user = await User.loginUser(email, password); //User object is returned if login is successful.
+        const user = await User.logInUser(email, password); //User object is returned if login is successful.
         if (user instanceof User){
-            // Generate a token (e.g., user ID encrypted)
-            const token = jwt.sign({ id: user.id, email: user.email, verificationStatus: user.verificationStatus}, 
+            // Generate a token (encrped user ID)
+            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, verificationStatus: user.verificationStatus}, 
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" });
             // Cookie options
@@ -136,5 +136,12 @@ exports.loginUser = async (req, res) => {
         console.log("Error in loginUser Controller:", error);
         return res.redirect("/");
     }
+};
+
+//Function to log a user out:
+exports.logoutUser = async (req, res) => {
+    console.log("userController... logoutUser... is running");
+    res.clearCookie("auth_token"); //Clear cookies
+    return res.redirect("/"); //Redirect user to homepage
 };
 
