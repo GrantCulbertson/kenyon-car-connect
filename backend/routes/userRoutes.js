@@ -8,9 +8,12 @@ const userController = require('../controllers/userController');
 
 
 //Route to signup page
-router.get("/UserSignup", (req, res) => {
+router.get("/UserSignupPage", (req, res) => {
     res.render("signup");
 });
+
+//Route to render login page
+router.get("/UserLoginPage", userController.loginPage);
 
 //Route to render email verification page
 router.get("/VerifyEmailPage", userController.verifyEmailPage);
@@ -22,6 +25,9 @@ router.post("/CreateUser", userController.addUser);
 
 //Route for user to validate their email
 router.post("/VerifyEmail", userController.verifyEmail);
+
+//Route for user to login
+router.post("/LoginUser", userController.loginUser);
 
 
 

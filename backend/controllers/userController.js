@@ -36,6 +36,7 @@ exports.addUser = async (req, res) => {
     }
 };
 
+//Control for rendering the email verification page. If user is already verified or has no cookies, they are redirected to the homepage.
 exports.verifyEmailPage = async (req, res) => {
     console.log("userController... verifyEmailPage... running");
     const token = req.cookies.auth_token; // Get token from cookies
@@ -66,10 +67,10 @@ exports.verifyEmailPage = async (req, res) => {
 
 };
 
+//Control for verifying user email. If user is verified, their verification status is updated in the database and they are redirected to the homepage.
 exports.verifyEmail = async (req, res) => {
-    //Code goes here
     console.log("userController... verifyEmail... running");
-    const {inputCode} = req.body
+    const {inputCode} = req.body //Retrieve input code from email verification form
     try{
         const token = req.cookies.auth_token; //get cookies from user
         const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token
@@ -95,6 +96,44 @@ exports.verifyEmail = async (req, res) => {
         }
     }catch(error){
         console.log("Error in verifyEmail Controller:", error);
+        return res.redirect("/");
+    }
+};
+
+exports.loginPage = async (req, res) => {
+    console.log("userController... signupPage... running");
+    const token = req.cookies.auth_token; //get cookies from user (if they exist)
+    if (token) {
+        return res.redirect("/"); // Return to homepage if user has a token (they are already logged in)
+    }
+    return res.render("login", {loginFailed: false}); //Render login page
+};
+
+exports.loginUser = async (req, res) => {
+    const {email, password} = req.body;
+    try {
+        const user = await User.loginUser(email, password); //User object is returned if login is successful.
+        if (user instanceof User){
+            // Generate a token (e.g., user ID encrypted)
+            const token = jwt.sign({ id: user.id, email: user.email, verificationStatus: user.verificationStatus}, 
+                process.env.JWT_SECRET,
+                { expiresIn: "1d" });
+            // Cookie options
+            const cookieOptions = {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                maxAge: 24 * 60 * 60 * 1000, // 1 day
+                sameSite: "Strict"
+            };
+
+            // Set the cookie & redirect to homepage
+            res.cookie("auth_token", token, cookieOptions)
+            return res.redirect("/"); //Return user to homepage after successful login
+        }else{
+            return res.render("login", {loginFailed: true}); //Return user to login page if login is unsuccessful
+        }
+    }catch(error){
+        console.log("Error in loginUser Controller:", error);
         return res.redirect("/");
     }
 };

@@ -96,6 +96,7 @@ class User {
 		}
     }
 
+    //Function to verify user email:
     static async verifyEmail(email, inputCode){
         try{
             const query = `SELECT emailValidationCode FROM userData WHERE email = ?`;
@@ -116,7 +117,22 @@ class User {
     }
 
 
-
+    //Function to login user:
+    static async loginUser(email,password){
+        try{
+            const query = 'SELECT * FROM userData WHERE email = ? AND password =?';
+            const params = [email, password];
+            const rows = await db.query(query, params);
+            if (rows.length > 0){
+                return new User(rows[0]); //Return user object if password & email are found in database
+            }else{
+                return null; //Return null if no user is found (wrong password or email)
+            }
+        }catch(error){
+            console.log("Error in loginUser:", error);
+            throw error;
+        }
+    }
 //Bottom of user class here:
 }
 
