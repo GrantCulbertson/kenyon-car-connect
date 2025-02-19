@@ -49,9 +49,13 @@ db.pool.getConnection()
 
 //Define route directories:
 const userRoutes = require('./backend/routes/userRoutes');
+const carRoutes = require('./backend/routes/carRoutes');
+
 
 //Routes:
 app.use('/User', userRoutes);
+app.use('/Car', carRoutes);
+
 
 // Serving the webpage
 app.get('/', (req, res) => {
