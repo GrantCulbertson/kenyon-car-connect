@@ -21,6 +21,9 @@ router.get("/VerifyEmailPage", userController.verifyEmailPage);
 //Route for user to logout
 router.get("/LogoutUser", userController.logoutUser);
 
+//Route to render user profile page
+router.get("/Profile", userController.profilePage);
+
 //----------------------- ROUTES TO HANDLE USER DATA ------------------------//
 
 //Route to create a user

@@ -1,6 +1,16 @@
+/* -------------- Styles for the entire application -------------- */
 body {
     background-color: #f8f9fa;
 }
 h1 {
     margin-top: 20px;
+}
+
+/* --------------- Styles for profile page ---------------- */
+.username-box {
+    border-radius: 0 5px 5px 0; /* Smooth transition to the right */
+    border-left: none; /* Removes double border effect */
+}
+.label-box {
+    border-radius: 5px 0 0 5px; /* Smooth transition to the left */
 }

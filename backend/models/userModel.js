@@ -134,6 +134,19 @@ class User {
         }
     }
 
+    //Function to grab a users password by their id:
+    static async getPasswordByID(ID){
+        try{
+            const query = 'SELECT password FROM userData WHERE id = ?';
+            const params = [ID];
+            const password = await db.query(query, params);
+            return password[0].password;
+        }catch(error){
+            console.log("error in getPasswordByID");
+            throw error;
+        }
+    }
+
     
 //Bottom of user class here:
 }
