@@ -10,6 +10,9 @@ exports.addCar = async (req, res) => {
     const token = req.cookies.auth_token; // Get token from cookies
     const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token to get user information
     const userID = decoded.id;
+    if (!token) {
+        return res.redirect("/"); //Return user to homepage if no token is found (User should not be able to perform this function)
+    }
     try{
         const car = await Car.addCarToDatabase({userID, make, model, year, color, licensePlate, seatsInCar, conversationPreference});
         if (car instanceof Car){
