@@ -51,6 +51,23 @@ static async addCarToDatabase(carData){
     }
 };
 
+static async updateCar(userID, carData){
+    try{
+        console.log("carModel... updateCar... running for userID:", userID);
+        const query = 'UPDATE carData SET make = ?, model = ?, year = ?, color = ?, licensePlate = ?, seatsInCar = ?, conversationPreference = ? WHERE userID = ?';
+        const params = [carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar, carData.conversationPreference, userID];
+        const update = db.query(query, params); //Update car info in database
+        if(update.affectedRows > 0){
+            return true; //Return true if update is successful
+        }else{
+            return false; //Return false if update is unsuccessful
+        }
+    }catch(error){
+        console.log("error in updateCar", error);
+        throw error;
+    }
+}
+
 //END OF CLASS DEFINITION
 };
 

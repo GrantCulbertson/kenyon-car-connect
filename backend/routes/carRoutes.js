@@ -10,6 +10,9 @@ const carController = require('../controllers/carController');
 //Route to add a car to the database
 router.post("/AddCar", carController.addCar);
 
+//Route to update a car in the database
+router.post("/UpdateCar", carController.updateCar);
+
 
 
 

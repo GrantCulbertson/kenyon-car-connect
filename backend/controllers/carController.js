@@ -4,6 +4,8 @@ const Car = require("../models/carModel").Car; //Require car model
 const jwt = require("jsonwebtoken");
 
 //----------------------- DEFINE USER CONTROLLER ------------------------//
+
+//Function for a user to add their car to the database
 exports.addCar = async (req, res) => {
     console.log("carController.. addCar... running");
     const {make, model, year, color, licensePlate, seatsInCar, conversationPreference} = req.body;
@@ -21,6 +23,30 @@ exports.addCar = async (req, res) => {
         }
     }catch(error){
         console.log("Error in addCar Controller:", error);
+        return res.redirect("/User/Profile"); //Catch error and return user to profile page (The user route will handle whether they have a car or not)
+    }
+};
+
+//Function for a user to update their stored car information
+exports.updateCar = async (req, res) => {
+    console.log("carController.. UpdateCar... running");
+    const {make, model, year, color, licensePlate, seatsInCar, conversationPreference} = req.body;
+    const token = req.cookies.auth_token; // Get token from cookies if it is there
+    if(!token){
+        return res.redirect("/User/Profile"); //Return user to homepage if no token is found (User should not be able to perform this function)
+    }
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token to get user information
+        const update = await Car.updateCar(decoded.id, {make, model, year, color, licensePlate, seatsInCar, conversationPreference});
+        if(update){
+            console.log("Car updated successfully for user ID:", decoded.id);
+            return res.redirect("/User/Profile"); //Redirect user to profile page if car is updated successfully (The user route will handle car information)
+        }else{
+            console.log("Error updating car for user ID:", decoded.id);
+            return res.redirect("/User/Profile"); //Catch error and return user to profile page (The user route will handle car information)
+        }
+    }catch(error){
+        console.log("Error in UpdateCar Controller:", error);
         return res.redirect("/User/Profile"); //Catch error and return user to profile page (The user route will handle whether they have a car or not)
     }
 };
