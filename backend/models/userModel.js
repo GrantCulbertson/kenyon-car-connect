@@ -35,7 +35,6 @@ class User {
             }else{
                 const insert = await db.query(sql, params);
                 const user = await User.getUserByEmail(userData.email);
-                const sendEmail = await emailServices.sendVerificationEmail(userData.email, emailValidationCode); // Send email verification code to user after they sign up.
                 console.log("New user:", userData.email, "added to database!");
                 return user;
             }
@@ -162,6 +161,21 @@ class User {
     static async generateEmailVerificationCode(){
         let code = Math.floor(Math.random() * 10000);
         return code;
+    }
+
+    static async sendVerificationEmail(userEmail){
+        console.log("Email Verification Code being sent to:", userEmail);
+        try{
+            const query = 'SELECT emailValidationCode FROM userData where email = ?'; //Grab user validation code from database
+            const params = [userEmail];
+            const rows = await db.query(query, params);
+            const validationCode = rows[0].emailValidationCode;
+            console.log(validationCode);
+            emailServices.sendVerificationEmail(userEmail, validationCode)
+        }catch(error){
+            console.log("Error in sending email verification code to:")
+            throw error;
+        }
     }
 
     

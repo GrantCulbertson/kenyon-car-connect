@@ -1,6 +1,7 @@
 // /backend/models/carModel.js
 
 //Load in database
+const e = require('express');
 let db = require('../../db');
 
 // ----------------------- DEFINE CAR CLASS ------------------------//

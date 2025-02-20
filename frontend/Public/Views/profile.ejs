@@ -46,7 +46,14 @@
                 <%= user.email %>
             </div>
         </div>
-        
+        <!-- Tell user they should verify their email if it is not verified already-->
+        <% if(user.verificationStatus == "No"){ %>
+            <div class = "d-flex align-items-center">
+                    <p>Your email is not verified yet. You will need to verify it to be able to request & post rides.</p>
+                    <a href="/User/VerifyEmailPage" class="btn btn-primary btn-md ms-2" role="button">Verify Email</a>
+            </div>
+        <% } %>
+        <!-- -->
         <br>
         <!-- User Password -->
         <div class="d-flex align-items-center">

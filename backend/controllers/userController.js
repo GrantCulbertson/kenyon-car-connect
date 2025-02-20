@@ -56,10 +56,14 @@ exports.verifyEmailPage = async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.getUserByEmail(decoded.email);
 
+        //Send verification code to user:
+        const sendEmail = await User.sendVerificationEmail(decoded.email)
+
+        //Grab last page user was on, necessary for dynamic display of verification page.
+        const lastPage = req.get('Referer') || '' //Default to '' if can't find last page
+
         //Render email verification page and pass user information
-        res.render("verifyemail", {
-            isUser: user instanceof User,
-            user: user});
+        res.render("verifyemail", {lastPage: lastPage});
 
     }catch(error){
         console.log("Error in verifyEmail Controller:", error);
