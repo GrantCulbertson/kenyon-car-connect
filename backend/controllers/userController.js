@@ -14,7 +14,7 @@ exports.addUser = async (req, res) => {
 
         if (user instanceof User) {
             // Generate a token (e.g., user ID encrypted)
-            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, verificationStatus: user.verificationStatus}, 
+            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, gender: user.gender, verificationStatus: user.verificationStatus}, 
                                      process.env.JWT_SECRET,
                                      { expiresIn: "1d" });
                         // Cookie options
@@ -78,7 +78,7 @@ exports.verifyEmail = async (req, res) => {
         const verificationStatus = await User.verifyEmail(decoded.email, inputCode); //Function returns true if user gets verified and vice versa
         if (verificationStatus){
             //Update user verification status in cookie
-            const newToken = jwt.sign({ id: decoded.id, firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.email, verificationStatus: "Yes" }, 
+            const newToken = jwt.sign({ id: decoded.id, firstName: decoded.firstName, lastName: decoded.lastName, gender: decoded.gender, email: decoded.email, verificationStatus: "Yes" }, 
                                         process.env.JWT_SECRET, 
                                         { expiresIn: "1d" });
 
@@ -116,7 +116,7 @@ exports.loginUser = async (req, res) => {
         const user = await User.logInUser(email, password); //User object is returned if login is successful.
         if (user instanceof User){
             // Generate a token (encrped user ID)
-            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, verificationStatus: user.verificationStatus}, 
+            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, gender: user.gender, verificationStatus: user.verificationStatus}, 
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" });
             // Cookie options
@@ -165,5 +165,44 @@ exports.profilePage = async (req, res) => {
         return res.redirect("/"); //Return to homepage if error occurs accessing profile
     }
     
+};
+
+//Function to update user profile information
+exports.updateProfile = async (req, res) => {
+    const token = req.cookies.auth_token; //Get cookies from user
+    const {firstName, lastName, password, gender} = req.body; //Get user input from form
+    if(!token){ //Return user to homepage if they have no cookies, they should not be performing this function.
+        return res.redirect("/");
+    }
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode token
+        console.log("userController... updateProfile... is running for user:", decoded.id);
+        const result = await User.updateProfile(decoded.id, {firstName, lastName, password, gender}); //Update user profile information, result is true if successfuly update and false if not
+        if(result){
+            //Get new user information
+            const user = await User.getUserByID(decoded.id);
+            //Generate new token
+            const newToken = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, gender: user.gender, verificationStatus: user.verificationStatus}, 
+                process.env.JWT_SECRET,
+                { expiresIn: "1d" });
+            // Cookie options
+            const cookieOptions = {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                maxAge: 24 * 60 * 60 * 1000, // 1 day
+                sameSite: "Strict"
+            };
+            console.log("User:", user.email, "has been updated! Cookies successfully updated!");
+            // Set the cookie & redirect to homepage
+            res.cookie("auth_token", newToken, cookieOptions)
+            res.redirect("/User/Profile"); //Return to profile page if user information is updated successfully
+        }else{
+            return res.redirect("/User/Profile"); //Return to profile page if user information is not updated successfully
+        }
+    }catch(error){
+        console.log("Error in updateProfile Controller:", error);
+        return res.redirect("/User/Profile"); //Return to profile page if error occurs in updating user information
+    }
+
 };
 

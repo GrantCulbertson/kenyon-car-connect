@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenyon Car Connect - Your Profile </title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../Styles/styles.css">
 </head>
 <body>
@@ -75,7 +75,6 @@
             <div class="px-3 py-2 bg-light border username-box">
                 <%= userPassword %>
             </div>
-            <button class="btn btn-primary ms-2">Update</button>
         </div>
         <!-- Button to update profile information -->
         <div class = "d-flex align-items-center">
@@ -95,39 +94,43 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Form for adding car information -->
+                <!-- Form for updating profile information -->
                 <form action="/User/UpdateProfile" method="POST">                     
                     <div class="form-group">
-                        <label for="model" class="form-label">Car Model</label>
-                        <input type="text" name="model" id="model" class="form-control" required>
+                        <label for="email" class="form-label">Email</label>
+                        <input class="form-control" type="text" value = '<%= user.email %>' placeholder= 'Email' readonly> 
+                        <small id="emailHelp" class="form-text text-muted">Your school email must be used, so you cannot change this.</small>
                     </div>
                     <div class="form-group">
-                        <label for="year" class="form-label">Car Year</label>
-                        <input type="number" name="year" id="year" class="form-control" required>
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" value = "<%= userPassword %>" placeholder = "Password" class="form-control" required>
+                    </div>
+                    <div class="form-group" id="retypePasswordContainer" style="display: none;">
+                        <label for="retypePassword" class="form-label">Re-type Password</label>
+                        <input type="password" name="retypePassword" id="retypePassword" class="form-control">
+                        <small id="passwordMatchMessage" class="text-danger" style="display: none;">Passwords do not match</small>
                     </div>
                     <div class="form-group">
-                        <label for="color" class="form-label">Car Color</label>
-                        <input type="text" name="color" id="color" class="form-control" required>
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" name="firstName" id="firstName" value = "<%= user.firstName %>" placeholder = "First Name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="licensePlate" class="form-label">Car License Plate</label>
-                        <input type="text" name="licensePlate" id="licensePlate" class="form-control" required>
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" name="lastName" id="lastName" value = "<%= user.lastName %>" placeholder = "Last Name" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
-                        <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
-                        <select name="conversationPreference" id="conversationPreference" class="form-control" required>
-                            <option>Very talkative</option>
-                            <option>Some small talk</option>
-                            <option>Silence is preferred</option>
-                            <option>No preference</option>
+                        <label for="gender" class="form-label">Gender</label>
+                        <select name="gender" id="gender" class="form-control" required>
+                            <option value="" disabled selected><%= user.gender %></option>
+                            <option value="Male" <%= user.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                            <option value="Female" <%= user.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                            <option value="Nonbinary" <%= user.gender === 'Nonbinary' ? 'selected' : '' %>>Nonbinary</option>
+                            <option value="Other" <%= user.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                            <option value="Prefer not to say" <%= user.gender === 'Prefer not to say' ? 'selected' : '' %>>Prefer not to say</option>
                         </select>
                     </div>
                     <div class = "mt-5 text-center">
-                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
                     </div>
                 </form>
             </div>
@@ -210,10 +213,115 @@
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.conversationPreference %>
             </div>
-            <button class="btn btn-primary ms-2">Update</button>
+        </div>
+        <!-- Button to update car information -->
+        <div class = "d-flex align-items-center">
+            <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateCarModal">Update Car Info</button>
         </div>
     </div>
 </div>
+<!-- Modal for Updating Car Information -->
+<div class="modal fade" id="updateCarModal" tabindex="-1" aria-labelledby="updateCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCarModalLabel">Update Your Car Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for adding car information -->
+                <form action="/Car/UpdateCarInfo" method="POST">
+                    <div class="form-group">
+                        <label for="make" class="form-label">Car Make</label>
+                        <select name="make" id="make" class="form-control" required>
+                            <option value="" disabled selected><%= car.make %></option>
+                            <option>Audi</option>
+                            <option>BMW</option>
+                            <option>Buick</option>
+                            <option>Cadillac</option>
+                            <option>Chevrolet</option>
+                            <option>Chrysler</option>
+                            <option>Dodge</option>
+                            <option>Ferrari</option>
+                            <option>Ford</option>
+                            <option>GM</option>
+                            <option>GEM</option>
+                            <option>GMC</option>
+                            <option>Honda</option>
+                            <option>Hummer</option>
+                            <option>Hyundai</option>
+                            <option>Infiniti</option>
+                            <option>Isuzu</option>
+                            <option>Jaguar</option>
+                            <option>Jeep</option>
+                            <option>Kia</option>
+                            <option>Lamborghini</option>
+                            <option>Land Rover</option>
+                            <option>Lexus</option>
+                            <option>Lincoln</option>
+                            <option>Lotus</option>
+                            <option>Mazda</option>
+                            <option>Mercedes-Benz</option>
+                            <option>Mercury</option>
+                            <option>Mitsubishi</option>
+                            <option>Nissan</option>
+                            <option>Oldsmobile</option>
+                            <option>Peugeot</option>
+                            <option>Pontiac</option>
+                            <option>Porsche</option>
+                            <option>Regal</option>
+                            <option>Saab</option>
+                            <option>Saturn</option>
+                            <option>Subaru</option>
+                            <option>Suzuki</option>
+                            <option>Toyota</option>
+                            <option>Volkswagen</option>
+                            <option>Volvo</option>
+                        </select>
+                    </div>                        
+                    <div class="form-group">
+                        <label for="model" class="form-label">Car Model</label>
+                        <input type="text" name="model" id="model" class="form-control" placeholder = "<%= car.model %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year" class="form-label">Car Year</label>
+                        <input type="number" name="year" id="year" class="form-control" placeholder = "<%= car.year %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="color" class="form-label">Car Color</label>
+                        <input type="text" name="color" id="color" class="form-control" placeholder = "<%= car.color %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="licensePlate" class="form-label">Car License Plate</label>
+                        <input type="text" name="licensePlate" id="licensePlate" class="form-control" placeholder = "<%= car.licensePlate %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
+                        <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" placeholder = "<%= car.seatsInCar %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
+                        <select name="conversationPreference" id="conversationPreference" class="form-control" required>
+                            <option value="" disabled selected><%= car.conversationPreference%></option>
+                            <option>Very talkative</option>
+                            <option>Some small talk</option>
+                            <option>Silence is preferred</option>
+                            <option>No preference</option>
+                        </select>
+                    </div>
+                    <div class = "mt-5 text-center">
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- Add Car Information (Shown if user has no car)-->
 <% }else{ %>
 <!-- Car Information -->
@@ -336,6 +444,62 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Awesome scripts for making this page dynamic-->
+ <script>
+// Custom validation for password
+    document.getElementById('password').addEventListener('input', function() {
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+        if (!passwordPattern.test(this.value)) {
+            this.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, and one number.');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+// Prevent form submission if password is not valid
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const passwordInput = document.getElementById('password');
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+        if (!passwordPattern.test(passwordInput.value)) {
+            passwordInput.setCustomValidity('Password must contain at least one uppercase letter, one lowercase letter, and one number.');
+            passwordInput.reportValidity();
+            event.preventDefault();
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get references to form elements
+        const passwordInput = document.getElementById("password");  // The main password input field
+        const retypePasswordContainer = document.getElementById("retypePasswordContainer"); // Div containing the retype password field
+        const retypePasswordInput = document.getElementById("retypePassword"); // The re-type password input field
+        const passwordMatchMessage = document.getElementById("passwordMatchMessage"); // Error message for mismatched passwords
+        const submitButton = document.getElementById("submitButton"); // Submit button
+
+        // Event listener for the main password field
+        passwordInput.addEventListener("input", function() {
+            // If the user starts typing in the password field, show the "Re-type Password" input
+            if (passwordInput.value.length > 0 && passwordInput.value != "<%= userPassword %>") {
+                retypePasswordContainer.style.display = "block"; // Show the retype password input field
+            } else {
+                // Hide the retype password field if the main password field is empty
+                retypePasswordContainer.style.display = "none";
+                passwordMatchMessage.style.display = "none"; // Hide the error message
+                retypePasswordInput.value = ""; // Clear the retype password field
+            }
+        });
+        // Event listener for the retype password field
+        retypePasswordInput.addEventListener("input", function() {
+            // Check if the retype password matches the main password
+            if (retypePasswordInput.value !== passwordInput.value) {
+                passwordMatchMessage.style.display = "block"; // Show error message
+                submitButton.disabled = true; // Disable the submit button
+            } else {
+                passwordMatchMessage.style.display = "none"; // Hide error message
+                submitButton.disabled = false; // Enable the submit button
+            }
+        });
+    });
+
+</script>
 
 </body>
 </html>

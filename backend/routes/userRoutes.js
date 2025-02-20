@@ -35,6 +35,9 @@ router.post("/VerifyEmail", userController.verifyEmail);
 //Route for user to login
 router.post("/LoginUser", userController.loginUser);
 
+//Rout for user to update their profile information
+router.post("/UpdateProfile", userController.updateProfile);
+
 
 
 

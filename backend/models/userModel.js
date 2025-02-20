@@ -1,6 +1,7 @@
 // /backend/models/userModel.js
 
 //Load in database
+const e = require('express');
 let db = require('../../db');
 let emailServices = require('../../email');
 
@@ -45,34 +46,13 @@ class User {
     }
     }
 
-
-    //Function to create a unique random user ID (will not produce an ID already in the database):
-    static async createID() {
-        while (true) { // Loop until we find a unique ID
-            let randomID = Math.floor(Math.random() * 1000000);
-            let user = await User.getUserByID(randomID); // Await the database check
-            
-            if (!user || user.length === 0) { // If no user found, return the ID
-                return randomID;
-            }
-    
-            console.log("ID:", randomID, "already exists, generating new ID...");
-        }
-    }
-
-    //Function to generate email verification code:
-    static async generateEmailVerificationCode(){
-        let code = Math.floor(Math.random() * 10000);
-        return code;
-    }
-
     //Function to get user by unique ID:
     static async getUserByID(ID){
         try{
             const sql = 'SELECT * FROM userData WHERE id = ?';
             const params = [ID];
-            const user = await db.query(sql, params);
-            return user;
+            const rows = await db.query(sql, params);
+            return new User(rows[0]);
         } catch (error){
             console.log("Error in getUserByID:", error);
             throw error;
@@ -134,6 +114,23 @@ class User {
         }
     }
 
+    //Function to update user profile:
+    static async updateProfile(id, updateData){
+        try{
+            const query = 'UPDATE userData SET firstName = ?, lastName = ?, password = ?, gender = ? WHERE id = ?';
+            const params = [updateData.firstName, updateData.lastName, updateData.password, updateData.gender, id];
+            const update = await db.query(query, params);
+            if((update.affectedRows > 0)){
+                return true; //Return true if user profile is updated successfully
+            }else{
+                return false; //Return false if user profile is not updated successfully
+            }
+        }catch(error){
+            console.log("Error in updateProfile:", error);
+            throw error;
+        }
+    }
+
     //Function to grab a users password by their id:
     static async getPasswordByID(ID){
         try{
@@ -145,6 +142,26 @@ class User {
             console.log("error in getPasswordByID");
             throw error;
         }
+    }
+
+    //Function to create a unique random user ID (will not produce an ID already in the database):
+    static async createID() {
+        while (true) { // Loop until we find a unique ID
+            let randomID = Math.floor(Math.random() * 1000000);
+            let user = await User.getUserByID(randomID); // Await the database check
+            
+            if (!user || user.length === 0) { // If no user found, return the ID
+                return randomID;
+            }
+    
+            console.log("ID:", randomID, "already exists, generating new ID...");
+        }
+    }
+
+    //Function to generate email verification code:
+    static async generateEmailVerificationCode(){
+        let code = Math.floor(Math.random() * 10000);
+        return code;
     }
 
     
