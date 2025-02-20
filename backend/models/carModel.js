@@ -22,12 +22,13 @@ static async getCarByUserID(userID){
         console.log("carModel... getCarByUserID... running for userID:", userID);
         const query = 'SELECT * FROM carData WHERE userID = ?';
         const params = [userID];
-        const car = await db.query(query, params);
-        if (car.length === 0){
+        const rows = await db.query(query, params);
+        if (rows.length === 0){ //If nothing is returned they don't have a car.
             console.log("No car found for user ID:", userID);
             return null; //Return null if no car is found
         }
-        return car; //Return car object if car is found attached to user.
+        console.log("Car found for user ID:", userID);
+        return new Car(rows[0]); //Return car object if car is found attached to user.
     }catch(error){
         console.log("error in getCarByUserID");
         throw error;

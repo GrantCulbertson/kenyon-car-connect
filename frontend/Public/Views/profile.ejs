@@ -22,7 +22,7 @@
             </li>
         </ul>
         <a href="/User/LogoutUser" class="btn btn-info" role="button">Logout</a>
-        <a href="/User/ProfilePage" class="btn btn-info" role="button">Profile</a>
+        <a href="/User/Profile" class="btn btn-info" role="button">Profile</a>
     </div>
 </nav>
 
@@ -36,47 +36,102 @@
 <div class="container mt-4">
     <!-- Header for Account Information-->
     <h2> Account Information </h2>
-    <!-- User First Name-->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            First Name:
+    <div class="d-flex flex-column">
+        <!-- User First Name-->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                First Name:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= user.firstName %>
+            </div>
         </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= user.firstName %>
+        <br>
+        <!-- User Last Name-->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Last Name:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= user.lastName %>
+            </div>
         </div>
-        <button class="btn btn-primary ms-2">Update</button>
+        <br>
+        <!-- User Email -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Email:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= user.email %>
+            </div>
+        </div>
+        <br>
+        <!-- User Password -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Password:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= userPassword %>
+            </div>
+            <button class="btn btn-primary ms-2">Update</button>
+        </div>
+        <!-- Button to update profile information -->
+        <div class = "d-flex align-items-center">
+            <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateProfileModal">Update Profile Info</button>
+        </div>
     </div>
-    <br>
-    <!-- User Last Name-->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            Last Name:
+</div>
+
+<!-- Modal for updating profile information -->
+<div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCarModalLabel">Update Profile Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for adding car information -->
+                <form action="/User/UpdateProfile" method="POST">                     
+                    <div class="form-group">
+                        <label for="model" class="form-label">Car Model</label>
+                        <input type="text" name="model" id="model" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year" class="form-label">Car Year</label>
+                        <input type="number" name="year" id="year" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="color" class="form-label">Car Color</label>
+                        <input type="text" name="color" id="color" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="licensePlate" class="form-label">Car License Plate</label>
+                        <input type="text" name="licensePlate" id="licensePlate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
+                        <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
+                        <select name="conversationPreference" id="conversationPreference" class="form-control" required>
+                            <option>Very talkative</option>
+                            <option>Some small talk</option>
+                            <option>Silence is preferred</option>
+                            <option>No preference</option>
+                        </select>
+                    </div>
+                    <div class = "mt-5 text-center">
+                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= user.lastName %>
-        </div>
-        <button class="btn btn-primary ms-2">Update</button>
-    </div>
-    <br>
-    <!-- User Email -->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            Email:
-        </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= user.email %>
-        </div>
-    </div>
-    <br>
-    <!-- User Password -->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            Password:
-        </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= userPassword %>
-        </div>
-        <button class="btn btn-primary ms-2">Update</button>
     </div>
 </div>
 
@@ -84,37 +139,78 @@
 <% if(userHasCar){ %>
 <!-- Car Information -->
 <div class="container mt-4">
-    <!-- Header for Account Information-->
+    <!-- Header for Car Information-->
     <h2> Your Car </h2>
-    <!-- Car Make -->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            First Name:
+    <div class="d-flex flex-column">
+        <!-- Car Make -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Car Make:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.make %>
+            </div>
         </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= user.firstName %>
+        <br>
+        <!-- Car Model -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Car Model:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.model %>
+            </div>
         </div>
-        <button class="btn btn-primary ms-2">Update</button>
-    </div>
-    <br>
-    <!-- User Last Name-->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            Last Name:
+        <br>
+        <!-- Car Year -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Car Year:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.year %>
+            </div>
         </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= user.lastName %>
+        <br>
+        <!-- Car Color -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Car Color:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.color %>
+            </div>
         </div>
-        <button class="btn btn-primary ms-2">Update</button>
-    </div>
-    <br>
-    <!-- User Email -->
-    <div class="d-flex align-items-center">
-        <div class="px-3 py-2 bg-secondary text-white label-box border">
-            Email:
+        <br>
+        <!-- Car License Plate -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Car License Plate:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.licensePlate %>
+            </div>
         </div>
-        <div class="px-3 py-2 bg-light border username-box">
-            <%= user.email %>
+        <br>
+        <!-- Car Seats Available -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Seats Available:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.seatsInCar %>
+            </div>
+        </div>
+        <br>
+        <!-- Car Conversation Preference -->
+        <div class="d-flex align-items-center">
+            <div class="px-3 py-2 bg-secondary text-white label-box border">
+                Conversation Preference:
+            </div>
+            <div class="px-3 py-2 bg-light border username-box">
+                <%= car.conversationPreference %>
+            </div>
+            <button class="btn btn-primary ms-2">Update</button>
         </div>
     </div>
 </div>
@@ -228,19 +324,18 @@
                         </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
 </div>
 <% } %>
 
-
-
-
 <!-- Scripts for page necessities -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Awesome scripts for making this page dynamic-->
-
 
 </body>
 </html>

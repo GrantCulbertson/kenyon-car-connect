@@ -150,11 +150,11 @@ exports.logoutUser = async (req, res) => {
 exports.profilePage = async (req, res) => {
     console.log("userController... getProfilePage... is running");
     const token = req.cookies.auth_token; //Get cookies from user
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token
     if (!token) {
         return res.redirect("/"); //Return to homepage if user has no cookies, they should not even see the profile page option if they have no cookies.
     }
     try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token
         const car = await Car.getCarByUserID(decoded.id); //Get car object by user ID if it exists
         const userPassword = await User.getPasswordByID(decoded.id); //Get user password by user ID
         return res.render("profile", {car: car, 
