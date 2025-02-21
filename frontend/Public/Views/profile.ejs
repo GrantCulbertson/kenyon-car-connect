@@ -6,6 +6,7 @@
     <title>Kenyon Car Connect - Your Profile </title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../Styles/styles.css">
+    <script src="https://kit.fontawesome.com/cc3b2bd0f4.js" crossorigin="anonymous"></script> <!-- Add Fontawesome Symbols -->
 </head>
 <body>
 
@@ -60,10 +61,15 @@
             <div class="px-3 py-2 bg-secondary text-white label-box border">
                 Password:
             </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= userPassword %>
+            <div class="px-3 py-2 bg-light border d-flex align-items-center" style="height: 38px;">
+                <input type="password" id="passwordField" class="form-control form-control-sm border-0 bg-light" 
+                       value="<%= userPassword %>" readonly style="height: 100%; width: 100%;">
+                <span class="ms-2" style="cursor: pointer;" onclick="togglePassword()">
+                    <i id="togglePasswordIcon" class="fas fa-eye"></i>
+                </span>
             </div>
         </div>
+        
         <!-- User First Name-->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -363,7 +369,7 @@
                         <div class="form-group">
                             <label for="make" class="form-label">Car Make</label>
                             <select name="make" id="make" class="form-control" required>
-                                <option value="" disabled selected>Select a car make</option>
+                                <option value="" disabled selected>Select a car make:</option>
                                 <option>Audi</option>
                                 <option>BMW</option>
                                 <option>Buick</option>
@@ -410,27 +416,28 @@
                         </div>                        
                         <div class="form-group">
                             <label for="model" class="form-label">Car Model</label>
-                            <input type="text" name="model" id="model" class="form-control" required>
+                            <input type="text" name="model" id="model" placeholder = "Camry, Jetta, etc." class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="year" class="form-label">Car Year</label>
-                            <input type="number" name="year" id="year" class="form-control" required>
+                            <input type="number" name="year" id="year" placeholder ="2012, 2020, etc." class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="color" class="form-label">Car Color</label>
-                            <input type="text" name="color" id="color" class="form-control" required>
+                            <input type="text" name="color" id="color" placeholder = "Blue, Green, etc." class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="licensePlate" class="form-label">Car License Plate</label>
-                            <input type="text" name="licensePlate" id="licensePlate" class="form-control" required>
+                            <input type="text" name="licensePlate" id="licensePlate" placeholder = "JDOE903" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
-                            <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" required>
+                            <input type="number" name="seatsInCar" id="seatsInCar" placeholder = "1, 2, 3, etc." class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
                             <select name="conversationPreference" id="conversationPreference" class="form-control" required>
+                                <option value="" disabled selected>Select an option:</option>
                                 <option>Very talkative</option>
                                 <option>Some small talk</option>
                                 <option>Silence is preferred</option>
@@ -476,6 +483,7 @@
         }
     });
 
+    //This function makes the user have to re-type a matching password to change their password.
     document.addEventListener("DOMContentLoaded", function() {
         // Get references to form elements
         const passwordInput = document.getElementById("password");  // The main password input field
@@ -508,6 +516,22 @@
             }
         });
     });
+
+    //Function to allow user to toggle viewing of their password in account information.
+    function togglePassword() {
+        let passwordField = document.getElementById('passwordField');
+        let toggleIcon = document.getElementById('togglePasswordIcon');
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
 
 </script>
 
