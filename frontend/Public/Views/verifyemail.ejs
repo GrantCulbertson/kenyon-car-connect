@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../Styles/styles.css">
 </head>
 <body>
+<% if(lastPage.includes('/UserSignupPage')){ %> <!-- Show this page if coming directly from signup-->
     <div class="container-md mt-5 justify-content-center text-center">
         <h1>Welcome, <%= user.firstName %>!</h1>
         <h2>One last thing...</h2>
@@ -26,8 +27,10 @@
         </form>
         <a href="/User/Profile" class="btn btn-primary ms-2" role="button">Skip for now</a>
     </div>
+<% }else{ %>
 
-<!-- PAGE THAT IS SHOWN IF USER IS COMING FROM PROFILE PAGE TO VERIFY THEIR EMAIL-->
+
+<!-- PAGE THAT IS SHOWN IF USER IS COMING TO VERIFY EMAIL NOT FROM SIGN UP-->
 <div class="container-md mt-5 justify-content-center text-center">
   <h1>Hi <%= user.firstName %>!</h1>
   <p>Please input the verification code just sent to your school email</p>
@@ -44,6 +47,9 @@
   </form>
   <a href="/User/Profile" class="btn btn-primary ms-2" role="button">Skip for now</a>
 </div>
+
+<% } %>
+
 
 
 

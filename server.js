@@ -36,8 +36,8 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'frontend/Public/Views'));
 
-// Setup static files to be served from the "public" directory
-app.use(express.static('public'));
+// Setup static files to be served from the "frontend/public" directory
+app.use(express.static(path.join(__dirname, 'frontend/Public')));
 
 // Test Connection to database
 db.pool.getConnection()

@@ -6,11 +6,127 @@ h1 {
     margin-top: 20px;
 }
 
+/* --------------- Styles for the Navbar ------------------ */
+.navbar.navbar-light.bg-light {
+    background-color: #432C91 !important; /* Replace with your desired color */
+}
+
+.navbar-brand{
+    color: #FCF7FF !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.navbar-nav .nav-link {
+    color: #FCF7FF !important; /* Change to your desired color */
+    font-family: 'Helvetica', sans-serif !important;
+}
+
+/* Hover state for navbar links */
+.navbar-nav .nav-link:hover {
+    color: #FFFADE !important; /* Change to your desired hover color */
+}
+
+/* Button styling in navbar */
+.navbar .btn-info {
+    background-color: #FCF7FF !important; /* Green background */
+    border-color: #FCF7FF !important;
+    color: #432C91 !important;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Button hover styling in navbar */
+.navbar .btn-info:hover {
+    background-color: #9989B4 !important; /* Green background */
+    border-color: #9989B4 !important;
+    color: #FCF7FF !important;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+/* Dropdown toggle button */
+.navbar .btn-secondary {
+    background-color: #432C91 !important;
+    border-color: #432C91 !important;
+    color: #FCF7FF !important;
+}
+
+/* Dropdown toggle button hover */
+.navbar .btn-secondary:hover{
+    background-color: #432C91 !important;
+    border-color: #432C91 !important;
+    color: #9989B4 !important;
+}
+
+/* Dropdown menu items */
+.dropdown-menu .dropdown-item {
+    color: #432C91 !important;
+    font-family: 'Helvetica', sans-serif !important;
+}
+
+/* Dropdown menu items on hover */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #9989B4 !important;
+    color: #FCF7FF !important;
+}
+
+
+
+
+
+
 /* --------------- Styles for profile page ---------------- */
 .username-box {
     border-radius: 0 5px 5px 0; /* Smooth transition to the right */
     border-left: none; /* Removes double border effect */
 }
+
 .label-box {
     border-radius: 5px 0 0 5px; /* Smooth transition to the left */
 }
+
+.verify-text {
+    margin-right: 15px; /* Adjust as needed */
+}
+
+.account-information{
+    color: #00523A !important;
+}
+
+/* First box i.e email */
+.label-box{
+    background-color:#9989B4 !important;
+    color: #ffffff !important; /* White text */
+    font-family: 'Helvetica', sans-serif !important;
+}
+
+/* Second box i.e johndoe@school.edu */
+.username-box {
+    background-color: #FCF7FF !important; /* Light gray background */
+    color: #000000 !important; /* Dark gray text */
+    font-family: 'Helvetica', sans-serif !important;
+}
+
+/* Standardize the size of the account information text boxes */
+.label-box{
+    width: 150px; /* Set a fixed width for the label and username boxes */
+    height: 38px; /* Set a fixed height for the label and username boxes */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.username-box{
+    width: 200px; /* Set a fixed width for the label and username boxes */
+    height: 38px; /* Set a fixed height for the label and username boxes */
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+
+
+
+
+
