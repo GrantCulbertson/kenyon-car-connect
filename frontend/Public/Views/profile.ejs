@@ -25,7 +25,7 @@
                     <!-- Post Trip Button Information -->
                     <li class = "nav-item">
                         <a href="/" class="btn btn-info me-3" role="button">
-                            <i class="fa-solid fa-car"></i> Post Trip
+                            <i class="fa-solid fa-car"></i> Post a Trip
                         </a>
                     </li>
                     <!-- Your Trips Button Information -->
@@ -63,10 +63,10 @@
 
 
 <!-- Profile Information -->
-<div class="container mt-4">
-    <!-- Header for Account Information-->
-    <span class = "account-information"><h2><b>Account Information</b></h2></span>
+<div class="container-lg pt-4">
     <div class="d-flex flex-column">
+        <!-- Header for Account Information-->
+        <span class = "profile-header"><h2>Account Information</h2></span>
         <!-- User Email -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -80,10 +80,9 @@
         <% if(user.verificationStatus == "No"){ %>
             <div class>
                     <span class = "verify-text">
-                        <i>Your email is not verified yet. You will need to verify it to be able to request & post rides.</i>
-                    </span>
-                    <span class = "ms-3">
-                        <a href="/User/VerifyEmailPage" class="btn btn-primary btn-sm" role="button">Verify Email</a>
+                        <i>Your email is not verified yet. You will need to verify it to be able to request & post rides.
+                            <a href ="/User/VerifyEmailPage">Click here to verify.</a>
+                        </i>
                     </span>
             </div>
         <% } %>
@@ -136,7 +135,7 @@
         </div>
         <br>
         <!-- Button to update profile information -->
-        <div class = "d-flex align-items-center">
+        <div class = "d-flex justify-content-center">
             <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateProfileModal">Update Profile Info</button>
         </div>
     </div>
@@ -202,12 +201,12 @@
 <!-- Car Information -->
 <div class="container mt-4">
     <!-- Header for Car Information-->
-    <h2> Your Car </h2>
+    <span class = "profile-header"><h2> Your Car </h2></span>
     <div class="d-flex flex-column">
         <!-- Car Make -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Car Make:
+                Make:
             </div>
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.make %>
@@ -217,7 +216,7 @@
         <!-- Car Model -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Car Model:
+                Model:
             </div>
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.model %>
@@ -227,7 +226,7 @@
         <!-- Car Year -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Car Year:
+                Year:
             </div>
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.year %>
@@ -237,7 +236,7 @@
         <!-- Car Color -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Car Color:
+                Color:
             </div>
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.color %>
@@ -247,7 +246,7 @@
         <!-- Car License Plate -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Car License Plate:
+                License Plate:
             </div>
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.licensePlate %>
@@ -257,7 +256,7 @@
         <!-- Car Seats Available -->
         <div class="d-flex align-items-center">
             <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Seats Available:
+                Seats:
             </div>
             <div class="px-3 py-2 bg-light border username-box">
                 <%= car.seatsInCar %>
@@ -275,7 +274,7 @@
         </div>
         <!-- Button to update car information -->
         <div class = "d-flex align-items-center">
-            <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateCarModal">Update Car Info</button>
+            <button class="btn btn-primary" data-toggle = "modal" data-target = "#updateCarModal">Update Car Info</button>
         </div>
     </div>
 </div>

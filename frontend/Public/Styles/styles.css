@@ -1,9 +1,26 @@
 /* -------------- Styles for the entire application -------------- */
 body {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
 }
 h1 {
     margin-top: 20px;
+}
+
+/* Button styling for whole program */
+.btn.btn-primary{
+    background-color: #00523A; /* Change the background color */
+    border-color: #00523A; /* Change the border color */
+    color: #FFFADE; /* Change the text color */
+    font-size: 1rem; /* Adjust the font size */
+    padding: 0.5rem 1rem; /* Adjust the padding */
+    border-radius: 0.25rem; /* Adjust the border radius */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
+}
+
+/* Button Hover Styling for whole program */
+.btn.btn-primary:hover{
+    background-color: #008699; /* Change the background color on hover */
+    border-color: #008699; /* Change the border color on hover */
 }
 
 /* --------------- Styles for the Navbar ------------------ */
@@ -14,6 +31,7 @@ h1 {
 .navbar-brand{
     color: #FCF7FF !important;
     font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: bold;
 }
 
 .navbar-nav .nav-link {
@@ -32,6 +50,7 @@ h1 {
     border-color: #FCF7FF !important;
     color: #432C91 !important;
     font-family: 'Roboto', sans-serif !important;
+    margin-right: 15px
 }
 
 /* Button hover styling in navbar */
@@ -85,10 +104,24 @@ h1 {
 
 .verify-text {
     margin-right: 15px; /* Adjust as needed */
+    color:#000000
 }
 
-.account-information{
-    color: #00523A !important;
+/* Styling for link to email verification */
+.verify-text a{
+    color:#008699 !important;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.verify-text a:hover{
+    color: #432C91 !important;
+    text-decoration: underline;
+}
+
+.profile-header h2{
+    color: #432C91 !important;
+    font-weight: bold !important;
 }
 
 /* First box i.e email */
@@ -107,22 +140,32 @@ h1 {
 
 /* Standardize the size of the account information text boxes */
 .label-box{
-    width: 150px; /* Set a fixed width for the label and username boxes */
+    width: 250px; /* Set a fixed width for the label and username boxes */
     height: 38px; /* Set a fixed height for the label and username boxes */
     display: flex;
+    margin-top: 20px;
     align-items: center;
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .username-box{
-    width: 200px; /* Set a fixed width for the label and username boxes */
+    width: 275px; /* Set a fixed width for the label and username boxes */
     height: 38px; /* Set a fixed height for the label and username boxes */
     display: flex;
-    margin-top: 10px;
+    margin-top: 20px;
     align-items: center;
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/*Specific styling for button on profile page */
+.btn.btn-primary[data-target="#updateProfileModal"] {
+    margin-top: 15px; /* adjust margin above button */
+}
+
+.btn.btn-primary[data-target="#updateCarModal"] {
+    margin-top: 15px; /* adjust margin above button */
 }
 
 
