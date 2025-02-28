@@ -63,80 +63,415 @@
 
 
 <!-- Profile Information -->
-<div class="container-lg pt-4">
-    <div class="d-flex flex-column">
-        <!-- Header for Account Information-->
-        <span class = "profile-header"><h2>Account Information</h2></span>
-        <!-- User Email -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Email:
+<div class="container-fluid mt-4">
+    <div class = "row">
+        <div class="col-md-6">
+            <!-- Header for Account Information-->
+            <span class = "profile-header"><h2>Account Information</h2></span>
+            <!-- User Email -->
+            <div class="d-flex align-items-center">
+                <div class="px-3 py-2 bg-secondary text-white label-box border">
+                    Email:
+                </div>
+                <div class="px-3 py-2 bg-light border username-box">
+                    <%= user.email %>
+                </div>
             </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= user.email %>
-            </div>
-        </div>
-        <!-- Tell user they should verify their email if it is not verified already-->
-        <% if(user.verificationStatus == "No"){ %>
-            <div class>
-                    <span class = "verify-text">
-                        <i>Your email is not verified yet. You will need to verify it to be able to request & post rides.
-                            <a href ="/User/VerifyEmailPage">Click here to verify.</a>
-                        </i>
-                    </span>
-            </div>
-        <% } %>
-        <!-- -->
-        <br>
-        <!-- User Password -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Password:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= userPassword.replace(/./g, '*') %>
-            </div>
-        </div>
-
-        <!-- ORIGINAL DYNAMIC PASSWORD FIELD... MAYBE WILL COME BACK TO
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Password:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box d-flex align-items-center">
-                <span id="passwordField" class="form-control form-control-sm border-0 bg-light" style="height: auto; width: auto;">
+            <!-- Tell user they should verify their email if it is not verified already-->
+            <% if(user.verificationStatus == "No"){ %>
+                <div class>
+                        <span class = "verify-text">
+                            <i>Your email is not verified yet. You will need to verify it to be able to request & post rides.
+                                <a href ="/User/VerifyEmailPage">Click here to verify.</a>
+                            </i>
+                        </span>
+                </div>
+            <% } %>
+            <!-- -->
+            <br>
+            <!-- User Password -->
+            <div class="d-flex align-items-center">
+                <div class="px-3 py-2 bg-secondary text-white label-box border">
+                    Password:
+                </div>
+                <div class="px-3 py-2 bg-light border username-box">
                     <%= userPassword.replace(/./g, '*') %>
-                </span>
-                <span class="ms-2" style="cursor: pointer;" onclick="togglePassword()">
-                    <i id="togglePasswordIcon" class="fas fa-eye"></i>
-                </span>
+                </div>
             </div>
+
+            <!-- ORIGINAL DYNAMIC PASSWORD FIELD... MAYBE WILL COME BACK TO
+            <div class="d-flex align-items-center">
+                <div class="px-3 py-2 bg-secondary text-white label-box border">
+                    Password:
+                </div>
+                <div class="px-3 py-2 bg-light border username-box d-flex align-items-center">
+                    <span id="passwordField" class="form-control form-control-sm border-0 bg-light" style="height: auto; width: auto;">
+                        <%= userPassword.replace(/./g, '*') %>
+                    </span>
+                    <span class="ms-2" style="cursor: pointer;" onclick="togglePassword()">
+                        <i id="togglePasswordIcon" class="fas fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            -->
+            
+            <!-- User First Name-->
+            <div class="d-flex align-items-center">
+                <div class="px-3 py-2 bg-secondary text-white label-box border">
+                    First Name:
+                </div>
+                <div class="px-3 py-2 bg-light border username-box">
+                    <%= user.firstName %>
+                </div>
+            </div>
+            <br>
+            <!-- User Last Name-->
+            <div class="d-flex align-items-center">
+                <div class="px-3 py-2 bg-secondary text-white label-box border">
+                    Last Name:
+                </div>
+                <div class="px-3 py-2 bg-light border username-box">
+                    <%= user.lastName %>
+                </div>
+            </div>
+            <br>
+            <!-- Button to update profile information -->
+            <div class = "d-flex justify-content-center">
+                <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateProfileModal">Update Profile Info</button>
+            </div>
+        <% if(userHasCar){ %>
+            <!-- Car Information -->
+            <div class="container mt-4">
+                <!-- Header for Car Information-->
+                <span class = "profile-header"><h2> Your Car </h2></span>
+                <div class="d-flex flex-column">
+                    <!-- Car Make -->
+                    <div class="d-flex align-items-center">
+                        <div class="px-3 py-2 bg-secondary text-white label-box border">
+                            Make:
+                        </div>
+                        <div class="px-3 py-2 bg-light border username-box">
+                            <%= car.make %>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Car Model -->
+                    <div class="d-flex align-items-center">
+                        <div class="px-3 py-2 bg-secondary text-white label-box border">
+                            Model:
+                        </div>
+                        <div class="px-3 py-2 bg-light border username-box">
+                            <%= car.model %>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Car Year -->
+                    <div class="d-flex align-items-center">
+                        <div class="px-3 py-2 bg-secondary text-white label-box border">
+                            Year:
+                        </div>
+                        <div class="px-3 py-2 bg-light border username-box">
+                            <%= car.year %>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Car Color -->
+                    <div class="d-flex align-items-center">
+                        <div class="px-3 py-2 bg-secondary text-white label-box border">
+                            Color:
+                        </div>
+                        <div class="px-3 py-2 bg-light border username-box">
+                            <%= car.color %>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Car License Plate -->
+                    <div class="d-flex align-items-center">
+                        <div class="px-3 py-2 bg-secondary text-white label-box border">
+                            License Plate:
+                        </div>
+                        <div class="px-3 py-2 bg-light border username-box">
+                            <%= car.licensePlate %>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Car Seats Available -->
+                    <div class="d-flex align-items-center">
+                        <div class="px-3 py-2 bg-secondary text-white label-box border">
+                            Seats:
+                        </div>
+                        <div class="px-3 py-2 bg-light border username-box">
+                            <%= car.seatsInCar %>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- Button to update car information -->
+                    <div class = "d-flex justify-content-center">
+                        <button class="btn btn-primary" data-toggle = "modal" data-target = "#updateCarModal">Update Car Info</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal for Updating Car Information -->
+            <div class="modal fade" id="updateCarModal" tabindex="-1" aria-labelledby="updateCarModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCarModalLabel">Update Your Car Info</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form for adding car information -->
+                            <form action="/Car/UpdateCar" method="POST">
+                                <!-- Selection for car make, code is to make sure pre-existing car model is passed if it exists-->
+                                <div class="form-group">
+                                    <label for="make" class="form-label">Car Make</label>
+                                    <select name="make" id="make" class="form-control" required>
+                                        <option value="" disabled <%= !car.make ? 'selected' : '' %>>Select a car make</option>
+                                        <option value="Audi" <%= car.make === 'Audi' ? 'selected' : '' %>>Audi</option>
+                                        <option value="BMW" <%= car.make === 'BMW' ? 'selected' : '' %>>BMW</option>
+                                        <option value="Buick" <%= car.make === 'Buick' ? 'selected' : '' %>>Buick</option>
+                                        <option value="Cadillac" <%= car.make === 'Cadillac' ? 'selected' : '' %>>Cadillac</option>
+                                        <option value="Chevrolet" <%= car.make === 'Chevrolet' ? 'selected' : '' %>>Chevrolet</option>
+                                        <option value="Chrysler" <%= car.make === 'Chrysler' ? 'selected' : '' %>>Chrysler</option>
+                                        <option value="Dodge" <%= car.make === 'Dodge' ? 'selected' : '' %>>Dodge</option>
+                                        <option value="Ferrari" <%= car.make === 'Ferrari' ? 'selected' : '' %>>Ferrari</option>
+                                        <option value="Ford" <%= car.make === 'Ford' ? 'selected' : '' %>>Ford</option>
+                                        <option value="GM" <%= car.make === 'GM' ? 'selected' : '' %>>GM</option>
+                                        <option value="GEM" <%= car.make === 'GEM' ? 'selected' : '' %>>GEM</option>
+                                        <option value="GMC" <%= car.make === 'GMC' ? 'selected' : '' %>>GMC</option>
+                                        <option value="Honda" <%= car.make === 'Honda' ? 'selected' : '' %>>Honda</option>
+                                        <option value="Hummer" <%= car.make === 'Hummer' ? 'selected' : '' %>>Hummer</option>
+                                        <option value="Hyundai" <%= car.make === 'Hyundai' ? 'selected' : '' %>>Hyundai</option>
+                                        <option value="Infiniti" <%= car.make === 'Infiniti' ? 'selected' : '' %>>Infiniti</option>
+                                        <option value="Isuzu" <%= car.make === 'Isuzu' ? 'selected' : '' %>>Isuzu</option>
+                                        <option value="Jaguar" <%= car.make === 'Jaguar' ? 'selected' : '' %>>Jaguar</option>
+                                        <option value="Jeep" <%= car.make === 'Jeep' ? 'selected' : '' %>>Jeep</option>
+                                        <option value="Kia" <%= car.make === 'Kia' ? 'selected' : '' %>>Kia</option>
+                                        <option value="Lamborghini" <%= car.make === 'Lamborghini' ? 'selected' : '' %>>Lamborghini</option>
+                                        <option value="Land Rover" <%= car.make === 'Land Rover' ? 'selected' : '' %>>Land Rover</option>
+                                        <option value="Lexus" <%= car.make === 'Lexus' ? 'selected' : '' %>>Lexus</option>
+                                        <option value="Lincoln" <%= car.make === 'Lincoln' ? 'selected' : '' %>>Lincoln</option>
+                                        <option value="Lotus" <%= car.make === 'Lotus' ? 'selected' : '' %>>Lotus</option>
+                                        <option value="Mazda" <%= car.make === 'Mazda' ? 'selected' : '' %>>Mazda</option>
+                                        <option value="Mercedes-Benz" <%= car.make === 'Mercedes-Benz' ? 'selected' : '' %>>Mercedes-Benz</option>
+                                        <option value="Mercury" <%= car.make === 'Mercury' ? 'selected' : '' %>>Mercury</option>
+                                        <option value="Mitsubishi" <%= car.make === 'Mitsubishi' ? 'selected' : '' %>>Mitsubishi</option>
+                                        <option value="Nissan" <%= car.make === 'Nissan' ? 'selected' : '' %>>Nissan</option>
+                                        <option value="Oldsmobile" <%= car.make === 'Oldsmobile' ? 'selected' : '' %>>Oldsmobile</option>
+                                        <option value="Peugeot" <%= car.make === 'Peugeot' ? 'selected' : '' %>>Peugeot</option>
+                                        <option value="Pontiac" <%= car.make === 'Pontiac' ? 'selected' : '' %>>Pontiac</option>
+                                        <option value="Porsche" <%= car.make === 'Porsche' ? 'selected' : '' %>>Porsche</option>
+                                        <option value="Regal" <%= car.make === 'Regal' ? 'selected' : '' %>>Regal</option>
+                                        <option value="Saab" <%= car.make === 'Saab' ? 'selected' : '' %>>Saab</option>
+                                        <option value="Saturn" <%= car.make === 'Saturn' ? 'selected' : '' %>>Saturn</option>
+                                        <option value="Subaru" <%= car.make === 'Subaru' ? 'selected' : '' %>>Subaru</option>
+                                        <option value="Suzuki" <%= car.make === 'Suzuki' ? 'selected' : '' %>>Suzuki</option>
+                                        <option value="Toyota" <%= car.make === 'Toyota' ? 'selected' : '' %>>Toyota</option>
+                                        <option value="Volkswagen" <%= car.make === 'Volkswagen' ? 'selected' : '' %>>Volkswagen</option>
+                                        <option value="Volvo" <%= car.make === 'Volvo' ? 'selected' : '' %>>Volvo</option>
+                                    </select>
+                                </div>                                         
+                                <div class="form-group">
+                                    <label for="model" class="form-label">Car Model</label>
+                                    <input type="text" name="model" id="model" class="form-control" value = "<%= car.model %>" placeholder = "Car Model" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="year" class="form-label">Car Year</label>
+                                    <input type="number" name="year" id="year" class="form-control" value = "<%= car.year %>" placeholder = "Car Year" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="color" class="form-label">Car Color</label>
+                                    <input type="text" name="color" id="color" class="form-control" value = "<%= car.color %>" placeholder = "Car Color" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="licensePlate" class="form-label">Car License Plate</label>
+                                    <input type="text" name="licensePlate" id="licensePlate" class="form-control" value = "<%= car.licensePlate %>" placeholder = "License Plate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
+                                    <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" value = "<%= car.seatsInCar %>" placeholder = "Seats in Car" required>
+                                </div>
+                                <div class = "mt-5 text-center">
+                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <!-- Add Car Information (Shown if user has no car)-->
+            <% }else{ %>
+            <!-- Car Information -->
+            <div class="container mt-4">
+                <!-- Header for Car Information-->
+                <h2> Your Car </h2>
+            
+                <!-- Text & Button to add car-->
+                <div class="d-flex align-items-center">
+                    <span class = "add-car-text">
+                        Looks like you do not have a car added yet... Add one below when ready!
+                    </span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#addCarModal">Add Your Car</button>
+                </div>
+            
+                <!-- Modal for adding car information -->
+                <div class="modal fade" id="addCarModal" tabindex="-1" aria-labelledby="addCarModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addCarModalLabel">Add Your Car Info</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form for adding car information -->
+                                <form action="/Car/AddCar" method="POST">
+                                    <div class="form-group">
+                                        <label for="make" class="form-label">Car Make</label>
+                                        <select name="make" id="make" class="form-control" required>
+                                            <option value="" disabled selected>Select a car make:</option>
+                                            <option>Audi</option>
+                                            <option>BMW</option>
+                                            <option>Buick</option>
+                                            <option>Cadillac</option>
+                                            <option>Chevrolet</option>
+                                            <option>Chrysler</option>
+                                            <option>Dodge</option>
+                                            <option>Ferrari</option>
+                                            <option>Ford</option>
+                                            <option>GM</option>
+                                            <option>GEM</option>
+                                            <option>GMC</option>
+                                            <option>Honda</option>
+                                            <option>Hummer</option>
+                                            <option>Hyundai</option>
+                                            <option>Infiniti</option>
+                                            <option>Isuzu</option>
+                                            <option>Jaguar</option>
+                                            <option>Jeep</option>
+                                            <option>Kia</option>
+                                            <option>Lamborghini</option>
+                                            <option>Land Rover</option>
+                                            <option>Lexus</option>
+                                            <option>Lincoln</option>
+                                            <option>Lotus</option>
+                                            <option>Mazda</option>
+                                            <option>Mercedes-Benz</option>
+                                            <option>Mercury</option>
+                                            <option>Mitsubishi</option>
+                                            <option>Nissan</option>
+                                            <option>Oldsmobile</option>
+                                            <option>Peugeot</option>
+                                            <option>Pontiac</option>
+                                            <option>Porsche</option>
+                                            <option>Regal</option>
+                                            <option>Saab</option>
+                                            <option>Saturn</option>
+                                            <option>Subaru</option>
+                                            <option>Suzuki</option>
+                                            <option>Toyota</option>
+                                            <option>Volkswagen</option>
+                                            <option>Volvo</option>
+                                        </select>
+                                    </div>                        
+                                    <div class="form-group">
+                                        <label for="model" class="form-label">Car Model</label>
+                                        <input type="text" name="model" id="model" placeholder = "Camry, Jetta, etc." class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="year" class="form-label">Car Year</label>
+                                        <input type="number" name="year" id="year" placeholder ="2012, 2020, etc." class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="color" class="form-label">Car Color</label>
+                                        <input type="text" name="color" id="color" placeholder = "Blue, Green, etc." class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="licensePlate" class="form-label">Car License Plate</label>
+                                        <input type="text" name="licensePlate" id="licensePlate" placeholder = "JDOE903" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
+                                        <input type="number" name="seatsInCar" id="seatsInCar" placeholder = "1, 2, 3, etc." class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
+                                        <select name="conversationPreference" id="conversationPreference" class="form-control" required>
+                                            <option value="" disabled selected>Select an option:</option>
+                                            <option>Very talkative</option>
+                                            <option>Some small talk</option>
+                                            <option>Silence is preferred</option>
+                                            <option>No preference</option>
+                                        </select>
+                                    </div>
+                                    <div class = "mt-5 text-center">
+                                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
         </div>
-        -->
-        
-        <!-- User First Name-->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                First Name:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= user.firstName %>
-            </div>
-        </div>
-        <br>
-        <!-- User Last Name-->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Last Name:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= user.lastName %>
-            </div>
-        </div>
-        <br>
-        <!-- Button to update profile information -->
-        <div class = "d-flex justify-content-center">
-            <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateProfileModal">Update Profile Info</button>
+        <!-- Column With Ride Profile -->
+        <div class="col-md-6">
+            <!-- Card with Ride Profile-->
+            <% if(userHasRideProfile){ %>
+             <div class = "card">
+                <div class = "card text-center">
+                    <div class = "card-body">
+                            <h2 class="card-title">Ride Profile</h2>
+                            <span class = "ride-profile-subtext">
+                                <p>This is how other users will see you on the site</p>
+                            </span>
+                        <span class = "ride-profile-card-field">
+                            <p class="card-text"><b>Name:</b> <%= profile.name %></p>
+                        </span>
+                        <span class = "ride-profile-card-field">
+                            <p class="card-text"><b>Pronouns:</b> <%= profile.pronouns %> </p>
+                        </span>
+                        <span class = "ride-profile-card-field">
+                            <p class="card-text"><b>Preferred Music:</b> <%= profile.preferredMusic %> </p>
+                        </span>
+                        <span class = "ride-profile-card-field">
+                            <p class="card-text"><b>Preferred Conversation Level:</b> <%= profile.conversationPreference %> </p>
+                        </span>
+                        <span class = "ride-profile-card-field">
+                            <p class="card-text"><b>Bio:</b> <%= profile.bio %></p>
+                        </span>
+                        <!-- Button for User to Add Ride Profile Information-->
+                        <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateRideProfileModal">Update Ride Profile</button>
+                    </div>
+                </div>
+             </div>
+             <!-- Card that is shown if the user has no added their rider profile-->
+             <%}else{%>
+                <div class = "card">
+                    <div class = "card text-center">
+                        <div class = "card-body">
+                                <h2 class="card-title">Ride Profile</h2>
+                                <span class = "ride-profile-subtext">
+                                    <p>This is how other users will see you on the site</p>
+                                </span>
+                            <span class = "ride-profile-card-field">
+                                <p class="card-text">Looks like you don't have a ride profile yet, please click the button below to create one.</p>
+                            </span>
+                            <!-- Button for User to Add Ride Profile Information-->
+                            <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#addRideProfileModal">Create Ride Profile</button>
+                        </div>
+                    </div>
+                 </div>
+             <%}%>
         </div>
     </div>
 </div>
@@ -196,310 +531,108 @@
     </div>
 </div>
 
-<!-- Car Information (Shown if user has car) -->
-<% if(userHasCar){ %>
-<!-- Car Information -->
-<div class="container mt-4">
-    <!-- Header for Car Information-->
-    <span class = "profile-header"><h2> Your Car </h2></span>
-    <div class="d-flex flex-column">
-        <!-- Car Make -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Make:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.make %>
-            </div>
-        </div>
-        <br>
-        <!-- Car Model -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Model:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.model %>
-            </div>
-        </div>
-        <br>
-        <!-- Car Year -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Year:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.year %>
-            </div>
-        </div>
-        <br>
-        <!-- Car Color -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Color:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.color %>
-            </div>
-        </div>
-        <br>
-        <!-- Car License Plate -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                License Plate:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.licensePlate %>
-            </div>
-        </div>
-        <br>
-        <!-- Car Seats Available -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Seats:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.seatsInCar %>
-            </div>
-        </div>
-        <br>
-        <!-- Car Conversation Preference -->
-        <div class="d-flex align-items-center">
-            <div class="px-3 py-2 bg-secondary text-white label-box border">
-                Conversation Preference:
-            </div>
-            <div class="px-3 py-2 bg-light border username-box">
-                <%= car.conversationPreference %>
-            </div>
-        </div>
-        <!-- Button to update car information -->
-        <div class = "d-flex align-items-center">
-            <button class="btn btn-primary" data-toggle = "modal" data-target = "#updateCarModal">Update Car Info</button>
-        </div>
-    </div>
-</div>
-<!-- Modal for Updating Car Information -->
-<div class="modal fade" id="updateCarModal" tabindex="-1" aria-labelledby="updateCarModalLabel" aria-hidden="true">
+
+<!-- Modal for updating ride profile information -->
+ <% if (userHasRideProfile){ %>
+<div class="modal fade" id="updateRideProfileModal" tabindex="-1" aria-labelledby="updateRideProfileModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addCarModalLabel">Update Your Car Info</h5>
+                <h5 class="modal-title" id="updateRideProfileModalLabel">Update Ride Profile</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Form for adding car information -->
-                <form action="/Car/UpdateCar" method="POST">
-                    <!-- Selection for car make, code is to make sure pre-existing car model is passed if it exists-->
+                <!-- Form for updating ride profile information -->
+                <form action="/RideProfile/UpdateRideProfile" method="POST">                     
                     <div class="form-group">
-                        <label for="make" class="form-label">Car Make</label>
-                        <select name="make" id="make" class="form-control" required>
-                            <option value="" disabled <%= !car.make ? 'selected' : '' %>>Select a car make</option>
-                            <option value="Audi" <%= car.make === 'Audi' ? 'selected' : '' %>>Audi</option>
-                            <option value="BMW" <%= car.make === 'BMW' ? 'selected' : '' %>>BMW</option>
-                            <option value="Buick" <%= car.make === 'Buick' ? 'selected' : '' %>>Buick</option>
-                            <option value="Cadillac" <%= car.make === 'Cadillac' ? 'selected' : '' %>>Cadillac</option>
-                            <option value="Chevrolet" <%= car.make === 'Chevrolet' ? 'selected' : '' %>>Chevrolet</option>
-                            <option value="Chrysler" <%= car.make === 'Chrysler' ? 'selected' : '' %>>Chrysler</option>
-                            <option value="Dodge" <%= car.make === 'Dodge' ? 'selected' : '' %>>Dodge</option>
-                            <option value="Ferrari" <%= car.make === 'Ferrari' ? 'selected' : '' %>>Ferrari</option>
-                            <option value="Ford" <%= car.make === 'Ford' ? 'selected' : '' %>>Ford</option>
-                            <option value="GM" <%= car.make === 'GM' ? 'selected' : '' %>>GM</option>
-                            <option value="GEM" <%= car.make === 'GEM' ? 'selected' : '' %>>GEM</option>
-                            <option value="GMC" <%= car.make === 'GMC' ? 'selected' : '' %>>GMC</option>
-                            <option value="Honda" <%= car.make === 'Honda' ? 'selected' : '' %>>Honda</option>
-                            <option value="Hummer" <%= car.make === 'Hummer' ? 'selected' : '' %>>Hummer</option>
-                            <option value="Hyundai" <%= car.make === 'Hyundai' ? 'selected' : '' %>>Hyundai</option>
-                            <option value="Infiniti" <%= car.make === 'Infiniti' ? 'selected' : '' %>>Infiniti</option>
-                            <option value="Isuzu" <%= car.make === 'Isuzu' ? 'selected' : '' %>>Isuzu</option>
-                            <option value="Jaguar" <%= car.make === 'Jaguar' ? 'selected' : '' %>>Jaguar</option>
-                            <option value="Jeep" <%= car.make === 'Jeep' ? 'selected' : '' %>>Jeep</option>
-                            <option value="Kia" <%= car.make === 'Kia' ? 'selected' : '' %>>Kia</option>
-                            <option value="Lamborghini" <%= car.make === 'Lamborghini' ? 'selected' : '' %>>Lamborghini</option>
-                            <option value="Land Rover" <%= car.make === 'Land Rover' ? 'selected' : '' %>>Land Rover</option>
-                            <option value="Lexus" <%= car.make === 'Lexus' ? 'selected' : '' %>>Lexus</option>
-                            <option value="Lincoln" <%= car.make === 'Lincoln' ? 'selected' : '' %>>Lincoln</option>
-                            <option value="Lotus" <%= car.make === 'Lotus' ? 'selected' : '' %>>Lotus</option>
-                            <option value="Mazda" <%= car.make === 'Mazda' ? 'selected' : '' %>>Mazda</option>
-                            <option value="Mercedes-Benz" <%= car.make === 'Mercedes-Benz' ? 'selected' : '' %>>Mercedes-Benz</option>
-                            <option value="Mercury" <%= car.make === 'Mercury' ? 'selected' : '' %>>Mercury</option>
-                            <option value="Mitsubishi" <%= car.make === 'Mitsubishi' ? 'selected' : '' %>>Mitsubishi</option>
-                            <option value="Nissan" <%= car.make === 'Nissan' ? 'selected' : '' %>>Nissan</option>
-                            <option value="Oldsmobile" <%= car.make === 'Oldsmobile' ? 'selected' : '' %>>Oldsmobile</option>
-                            <option value="Peugeot" <%= car.make === 'Peugeot' ? 'selected' : '' %>>Peugeot</option>
-                            <option value="Pontiac" <%= car.make === 'Pontiac' ? 'selected' : '' %>>Pontiac</option>
-                            <option value="Porsche" <%= car.make === 'Porsche' ? 'selected' : '' %>>Porsche</option>
-                            <option value="Regal" <%= car.make === 'Regal' ? 'selected' : '' %>>Regal</option>
-                            <option value="Saab" <%= car.make === 'Saab' ? 'selected' : '' %>>Saab</option>
-                            <option value="Saturn" <%= car.make === 'Saturn' ? 'selected' : '' %>>Saturn</option>
-                            <option value="Subaru" <%= car.make === 'Subaru' ? 'selected' : '' %>>Subaru</option>
-                            <option value="Suzuki" <%= car.make === 'Suzuki' ? 'selected' : '' %>>Suzuki</option>
-                            <option value="Toyota" <%= car.make === 'Toyota' ? 'selected' : '' %>>Toyota</option>
-                            <option value="Volkswagen" <%= car.make === 'Volkswagen' ? 'selected' : '' %>>Volkswagen</option>
-                            <option value="Volvo" <%= car.make === 'Volvo' ? 'selected' : '' %>>Volvo</option>
-                        </select>
-                    </div>                                         
-                    <div class="form-group">
-                        <label for="model" class="form-label">Car Model</label>
-                        <input type="text" name="model" id="model" class="form-control" value = "<%= car.model %>" placeholder = "Car Model" required>
+                        <label for="name" class="form-label">Name</label>
+                        <input class="form-control" type="text" name = "name" value = '<%= profile.name%>' placeholder= 'Name' readonly> 
+                        <small id="nameHelp" class="form-text text-muted">Your name can be updated with your account information, not your ride profile.</small>
                     </div>
                     <div class="form-group">
-                        <label for="year" class="form-label">Car Year</label>
-                        <input type="number" name="year" id="year" class="form-control" value = "<%= car.year %>" placeholder = "Car Year" required>
+                        <label for="pronouns" class="form-label">Pronouns</label>
+                        <input type="text" name="pronouns" id="pronouns" value = "<%= profile.pronouns%>" placeholder = "He/Him , She/her, etc." class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="color" class="form-label">Car Color</label>
-                        <input type="text" name="color" id="color" class="form-control" value = "<%= car.color %>" placeholder = "Car Color" required>
+                        <label for="preferredMusic" class="form-label">Preferred Music Genre/Artist</label>
+                        <input type="text" name="preferredMusic" id="preferredMusic" value = "<%= profile.preferredMusic %>" placeholder = "Rap, Country, etc." class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="licensePlate" class="form-label">Car License Plate</label>
-                        <input type="text" name="licensePlate" id="licensePlate" class="form-control" value = "<%= car.licensePlate %>" placeholder = "License Plate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
-                        <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" value = "<%= car.seatsInCar %>" placeholder = "Seats in Car" required>
-                    </div>
-                    <!-- Comfortable Level of Conversation, code is to make sure the preset conversastion preference is passed if the user doesn't select something new-->
-                    <div class="form-group">
-                        <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
+                        <label for="conversationPreference" class="form-label">What is your comfortable level of conversation on a car ride?</label>
                         <select name="conversationPreference" id="conversationPreference" class="form-control" required>
-                            <option value="" disabled <%= !car.conversationPreference ? 'selected' : '' %>>Select an option</option>
-                            <option value="Very talkative" <%= car.conversationPreference === 'Very talkative' ? 'selected' : '' %>>Very talkative</option>
-                            <option value="Some small talk" <%= car.conversationPreference === 'Some small talk' ? 'selected' : '' %>>Some small talk</option>
-                            <option value="Silence is preferred" <%= car.conversationPreference === 'Silence is preferred' ? 'selected' : '' %>>Silence is preferred</option>
-                            <option value="No preference" <%= car.conversationPreference === 'No preference' ? 'selected' : '' %>>No preference</option>
+                            <option value="" disabled <%= !profile.conversationPreference ? 'selected' : '' %>>Select a preference:</option>
+                            <option value="Very talkative" <%= profile.conversationPreference === 'Very talkative' ? 'selected' : '' %>>Very talkative</option>
+                            <option value="Some small talk" <%= profile.conversationPreference === 'Some small talk' ? 'selected' : '' %>>Some small talk</option>
+                            <option value="Silence is preferred" <%= profile.conversationPreference === 'Silence is preferred' ? 'selected' : '' %>>Silence is preferred</option>
+                            <option value="No preference" <%= profile.conversationPreference === 'No preference' ? 'selected' : '' %>>No preference</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bio" class="form-label">Bio</label>
+                        <input type="text" name="bio" id="bio" value = "<%= profile.bio %>" placeholder = "I am an english major and love Tim Hortons..." class="form-control" required>
+                        <small id="bioHelp" class="form-text text-muted">Write a little about yourself, this is how someone will get to know you before accepting you to a ride.</small>
                     </div>
                     <div class = "mt-5 text-center">
-                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-
-
-<!-- Add Car Information (Shown if user has no car)-->
-<% }else{ %>
-<!-- Car Information -->
-<div class="container mt-4">
-    <!-- Header for Car Information-->
-    <h2> Your Car </h2>
-
-    <!-- Text & Button to add car-->
-    <div class="d-flex align-items-center">
-        <span class = "add-car-text">
-            Looks like you do not have a car added yet... Add one below when ready!
-        </span>
-    </div>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#addCarModal">Add Your Car</button>
-    </div>
-
-    <!-- Modal for adding car information -->
-    <div class="modal fade" id="addCarModal" tabindex="-1" aria-labelledby="addCarModalLabel" aria-hidden="true">
+<!-- Model for adding ride profile -->
+<%}else{%>
+    <div class="modal fade" id="addRideProfileModal" tabindex="-1" aria-labelledby="addRideProfileModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addCarModalLabel">Add Your Car Info</h5>
+                    <h5 class="modal-title" id="addRideProfileModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Form for adding car information -->
-                    <form action="/Car/AddCar" method="POST">
+                    <!-- Form for updating ride profile information -->
+                    <form action="/RideProfile/AddRideProfile" method="POST">                     
                         <div class="form-group">
-                            <label for="make" class="form-label">Car Make</label>
-                            <select name="make" id="make" class="form-control" required>
-                                <option value="" disabled selected>Select a car make:</option>
-                                <option>Audi</option>
-                                <option>BMW</option>
-                                <option>Buick</option>
-                                <option>Cadillac</option>
-                                <option>Chevrolet</option>
-                                <option>Chrysler</option>
-                                <option>Dodge</option>
-                                <option>Ferrari</option>
-                                <option>Ford</option>
-                                <option>GM</option>
-                                <option>GEM</option>
-                                <option>GMC</option>
-                                <option>Honda</option>
-                                <option>Hummer</option>
-                                <option>Hyundai</option>
-                                <option>Infiniti</option>
-                                <option>Isuzu</option>
-                                <option>Jaguar</option>
-                                <option>Jeep</option>
-                                <option>Kia</option>
-                                <option>Lamborghini</option>
-                                <option>Land Rover</option>
-                                <option>Lexus</option>
-                                <option>Lincoln</option>
-                                <option>Lotus</option>
-                                <option>Mazda</option>
-                                <option>Mercedes-Benz</option>
-                                <option>Mercury</option>
-                                <option>Mitsubishi</option>
-                                <option>Nissan</option>
-                                <option>Oldsmobile</option>
-                                <option>Peugeot</option>
-                                <option>Pontiac</option>
-                                <option>Porsche</option>
-                                <option>Regal</option>
-                                <option>Saab</option>
-                                <option>Saturn</option>
-                                <option>Subaru</option>
-                                <option>Suzuki</option>
-                                <option>Toyota</option>
-                                <option>Volkswagen</option>
-                                <option>Volvo</option>
-                            </select>
-                        </div>                        
-                        <div class="form-group">
-                            <label for="model" class="form-label">Car Model</label>
-                            <input type="text" name="model" id="model" placeholder = "Camry, Jetta, etc." class="form-control" required>
+                            <label for="name" class="form-label">Name</label>
+                            <input class="form-control" name = "name" type="text" value = '<%= user.firstName %> <%= user.lastName %>' placeholder= 'Name' readonly> 
+                            <small id="nameHelp" class="form-text text-muted">Your name can be updated with your account information, not your ride profile.</small>
                         </div>
                         <div class="form-group">
-                            <label for="year" class="form-label">Car Year</label>
-                            <input type="number" name="year" id="year" placeholder ="2012, 2020, etc." class="form-control" required>
+                            <label for="pronouns" class="form-label">Pronouns</label>
+                            <input type="text" name="pronouns" id="pronouns" value = "" placeholder = "He/Him , She/her, etc." class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label for="color" class="form-label">Car Color</label>
-                            <input type="text" name="color" id="color" placeholder = "Blue, Green, etc." class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="licensePlate" class="form-label">Car License Plate</label>
-                            <input type="text" name="licensePlate" id="licensePlate" placeholder = "JDOE903" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
-                            <input type="number" name="seatsInCar" id="seatsInCar" placeholder = "1, 2, 3, etc." class="form-control" required>
+                            <label for="preferredMusic" class="form-label">Preferred Music Genre/Artist</label>
+                            <input type="text" name="preferredMusic" id="preferredMusic" value = "" placeholder = "Rap, Country, etc." class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="conversationPreference" class="form-label">What is your comfortable level of conversation with passengers?</label>
                             <select name="conversationPreference" id="conversationPreference" class="form-control" required>
-                                <option value="" disabled selected>Select an option:</option>
+                                <option value="" disabled selected>Select a preference:</option>
                                 <option>Very talkative</option>
                                 <option>Some small talk</option>
                                 <option>Silence is preferred</option>
                                 <option>No preference</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="bio" class="form-label">Bio</label>
+                            <input type="text" name="bio" id="bio" value = "" placeholder = "I am an english major and love Tim Hortons..." class="form-control" required>
+                            <small id="bioHelp" class="form-text text-muted">Write a little about yourself, this is how someone will get to know you before accepting you to a ride.</small>
+                        </div>
                         <div class = "mt-5 text-center">
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                            <button type="submit" class="btn btn-primary btn-block">Submit</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<% } %>
+<%}%>
 
 <!-- Scripts for page necessities -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

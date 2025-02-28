@@ -1,6 +1,7 @@
 //Add in required constants:
 const User = require("../models/userModel").User; //Require User model
 const Car = require("../models/carModel").Car; //Require car model
+const rideProfile = require("../models/rideProfileModel").rideProfile //Require ride profile model
 const jwt = require("jsonwebtoken");
 
 //----------------------- DEFINE USER CONTROLLER ------------------------// 
@@ -160,10 +161,13 @@ exports.profilePage = async (req, res) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token
         const car = await Car.getCarByUserID(decoded.id); //Get car object by user ID if it exists
+        const profile = await rideProfile.getRideProfileByUserID(decoded.id); //Get ride profile from userID if it exists.
         const userPassword = await User.getPasswordByID(decoded.id); //Get user password by user ID
         return res.render("profile", {car: car, 
                                       userHasCar: car instanceof Car,
-                                      userPassword: userPassword}); //Render profile page and pass car object and other necessities
+                                      userPassword: userPassword,
+                                      profile: profile,
+                                      userHasRideProfile: profile instanceof rideProfile}); //Render profile page and pass car object and other necessities
     }catch(error){
         console.log("Error in getProfilePage Controller:", error);
         return res.redirect("/"); //Return to homepage if error occurs accessing profile

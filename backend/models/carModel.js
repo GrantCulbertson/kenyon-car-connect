@@ -6,7 +6,7 @@ let db = require('../../db');
 
 // ----------------------- DEFINE CAR CLASS ------------------------//
 class Car{
-    constructor({userID, make, model, year, color, licensePlate, seatsInCar, conversationPreference}){
+    constructor({userID, make, model, year, color, licensePlate, seatsInCar}){
         this.userID = userID;
         this.make = make;
         this.model = model;
@@ -14,7 +14,6 @@ class Car{
         this.color = color;
         this.licensePlate = licensePlate;
         this.seatsInCar = seatsInCar;
-        this.conversationPreference = conversationPreference;
     }
 
 //Function to grab a car by user ID:
@@ -39,8 +38,8 @@ static async getCarByUserID(userID){
 static async addCarToDatabase(carData){
     try{
         console.log("carModel... addCarToDatabase... running");
-        const query = 'INSERT INTO carData (userID, make, model, year, color, licensePlate, seatsInCar, conversationPreference) VALUES (?,?,?,?,?,?,?,?)';
-        const params = [carData.userID, carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar, carData.conversationPreference];
+        const query = 'INSERT INTO carData (userID, make, model, year, color, licensePlate, seatsInCar) VALUES (?,?,?,?,?,?,?)';
+        const params = [carData.userID, carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar];
         const insert = await db.query(query, params); //Insert car into database
         const car = await Car.getCarByUserID(carData.userID); //Grab car from database to verify it was added correctly
         console.log("Car added to database for user:", carData.userID);
@@ -55,8 +54,8 @@ static async addCarToDatabase(carData){
 static async updateCar(userID, carData){
     try{
         console.log("carModel... updateCar... running for userID:", userID);
-        const query = 'UPDATE carData SET make = ?, model = ?, year = ?, color = ?, licensePlate = ?, seatsInCar = ?, conversationPreference = ? WHERE userID = ?';
-        const params = [carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar, carData.conversationPreference, userID];
+        const query = 'UPDATE carData SET make = ?, model = ?, year = ?, color = ?, licensePlate = ?, seatsInCar = ? WHERE userID = ?';
+        const params = [carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar, userID];
         const update = db.query(query, params); //Update car info in database
         if(update.affectedRows > 0){
             return true; //Return true if update is successful

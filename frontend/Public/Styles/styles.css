@@ -23,6 +23,11 @@ h1 {
     border-color: #008699; /* Change the border color on hover */
 }
 
+/* Card Styling for the whole application */
+.card{
+    background-color:#FCF7FF !important;
+}
+
 /* --------------- Styles for the Navbar ------------------ */
 .navbar.navbar-light.bg-light {
     background-color: #432C91 !important; /* Replace with your desired color */
@@ -122,6 +127,23 @@ h1 {
 .profile-header h2{
     color: #432C91 !important;
     font-weight: bold !important;
+}
+
+.card .card-body .card-title{
+    color: #432C91 !important;
+    font-weight: bold !important;
+}
+
+.card .card-body .ride-profile-subtext p{
+    color: #000000!important;
+    font-style: italic !important;
+}
+
+.card .card-body .ride-profile-card-field p{
+    color: #000000 !important;
+    font-weight: italic !important;
+    margin-top: 10px;
+    text-align: left;
 }
 
 /* First box i.e email */
