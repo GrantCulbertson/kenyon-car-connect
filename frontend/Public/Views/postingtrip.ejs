@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenyon Car Connect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/cc3b2bd0f4.js" crossorigin="anonymous"></script> <!-- Add Fontawesome Symbols -->
+    <link rel="stylesheet" href="../Styles/styles.css">
+</head>
+<body>
+
+
+    <!-- Homepage that is shown if the user is logged in (has cookies associated with them)-->
+<% if(isUser){ %>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class = "container-fluid">
+            <!-- Navbar Branding -->
+            <div class = "navbar-header">
+                <a class="navbar-brand" href="/">Kenyon Car Connect</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="nav navbar-nav ml-auto">
+                        <!-- Post Trip Button Information -->
+                        <li class = "nav-item">
+                            <a href="/" class="btn btn-info me-3" role="button">
+                                <i class="fa-solid fa-car"></i> Post a Trip
+                            </a>
+                        </li>
+                        <!-- Your Trips Button Information -->
+                        <li class = "nav-item">
+                            <a href="/" class="btn btn-info me-3" role="button">
+                                <i class="fa-solid fa-bell"></i> Your Trips
+                            </a>
+                        </li>
+                        <!-- Dropdown for profile and logout-->
+                        <div class="dropdown">
+                            <!-- Drop down button information -->
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-bars"></i> <!-- Hamburger Icon for dropdown -->
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
+                                <!-- Profile Button Information -->
+                                <li>
+                                    <a href="/User/Profile" class="dropdown-item" role="button">
+                                        <i class="fa-solid fa-user"></i> Profile
+                                    </a>
+                                </li>
+                                <!-- Logout Button Information -->
+                                <li>
+                                    <a href="/User/LogoutUser" class="dropdown-item" role="button">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>                        
+                   </ul>
+            </div>
+        </div>
+    </nav>  
+
+<!-- Page Header -->
+<div class="container-md mt-5 justify-content-center text-center">
+    <h1>Post a Trip</h1>
+    <p>please use the form below to post a trip to the feed</p>
+</div>
+
+<!-- Trip Posting Form -->
+<div class = "container-md justify-content-center">
+    <form action="/Trips/CreateTrip" method="POST">
+
+        <!-- Selction of ride type -->
+        <div class="form-group">
+            <label for="rideType" class="form-label">First, are you requesting or providing a ride?</label>
+            <select name="rideType" id="rideType" class="form-control" required>
+                <option value="" disabled selected>Select an option</option>
+                <option>Requesting a ride</option>
+                <option>Providing a ride</option>
+            </select>
+        </div>
+
+        <!-- Form if user is requesting a ride -->
+        <div id = "requestingTripFields">
+            <div class="form-group">
+                <label for="rideFrom" class="form-label">Where are you leaving from?</label>
+                <select name="leavingFrom" id="leavingFrom" class="form-control" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option>Campus</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <!-- Extra map to choose leaving destination if they aren't leaving from campus -->
+            <div id="leavingFromMapContainer" style="display: none;">
+                <div class="form-group">
+                    <label for="leavingFromDestination">Select where exactly you want to leave from</label>
+                    <input type="text" id="leavingFromDestination" name="leavingFromDestination" class="form-control" readonly required>
+                    <div id="mapLeaving" style="height: 400px; width: 100%;"></div>
+                    <input type="hidden" id="leavingFromLat" name="leavingFromLat">
+                    <input type="hidden" id="leavingFromLng" name="leavingFromLng">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="destination">Where are you going?</label>
+                <input type="text" id="destination" name="destination" class="form-control" readonly required>
+                <div id="map" style="height: 400px; width: 100%;"></div>
+                <input type="hidden" id="lat" name="lat">
+                <input type="hidden" id="lng" name="lng">
+            </div>
+            <div class="form-group">
+                <label for="payment" class="form-label">How much are you willing to pay?</label>
+                <input type="text" name="payment" id="payment" class="form-control" placeholder = "$10, I'll bring snacks, pay half of gas, etc." required>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">What time do you want to leave?</label>
+                <input type="time" name="time" id="time" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">What day do you want to leave?</label>
+                <input type="date" name="firstName" id="firstName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">Trip comments</label>
+                <input type="text" name="comments" id="comments" class="form-control" placeholder = "Write a little bit here about why you are requesting the ride or any other information you think is relevant." required>
+            </div>
+        </div>
+
+        <!-- Form if user is providing a ride -->
+        <div id = "provideRideFields" style="display: none;">
+            <div class="form-group">
+                <label for="rideFrom" class="form-label">Where are you leaving from?</label>
+                <select name="leavingFrom" id="leavingFrom" class="form-control" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option>Campus</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <!-- Extra map to choose leaving destination if they aren't leaving from campus -->
+            <div id="leavingFromMapContainer" style="display: none;">
+                <div class="form-group">
+                    <label for="leavingFromDestination">Select where exactly you want to leave from</label>
+                    <input type="text" id="leavingFromDestination" name="leavingFromDestination" class="form-control" readonly required>
+                    <div id="mapLeaving" style="height: 400px; width: 100%;"></div>
+                    <input type="hidden" id="leavingFromLat" name="leavingFromLat">
+                    <input type="hidden" id="leavingFromLng" name="leavingFromLng">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="destination" class="form-label">Where are you going?</label>
+                <input type="text" name="destination" id="destination" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="payment" class="form-label">How much would you like passengers to pay?</label>
+                <input type="text" name="payment" id="payment" class="form-control" placeholder = "$10, please bring snacks, pay for some gas, etc." required>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">What time are you leaving?</label>
+                <input type="time" name="time" id="time" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">What day is your trip planned for?</label>
+                <input type="date" name="firstName" id="firstName" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">Where on campus are you leaving from?</label>
+                <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascesnion Circle, etc." class="form-control" required>
+                <small id="meetingPointHelp" class="form-text text-muted">This is where passengers will meet you, please be precise.</small>
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">Trip comments</label>
+                <input type="text" name="comments" id="comments" class="form-control" placeholder = "Write a little bit here about why you are requesting the ride or any other information you think is relevant." required>
+            </div>
+        </div>
+</div>
+
+
+<!-- Trip posting page that is shown if the user is not logged in (does not have cookies associated with them, shouldn't be here anyways)-->
+    <% }else{ %>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class = "container-fluid">
+            <!-- Navbar Branding -->
+            <div class = "navbar-header">
+                <a class="navbar-brand" href="/">Kenyon Car Connect</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="nav navbar-nav ml-auto">
+                        <!-- Profile Button Information -->
+                        <li class = "nav-item">
+                            <a href="/User/UserSignupPage" class="btn btn-info me-3" role="button">
+                                <i class="fa-solid fa-user"></i> Sign Up
+                            </a>
+                        </li>
+                        <!-- Logout Button Information -->
+                        <li class = "nav-item">
+                            <a href="/User/UserLoginPage" class="btn btn-info" role="button">
+                                <i class="fa-solid fa-right-from-bracket"></i> Login
+                            </a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class = "d-flex align-items-center">
+        <div class="container mt-4 text-center">
+            <h1 id = "welcomeMessage" class = "fade-text">So... you aren't supposed to be here 0_0</h1>
+        </div>
+    </div>
+    <% } %>
+
+
+
+
+<!-- Scripts for page necessities -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Awesome scripts for making this page dynamic-->
+
+    <!-- Script to provide google maps API-->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%=GoogleMapsAPIKey%>&libraries=places&callback=initMap" async defer></script>
+    
+    <!-- Script to make the form dynamic -->
+    <script>
+        // Global variables
+let map, leavingMap, marker, leavingMarker, geocoder;
+
+// Initialize maps
+function initMap() {
+    console.log("Map initialization started");
+    // Default location (Kenyon College)
+    const defaultLocation = { lat: 40.3755, lng: -82.3977 };
+    
+    geocoder = new google.maps.Geocoder();
+
+    // ------ First Map (Destination Selection) ------
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultLocation,
+        zoom: 15,
+    });
+
+    marker = new google.maps.Marker({
+        position: defaultLocation,
+        map: map,
+        draggable: true,
+    });
+
+    function updateLocation(latLng) {
+        document.getElementById("lat").value = latLng.lat();
+        document.getElementById("lng").value = latLng.lng();
+
+        geocoder.geocode({ location: latLng }, function (results, status) {
+            if (status === "OK" && results[0]) {
+                document.getElementById("destination").value = results[0].formatted_address;
+            } else {
+                document.getElementById("destination").value = "Location not found";
+            }
+        });
+    }
+
+    marker.addListener("dragend", function () {
+        updateLocation(marker.getPosition());
+    });
+
+    map.addListener("click", function (event) {
+        marker.setPosition(event.latLng);
+        updateLocation(event.latLng);
+    });
+
+    updateLocation(marker.getPosition());
+
+    // ------ Second Map (Leaving From Selection) ------
+    const mapLeavingElement = document.getElementById("mapLeaving");
+    if (mapLeavingElement) {
+        console.log("Found mapLeaving element");
+        leavingMap = new google.maps.Map(mapLeavingElement, {
+            center: defaultLocation,
+            zoom: 15,
+        });
+
+        leavingMarker = new google.maps.Marker({
+            position: defaultLocation,
+            map: leavingMap,
+            draggable: true,
+        });
+
+        function updateLeavingLocation(latLng) {
+            document.getElementById("leavingFromLat").value = latLng.lat();
+            document.getElementById("leavingFromLng").value = latLng.lng();
+
+            geocoder.geocode({ location: latLng }, function (results, status) {
+                if (status === "OK" && results[0]) {
+                    document.getElementById("leavingFromDestination").value = results[0].formatted_address;
+                } else {
+                    document.getElementById("leavingFromDestination").value = "Location not found";
+                }
+            });
+        }
+
+        leavingMarker.addListener("dragend", function () {
+            updateLeavingLocation(leavingMarker.getPosition());
+        });
+
+        leavingMap.addListener("click", function (event) {
+            leavingMarker.setPosition(event.latLng);
+            updateLeavingLocation(event.latLng);
+        });
+
+        updateLeavingLocation(leavingMarker.getPosition());
+    } else {
+        console.error("Could not find mapLeaving element");
+    }
+    
+    // Add event listeners for dropdown changes
+    const rideTypeSelect = document.getElementById("rideType");
+    if (rideTypeSelect) {
+        rideTypeSelect.addEventListener("change", toggleFields);
+    }
+    
+    const leavingFromSelect = document.getElementById("leavingFrom");
+    if (leavingFromSelect) {
+        leavingFromSelect.addEventListener("change", toggleFields);
+    }
+    
+    // Initial call to set correct visibility
+    toggleFields();
+}
+
+// Function to toggle visibility of form sections
+function toggleFields() {
+    console.log("Toggle fields called");
+    const rideType = document.getElementById("rideType").value;
+    const provideRideFields = document.getElementById("provideRideFields");
+    const requestingTripFields = document.getElementById("requestingTripFields");
+    
+    // Handle ride type selection
+    if (rideType === "Requesting a ride") {
+        provideRideFields.style.display = "none";
+        requestingTripFields.style.display = "block";
+    } else if (rideType === "Providing a ride") {
+        provideRideFields.style.display = "block";
+        requestingTripFields.style.display = "none";
+    } else {
+        provideRideFields.style.display = "none";
+        requestingTripFields.style.display = "none";
+    }
+    
+    // Handle leaving from selection (only applicable for requesting rides)
+    if (rideType === "Requesting a ride") {
+        const leavingFrom = document.getElementById("leavingFrom").value;
+        const leavingFromMapContainer = document.getElementById("leavingFromMapContainer");
+        
+        console.log("Leaving from:", leavingFrom);
+        
+        if (leavingFrom === "Other") {
+            leavingFromMapContainer.style.display = "block";
+            console.log("Showing leaving map");
+            
+            // Ensure map is visible and properly sized
+            setTimeout(() => {
+                if (leavingMap) {
+                    google.maps.event.trigger(leavingMap, "resize");
+                    leavingMap.setCenter(leavingMarker.getPosition());
+                    console.log("Map resized");
+                }
+            }, 300);
+        } else {
+            leavingFromMapContainer.style.display = "none";
+            console.log("Hiding leaving map");
+        }
+    }
+}
+
+// Ensure maps initialize when Google Maps API is loaded
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOM fully loaded");
+});
+    </script>
+    
+
+</body>
+</html>

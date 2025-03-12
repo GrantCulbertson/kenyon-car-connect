@@ -51,6 +51,8 @@ db.pool.getConnection()
 const userRoutes = require('./backend/routes/userRoutes');
 const carRoutes = require('./backend/routes/carRoutes');
 const rideProfileRoutes = require('./backend/routes/rideProfileRoutes');
+const tripRoutes = require('./backend/routes/tripRoutes');
+
 
 
 
@@ -58,6 +60,8 @@ const rideProfileRoutes = require('./backend/routes/rideProfileRoutes');
 app.use('/User', userRoutes);
 app.use('/Car', carRoutes);
 app.use('/rideProfile', rideProfileRoutes);
+app.use('/Trips',tripRoutes);
+
 
 
 

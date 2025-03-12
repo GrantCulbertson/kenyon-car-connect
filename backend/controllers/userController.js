@@ -107,7 +107,7 @@ exports.verifyEmail = async (req, res) => {
 };
 
 exports.loginPage = async (req, res) => {
-    console.log("userController... signupPage... running");
+    console.log("userController... loginPage... running");
     const token = req.cookies.auth_token; //get cookies from user (if they exist)
     if (token) {
         return res.redirect("/"); // Return to homepage if user has a token (they are already logged in)

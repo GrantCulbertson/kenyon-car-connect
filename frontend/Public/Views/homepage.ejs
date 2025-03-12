@@ -26,7 +26,7 @@
                     <ul class="nav navbar-nav ml-auto">
                         <!-- Post Trip Button Information -->
                         <li class = "nav-item">
-                            <a href="/" class="btn btn-info me-3" role="button">
+                            <a href="/Trips/postTrip" class="btn btn-info me-3" role="button">
                                 <i class="fa-solid fa-car"></i> Post a Trip
                             </a>
                         </li>
@@ -63,9 +63,51 @@
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1>Welcome back <%= user.firstName %>! </h1>
-    </div>
+    <!-- Header Text for Homepage-->
+    <div class = "d-flex align-items-center">
+        <div class="container mt-4 text-center">
+            <h1 id = "welcomeMessage" class = "fade-text">Welcome back <%= user.firstName %>!</h1>
+            <!-- Trip Feed Cards-->
+            <div class = "card mb-3 mx-auto" style = "max-width: 750px;">
+                <!-- Card Body -->
+                <div class="card-body">
+                    <!-- Badge heading for trip -->
+                    <h2 class="card-title"><span class="badge badge-primary">Trip Request</span></h2>
+                    <!-- First Row-->
+                    <div class = "row g-0 h-100">
+                        <!-- Left Column with Image-->
+                        <div class="col-md-6 d-flex align-items-center justify-content-center h-100">
+                            <img src="https://media.wired.com/photos/59269cd37034dc5f91bec0f1/master/pass/GoogleMapTA.jpg" class="img-fluid rounded-start" alt="Trip Map">
+                        </div>
+
+                        <!-- Column with Ride Info-->
+                        <div class="col-md-6 d-flex flex-column align-items-start justify-content-center h-100">
+                            <span class = "trip-feed-card-field">
+                                <p class="card-text"><b>Distance:</b> 10 miles</p>
+                            </span>
+                            <span class = "trip-feed-card-field">
+                                <p class="card-text"><b>Stops:</b> 1 Stop</p>
+                            </span>
+                            <span class = "trip-feed-card-field">
+                                <p class="card-text"><b>Will pay:</b> $10</p>
+                            </span>
+                            <span class = "trip-feed-card-field">
+                                <p class="card-text"><b>Time:</b> 2:00 PM</p>
+                            </span>
+                            <span class = "trip-feed-card-field">
+                                <p class="card-text"><b>Date:</b> 10/23/2025</p>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Bottom of card (comment and buttons)-->
+                    <span class = "trip-feed-card-field">
+                        <p class="card-text"><b>Comment:</b> I need a ride to dunkin donuts pls</p>
+                    </span>
+                    <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateRideProfileModal">Accept Request</button>
+                </div>
+            </div>
+        </div>
+    </div>     
 
 <!-- Homepage that is shown if the user is not logged in (does not have cookies associated with them)-->
     <% }else{ %>
@@ -98,8 +140,10 @@
     </nav>
     
 
-    <div class="container mt-5">
-        <h1>Hello world!</h1>
+    <div class = "d-flex align-items-center">
+        <div class="container mt-4 text-center">
+            <h1 id = "welcomeMessage" class = "fade-text">Hello world!</h1>
+        </div>
     </div>
     <% } %>
 
@@ -112,6 +156,21 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Awesome scripts for making this page dynamic-->
+<!-- This script makes it so the header of the page changes from welcome user to trip feed on page load-->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+            let message = document.getElementById("welcomeMessage");
+            message.style.opacity = "0"; // Fade out
+
+            setTimeout(function() {
+                message.textContent = "Trip Feed"; // Change text
+                message.style.opacity = "1"; // Fade in
+            }, 1000); // Wait for fade-out transition to complete (1s)
+            
+        }, 3000); // Initial delay before fade starts (3s)
+    });
+</script>
 
 
 </body>

@@ -92,6 +92,21 @@ h1 {
     color: #FCF7FF !important;
 }
 
+/* -------------- Styles for homepage ---------------- */
+/* Styling for the homepage header */
+.fade-text {
+    transition: opacity 1s ease-in-out;
+}
+
+.card .card-body .trip-feed-card-field p{
+    color: #000000 !important;
+    font-weight: italic !important;
+    margin-top: 30px;
+    text-align: left;
+}
+
+
+
 
 
 
@@ -134,15 +149,17 @@ h1 {
     font-weight: bold !important;
 }
 
+/* Styling for text below ride profile card header */
 .card .card-body .ride-profile-subtext p{
     color: #000000!important;
     font-style: italic !important;
 }
 
+/* Styling for profile fields in ride profile card */
 .card .card-body .ride-profile-card-field p{
     color: #000000 !important;
     font-weight: italic !important;
-    margin-top: 10px;
+    margin-top: 30px;
     text-align: left;
 }
 
@@ -183,12 +200,48 @@ h1 {
 
 /*Specific styling for button on profile page */
 .btn.btn-primary[data-target="#updateProfileModal"] {
-    margin-top: 15px; /* adjust margin above button */
+    margin-top: 30px; /* adjust margin above button */
 }
 
 .btn.btn-primary[data-target="#updateCarModal"] {
-    margin-top: 15px; /* adjust margin above button */
+    margin-top: 30px; /* adjust margin above button */
+    margin-bottom: 50px;
 }
+
+.btn.btn-primary[data-target="#updateRideProfileModal"] {
+    margin-top: 50px; /* adjust margin above button */
+    background-color:#432C91 !important;
+}
+
+.btn.btn-primary[data-target="#updateRideProfileModal"]:hover{
+    margin-top: 50px; /* adjust margin above button */
+    background-color:#9989B4 !important;
+    color: #432C91;
+}
+
+/* Styles for Card on Profile Page */
+.row {
+    min-height: 100vh; /* Set minimum height to full viewport height */
+}
+
+.col-md-6 {
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    flex-grow: 1; /* Allow the card to expand within the column */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    flex-grow: 1; /* Make the body fill the card */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Ensures content is spaced evenly */
+}
+
 
 
 
