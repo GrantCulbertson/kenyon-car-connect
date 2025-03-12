@@ -93,7 +93,7 @@
                     <option>Other</option>
                 </select>
             </div>
-            <!-- Extra map to choose leaving destination if they aren't leaving from campus -->
+            <!-- Extra map to choose leaving destination if they aren't leaving from campus and requesting -->
             <div id="leavingFromMapContainer" style="display: none;">
                 <div class="form-group">
                     <label for="leavingFromDestination">Select where exactly you want to leave from</label>
@@ -104,7 +104,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="destination">Where are you going?</label>
+                <label for="destination">Where do you want to go?</label>
                 <input type="text" id="destination" name="destination" class="form-control" readonly required>
                 <div id="map" style="height: 400px; width: 100%;"></div>
                 <input type="hidden" id="lat" name="lat">
@@ -132,25 +132,36 @@
         <div id = "provideRideFields" style="display: none;">
             <div class="form-group">
                 <label for="rideFrom" class="form-label">Where are you leaving from?</label>
-                <select name="leavingFrom" id="leavingFrom" class="form-control" required>
+                <select name="leavingFrom" id="providingLeavingFrom" class="form-control" required>
                     <option value="" disabled selected>Select an option</option>
                     <option>Campus</option>
                     <option>Other</option>
                 </select>
             </div>
-            <!-- Extra map to choose leaving destination if they aren't leaving from campus -->
-            <div id="leavingFromMapContainer" style="display: none;">
+            <!-- Will ask where on campus they are leaving from if leaving from campus -->
+            <div id = "providingLeavingFromCampusContainer" style = "display: none;">
                 <div class="form-group">
-                    <label for="leavingFromDestination">Select where exactly you want to leave from</label>
-                    <input type="text" id="leavingFromDestination" name="leavingFromDestination" class="form-control" readonly required>
-                    <div id="mapLeaving" style="height: 400px; width: 100%;"></div>
-                    <input type="hidden" id="leavingFromLat" name="leavingFromLat">
-                    <input type="hidden" id="leavingFromLng" name="leavingFromLng">
+                    <label for="name" class="form-label">Where on campus are you leaving from?</label>
+                    <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascesnion Circle, etc." class="form-control" required>
+                    <small id="meetingPointHelp" class="form-text text-muted">This is where passengers will meet you, please be precise.</small>
+                </div>
+            </div>
+            <!-- Extra map to choose leaving destination if they aren't leaving from campus -->
+            <div id="providingLeavingMapContainer" style="display: none;">
+                <div class="form-group">
+                    <label for="providingLeavingDestination">Select where exactly you are leaving from</label>
+                    <input type="text" id="providingLeavingDestination" name="leavingFromDestination" class="form-control" readonly required>
+                    <div id="providingMapLeaving" style="height: 400px; width: 100%;"></div>
+                    <input type="hidden" id="providingLeavingFromLat" name="leavingFromLat">
+                    <input type="hidden" id="providingLeavingFromLng" name="leavingFromLng">
                 </div>
             </div>
             <div class="form-group">
-                <label for="destination" class="form-label">Where are you going?</label>
-                <input type="text" name="destination" id="destination" class="form-control" required>
+                <label for="destination">Where are you going?</label>
+                <input type="text" id="providingDestination" name="destination" class="form-control" readonly required>
+                <div id="providingMap" style="height: 400px; width: 100%;"></div>
+                <input type="hidden" id="providingDestinationLat" name="lat">
+                <input type="hidden" id="providingDestinationLng" name="lng">
             </div>
             <div class="form-group">
                 <label for="payment" class="form-label">How much would you like passengers to pay?</label>
@@ -165,13 +176,8 @@
                 <input type="date" name="firstName" id="firstName" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">Where on campus are you leaving from?</label>
-                <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascesnion Circle, etc." class="form-control" required>
-                <small id="meetingPointHelp" class="form-text text-muted">This is where passengers will meet you, please be precise.</small>
-            </div>
-            <div class="form-group">
                 <label for="name" class="form-label">Trip comments</label>
-                <input type="text" name="comments" id="comments" class="form-control" placeholder = "Write a little bit here about why you are requesting the ride or any other information you think is relevant." required>
+                <input type="text" name="comments" id="comments" class="form-control" placeholder = "Write a little bit here about the trip you are going on, include anything you think is relevant." required>
             </div>
         </div>
 </div>
@@ -231,158 +237,262 @@
     <!-- Script to make the form dynamic -->
     <script>
         // Global variables
-let map, leavingMap, marker, leavingMarker, geocoder;
+        let map, leavingMap, providingLeavingMap, providingMap, marker, leavingMarker, providingLeavingMarker, providingMapMarker, geocoder;
 
-// Initialize maps
-function initMap() {
-    console.log("Map initialization started");
-    // Default location (Kenyon College)
-    const defaultLocation = { lat: 40.3755, lng: -82.3977 };
-    
-    geocoder = new google.maps.Geocoder();
-
-    // ------ First Map (Destination Selection) ------
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: defaultLocation,
-        zoom: 15,
-    });
-
-    marker = new google.maps.Marker({
-        position: defaultLocation,
-        map: map,
-        draggable: true,
-    });
-
-    function updateLocation(latLng) {
-        document.getElementById("lat").value = latLng.lat();
-        document.getElementById("lng").value = latLng.lng();
-
-        geocoder.geocode({ location: latLng }, function (results, status) {
-            if (status === "OK" && results[0]) {
-                document.getElementById("destination").value = results[0].formatted_address;
-            } else {
-                document.getElementById("destination").value = "Location not found";
-            }
-        });
-    }
-
-    marker.addListener("dragend", function () {
-        updateLocation(marker.getPosition());
-    });
-
-    map.addListener("click", function (event) {
-        marker.setPosition(event.latLng);
-        updateLocation(event.latLng);
-    });
-
-    updateLocation(marker.getPosition());
-
-    // ------ Second Map (Leaving From Selection) ------
-    const mapLeavingElement = document.getElementById("mapLeaving");
-    if (mapLeavingElement) {
-        console.log("Found mapLeaving element");
-        leavingMap = new google.maps.Map(mapLeavingElement, {
-            center: defaultLocation,
-            zoom: 15,
-        });
-
-        leavingMarker = new google.maps.Marker({
-            position: defaultLocation,
-            map: leavingMap,
-            draggable: true,
-        });
-
-        function updateLeavingLocation(latLng) {
-            document.getElementById("leavingFromLat").value = latLng.lat();
-            document.getElementById("leavingFromLng").value = latLng.lng();
-
-            geocoder.geocode({ location: latLng }, function (results, status) {
-                if (status === "OK" && results[0]) {
-                    document.getElementById("leavingFromDestination").value = results[0].formatted_address;
-                } else {
-                    document.getElementById("leavingFromDestination").value = "Location not found";
-                }
-            });
-        }
-
-        leavingMarker.addListener("dragend", function () {
-            updateLeavingLocation(leavingMarker.getPosition());
-        });
-
-        leavingMap.addListener("click", function (event) {
-            leavingMarker.setPosition(event.latLng);
-            updateLeavingLocation(event.latLng);
-        });
-
-        updateLeavingLocation(leavingMarker.getPosition());
-    } else {
-        console.error("Could not find mapLeaving element");
-    }
-    
-    // Add event listeners for dropdown changes
-    const rideTypeSelect = document.getElementById("rideType");
-    if (rideTypeSelect) {
-        rideTypeSelect.addEventListener("change", toggleFields);
-    }
-    
-    const leavingFromSelect = document.getElementById("leavingFrom");
-    if (leavingFromSelect) {
-        leavingFromSelect.addEventListener("change", toggleFields);
-    }
-    
-    // Initial call to set correct visibility
-    toggleFields();
-}
-
-// Function to toggle visibility of form sections
-function toggleFields() {
-    console.log("Toggle fields called");
-    const rideType = document.getElementById("rideType").value;
-    const provideRideFields = document.getElementById("provideRideFields");
-    const requestingTripFields = document.getElementById("requestingTripFields");
-    
-    // Handle ride type selection
-    if (rideType === "Requesting a ride") {
-        provideRideFields.style.display = "none";
-        requestingTripFields.style.display = "block";
-    } else if (rideType === "Providing a ride") {
-        provideRideFields.style.display = "block";
-        requestingTripFields.style.display = "none";
-    } else {
-        provideRideFields.style.display = "none";
-        requestingTripFields.style.display = "none";
-    }
-    
-    // Handle leaving from selection (only applicable for requesting rides)
-    if (rideType === "Requesting a ride") {
-        const leavingFrom = document.getElementById("leavingFrom").value;
-        const leavingFromMapContainer = document.getElementById("leavingFromMapContainer");
-        
-        console.log("Leaving from:", leavingFrom);
-        
-        if (leavingFrom === "Other") {
-            leavingFromMapContainer.style.display = "block";
-            console.log("Showing leaving map");
+        // Initialize maps for form
+        function initMap() {
+            console.log("Map initialization started");
+            // Default location (Kenyon College)
+            const defaultLocation = { lat: 40.3755, lng: -82.3977 };
             
-            // Ensure map is visible and properly sized
-            setTimeout(() => {
-                if (leavingMap) {
-                    google.maps.event.trigger(leavingMap, "resize");
-                    leavingMap.setCenter(leavingMarker.getPosition());
-                    console.log("Map resized");
-                }
-            }, 300);
-        } else {
-            leavingFromMapContainer.style.display = "none";
-            console.log("Hiding leaving map");
-        }
-    }
-}
+            geocoder = new google.maps.Geocoder();
 
-// Ensure maps initialize when Google Maps API is loaded
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM fully loaded");
-});
+            // ------ First Map, Destination Selection for Requesting a ride ------
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: defaultLocation,
+                zoom: 15,
+            });
+
+            marker = new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                draggable: true,
+            });
+
+            function updateLocation(latLng) {
+                document.getElementById("lat").value = latLng.lat();
+                document.getElementById("lng").value = latLng.lng();
+
+                geocoder.geocode({ location: latLng }, function (results, status) {
+                    if (status === "OK" && results[0]) {
+                        document.getElementById("destination").value = results[0].formatted_address;
+                    } else {
+                        document.getElementById("destination").value = "Location not found";
+                    }
+                });
+            }
+
+            marker.addListener("dragend", function () {
+                updateLocation(marker.getPosition());
+            });
+
+            map.addListener("click", function (event) {
+                marker.setPosition(event.latLng);
+                updateLocation(event.latLng);
+            });
+
+            updateLocation(marker.getPosition());
+
+            // ------ Second Map (Leaving From Selection, Requesting Ride) ------
+            const mapLeavingElement = document.getElementById("mapLeaving");
+            if (mapLeavingElement) {
+                console.log("Found mapLeaving element");
+                leavingMap = new google.maps.Map(mapLeavingElement, {
+                    center: defaultLocation,
+                    zoom: 15,
+                });
+
+                leavingMarker = new google.maps.Marker({
+                    position: defaultLocation,
+                    map: leavingMap,
+                    draggable: true,
+                });
+
+                function updateLeavingLocation(latLng) {
+                    document.getElementById("leavingFromLat").value = latLng.lat();
+                    document.getElementById("leavingFromLng").value = latLng.lng();
+
+                    geocoder.geocode({ location: latLng }, function (results, status) {
+                        if (status === "OK" && results[0]) {
+                            document.getElementById("leavingFromDestination").value = results[0].formatted_address;
+                        } else {
+                            document.getElementById("leavingFromDestination").value = "Location not found";
+                        }
+                    });
+                }
+
+                leavingMarker.addListener("dragend", function () {
+                    updateLeavingLocation(leavingMarker.getPosition());
+                });
+
+                leavingMap.addListener("click", function (event) {
+                    leavingMarker.setPosition(event.latLng);
+                    updateLeavingLocation(event.latLng);
+                });
+
+                updateLeavingLocation(leavingMarker.getPosition());
+            } else {
+                console.error("Could not find mapLeaving element");
+            }
+
+            // ------ Third Map (Leaving From Selection, Providing a ride) ------
+            const providingMapLeavingElement = document.getElementById("providingMapLeaving");
+            if (providingMapLeavingElement) {
+                console.log("Found providingMapLeaving element");
+                providingLeavingMap = new google.maps.Map(providingMapLeavingElement, {
+                    center: defaultLocation,
+                    zoom: 15,
+                });
+
+                providingLeavingMarker = new google.maps.Marker({
+                    position: defaultLocation,
+                    map: providingLeavingMap,
+                    draggable: true,
+                });
+
+                function updateProvidingLeavingLocation(latLng) {
+                    document.getElementById("providingLeavingFromLat").value = latLng.lat();
+                    document.getElementById("providingLeavingFromLng").value = latLng.lng();
+
+                    geocoder.geocode({ location: latLng }, function (results, status) {
+                        if (status === "OK" && results[0]) {
+                            document.getElementById("providingLeavingDestination").value = results[0].formatted_address;
+                        } else {
+                            document.getElementById("providingLeavingDestination").value = "Location not found";
+                        }
+                    });
+                }
+
+                providingLeavingMarker.addListener("dragend", function () {
+                    updateProvidingLeavingLocation(providingLeavingMarker.getPosition());
+                });
+
+                providingLeavingMap.addListener("click", function (event) {
+                    providingLeavingMarker.setPosition(event.latLng);
+                    updateProvidingLeavingLocation(event.latLng);
+                });
+
+                updateProvidingLeavingLocation(providingLeavingMarker.getPosition());
+            } else {
+                console.error("Could not find providingMapLeaving element");
+            }
+
+            // ------ Fourth Map (Destination Selection, Providing a ride) ------
+            const providingMapElement = document.getElementById("providingMap");
+            if (providingMapElement) {
+                console.log("Found providingMap element");
+                providingMap = new google.maps.Map(providingMapElement, {
+                    center: defaultLocation,
+                    zoom: 15,
+                });
+
+                providingMapMarker = new google.maps.Marker({
+                    position: defaultLocation,
+                    map: providingMap,
+                    draggable: true,
+                });
+
+                function updateProvidingMapLocation(latLng) {
+                    document.getElementById("providingDestinationLat").value = latLng.lat();
+                    document.getElementById("providingDestinationLng").value = latLng.lng();
+
+                    geocoder.geocode({ location: latLng }, function (results, status) {
+                        if (status === "OK" && results[0]) {
+                            document.getElementById("providingDestination").value = results[0].formatted_address;
+                        } else {
+                            document.getElementById("providingDestination").value = "Location not found";
+                        }
+                    });
+                }
+
+                providingMapMarker.addListener("dragend", function () {
+                    updateProvidingMapLocation(providingMapMarker.getPosition());
+                });
+
+                providingMap.addListener("click", function (event) {
+                    providingMapMarker.setPosition(event.latLng);
+                    updateProvidingMapLocation(event.latLng);
+                });
+
+                updateProvidingMapLocation(providingMapMarker.getPosition());
+            } else {
+                console.error("Could not find providingMap element");
+            }
+
+            // Add event listeners for dropdown changes
+            const rideTypeSelect = document.getElementById("rideType");
+            if (rideTypeSelect) {
+                rideTypeSelect.addEventListener("change", toggleFields);
+            }
+            
+            const leavingFromSelect = document.getElementById("leavingFrom");
+            if (leavingFromSelect) {
+                leavingFromSelect.addEventListener("change", toggleFields);
+            }
+            
+            const providingLeavingFromSelect = document.getElementById("providingLeavingFrom");
+            if (providingLeavingFromSelect) {
+                providingLeavingFromSelect.addEventListener("change", toggleFields);
+            }
+            
+            // Initial call to set correct visibility
+            toggleFields();
+        }
+
+        // Update the toggleFields function to handle both map containers
+        function toggleFields() {
+            console.log("Toggle fields called");
+            const rideType = document.getElementById("rideType").value;
+            const provideRideFields = document.getElementById("provideRideFields");
+            const requestingTripFields = document.getElementById("requestingTripFields");
+            
+            // Handle ride type selection
+            if (rideType === "Requesting a ride") {
+                provideRideFields.style.display = "none";
+                requestingTripFields.style.display = "block";
+                
+                // Handle leaving from selection for requesting rides
+                const leavingFrom = document.getElementById("leavingFrom").value;
+                const leavingFromMapContainer = document.getElementById("leavingFromMapContainer");
+                        
+                if (leavingFrom === "Other") {
+                    leavingFromMapContainer.style.display = "block";
+                    
+                    // Ensure map is visible and properly sized
+                    setTimeout(() => {
+                        if (leavingMap) {
+                            google.maps.event.trigger(leavingMap, "resize");
+                            leavingMap.setCenter(leavingMarker.getPosition());
+                        }
+                    }, 300);
+                } else {
+                    leavingFromMapContainer.style.display = "none";
+                }
+            } else if (rideType === "Providing a ride") {
+                provideRideFields.style.display = "block";
+                requestingTripFields.style.display = "none";
+                
+                // Handle leaving from selection for providing rides
+                const providingLeavingFrom = document.getElementById("providingLeavingFrom").value;
+                const providingLeavingMapContainer = document.getElementById("providingLeavingMapContainer");
+                const providingLeavingFromCampusContainer = document.getElementById("providingLeavingFromCampusContainer");
+                        
+                if (providingLeavingFrom === "Other") {
+                    providingLeavingMapContainer.style.display = "block";
+                    providingLeavingFromCampusContainer.style.display = "none";
+
+                    
+                    // Ensure map is visible and properly sized
+                    setTimeout(() => {
+                        if (providingLeavingMap) {
+                            google.maps.event.trigger(providingLeavingMap, "resize");
+                            providingLeavingMap.setCenter(providingLeavingMarker.getPosition());
+                        }
+                    }, 300);
+                } else {
+                    providingLeavingMapContainer.style.display = "none";
+                    providingLeavingFromCampusContainer.style.display = "block";
+                }
+            } else {
+                provideRideFields.style.display = "none";
+                requestingTripFields.style.display = "none";
+            }
+        }
+
+        // Ensure maps initialize when Google Maps API is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("DOM fully loaded");
+        });
     </script>
     
 
