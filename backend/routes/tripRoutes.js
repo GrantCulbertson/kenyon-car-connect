@@ -11,7 +11,7 @@ router.get("/postTrip", tripController.postTripPage);
 
 //----------------------- ROUTES TO HANDLE TRIP DATA ------------------------//
 
-
+router.post("/createTrip", tripController.createTrip);
 
 
 

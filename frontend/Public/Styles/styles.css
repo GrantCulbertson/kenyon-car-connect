@@ -208,6 +208,11 @@ h1 {
     margin-bottom: 50px;
 }
 
+.btn.btn-primary[data-target="#addCarModal"] {
+    margin-top: 30px; /* adjust margin above button */
+    margin-bottom: 50px;
+}
+
 .btn.btn-primary[data-target="#updateRideProfileModal"] {
     margin-top: 50px; /* adjust margin above button */
     background-color:#432C91 !important;

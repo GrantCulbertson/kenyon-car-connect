@@ -7,6 +7,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

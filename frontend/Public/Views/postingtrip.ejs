@@ -12,7 +12,7 @@
 
 
     <!-- Homepage that is shown if the user is logged in (has cookies associated with them)-->
-<% if(isUser){ %>
+<% if(isUser && user.verificationStatus === "Yes"){ %>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class = "container-fluid">
             <!-- Navbar Branding -->
@@ -26,7 +26,7 @@
                     <ul class="nav navbar-nav ml-auto">
                         <!-- Post Trip Button Information -->
                         <li class = "nav-item">
-                            <a href="/" class="btn btn-info me-3" role="button">
+                            <a href="/Trips/createTrip" class="btn btn-info me-3" role="button">
                                 <i class="fa-solid fa-car"></i> Post a Trip
                             </a>
                         </li>
@@ -71,8 +71,7 @@
 
 <!-- Trip Posting Form -->
 <div class = "container-md justify-content-center">
-    <form action="/Trips/CreateTrip" method="POST">
-
+    <form action="/Trips/createTrip" method="POST">
         <!-- Selction of ride type -->
         <div class="form-group">
             <label for="rideType" class="form-label">First, are you requesting or providing a ride?</label>
@@ -86,7 +85,7 @@
         <!-- Form if user is requesting a ride -->
         <div id = "requestingTripFields">
             <div class="form-group">
-                <label for="rideFrom" class="form-label">Where are you leaving from?</label>
+                <label for="leavingFrom" class="form-label">Where are you leaving from?</label>
                 <select name="leavingFrom" id="leavingFrom" class="form-control" required>
                     <option value="" disabled selected>Select an option</option>
                     <option>Campus</option>
@@ -97,7 +96,7 @@
             <div id="leavingFromMapContainer" style="display: none;">
                 <div class="form-group">
                     <label for="leavingFromDestination">Select where exactly you want to leave from</label>
-                    <input type="text" id="leavingFromDestination" name="leavingFromDestination" class="form-control" readonly required>
+                    <input type="text" id="leavingFromDestination" name="leavingFromDestination" class="form-control" required>
                     <div id="mapLeaving" style="height: 400px; width: 100%;"></div>
                     <input type="hidden" id="leavingFromLat" name="leavingFromLat">
                     <input type="hidden" id="leavingFromLng" name="leavingFromLng">
@@ -105,34 +104,38 @@
             </div>
             <div class="form-group">
                 <label for="destination">Where do you want to go?</label>
-                <input type="text" id="destination" name="destination" class="form-control" readonly required>
+                <input type="text" id="destination" name="destination" class="form-control" required>
                 <div id="map" style="height: 400px; width: 100%;"></div>
                 <input type="hidden" id="lat" name="lat">
                 <input type="hidden" id="lng" name="lng">
             </div>
             <div class="form-group">
-                <label for="payment" class="form-label">How much are you willing to pay?</label>
-                <input type="text" name="payment" id="payment" class="form-control" placeholder = "$10, I'll bring snacks, pay half of gas, etc." required>
+                <label for="requestingPayment" class="form-label">How much are you willing to pay?</label>
+                <input type="text" name="requestingPayment" id="requestingPayment" class="form-control" placeholder = "$10, I'll bring snacks, pay half of gas, etc." required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">What time do you want to leave?</label>
-                <input type="time" name="time" id="time" class="form-control" required>
+                <label for="requestingTime" class="form-label">What time do you want to leave?</label>
+                <input type="time" name="requestingTime" id="requestingTime" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">What day do you want to leave?</label>
-                <input type="date" name="firstName" id="firstName" class="form-control" required>
+                <label for="requestingDate" class="form-label">What day do you want to leave?</label>
+                <input type="date" name="requestingDate" id="requestingDate" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">Trip comments</label>
-                <input type="text" name="comments" id="comments" class="form-control" placeholder = "Write a little bit here about why you are requesting the ride or any other information you think is relevant." required>
+                <label for="requestingTitle" class="form-label">Trip title</label>
+                <input type="text" name="requestingTitle" id="requestingTitle" class="form-control" placeholder = "Trip to Walmart, Driving to Columbus, etc." required>
+            </div>
+            <div class="form-group">
+                <label for="requestingComments" class="form-label">Trip comments</label>
+                <input type="text" name="requestingComments" id="requestingComments" class="form-control" placeholder = "Write a little bit here about why you are requesting the ride or any other information you think is relevant." required>
             </div>
         </div>
 
         <!-- Form if user is providing a ride -->
         <div id = "provideRideFields" style="display: none;">
             <div class="form-group">
-                <label for="rideFrom" class="form-label">Where are you leaving from?</label>
-                <select name="leavingFrom" id="providingLeavingFrom" class="form-control" required>
+                <label for="providingLeavingFrom" class="form-label">Where are you leaving from?</label>
+                <select name="providingLeavingFrom" id="providingLeavingFrom" class="form-control" required>
                     <option value="" disabled selected>Select an option</option>
                     <option>Campus</option>
                     <option>Other</option>
@@ -142,7 +145,7 @@
             <div id = "providingLeavingFromCampusContainer" style = "display: none;">
                 <div class="form-group">
                     <label for="name" class="form-label">Where on campus are you leaving from?</label>
-                    <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascesnion Circle, etc." class="form-control" required>
+                    <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascension Circle, etc." class="form-control" required>
                     <small id="meetingPointHelp" class="form-text text-muted">This is where passengers will meet you, please be precise.</small>
                 </div>
             </div>
@@ -150,7 +153,7 @@
             <div id="providingLeavingMapContainer" style="display: none;">
                 <div class="form-group">
                     <label for="providingLeavingDestination">Select where exactly you are leaving from</label>
-                    <input type="text" id="providingLeavingDestination" name="leavingFromDestination" class="form-control" readonly required>
+                    <input type="text" id="providingLeavingDestination" name="leavingFromDestination" class="form-control" required>
                     <div id="providingMapLeaving" style="height: 400px; width: 100%;"></div>
                     <input type="hidden" id="providingLeavingFromLat" name="leavingFromLat">
                     <input type="hidden" id="providingLeavingFromLng" name="leavingFromLng">
@@ -158,65 +161,98 @@
             </div>
             <div class="form-group">
                 <label for="destination">Where are you going?</label>
-                <input type="text" id="providingDestination" name="destination" class="form-control" readonly required>
+                <input type="text" id="providingDestination" name="destination" class="form-control" required>
                 <div id="providingMap" style="height: 400px; width: 100%;"></div>
                 <input type="hidden" id="providingDestinationLat" name="lat">
                 <input type="hidden" id="providingDestinationLng" name="lng">
             </div>
             <div class="form-group">
-                <label for="payment" class="form-label">How much would you like passengers to pay?</label>
-                <input type="text" name="payment" id="payment" class="form-control" placeholder = "$10, please bring snacks, pay for some gas, etc." required>
+                <label for="providingPayment" class="form-label">How much would you like passengers to pay?</label>
+                <input type="text" name="providingPayment" id="providingPayment" class="form-control" placeholder = "$10, please bring snacks, pay for some gas, etc." required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">What time are you leaving?</label>
-                <input type="time" name="time" id="time" class="form-control" required>
+                <label for="providingTime" class="form-label">What time are you leaving?</label>
+                <input type="time" name="providingTime" id="providingTime" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">What day is your trip planned for?</label>
-                <input type="date" name="firstName" id="firstName" class="form-control" required>
+                <label for="providingDate" class="form-label">What day is your trip planned for?</label>
+                <input type="date" name="providingDate" id="providingDate" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="name" class="form-label">Trip comments</label>
-                <input type="text" name="comments" id="comments" class="form-control" placeholder = "Write a little bit here about the trip you are going on, include anything you think is relevant." required>
+                <label for="providingTitle" class="form-label">Trip title</label>
+                <input type="text" name="providingTitle" id="providingTitle" class="form-control" placeholder = "Trip to Walmart, Driving to Columbus, etc." required>
+            </div>
+            <div class="form-group">
+                <label for="providingComments" class="form-label">Trip comments</label>
+                <input type="text" name="providingComments" id="providingComments" class="form-control" placeholder = "Write a little bit here about the trip you are going on, include anything you think is relevant." required>
             </div>
         </div>
+        <div class = "mt-5 text-center">
+            <button type="submit" class="btn btn-primary btn-block">Post Trip</button>
+        </div>
+    </form>
 </div>
 
 
 <!-- Trip posting page that is shown if the user is not logged in (does not have cookies associated with them, shouldn't be here anyways)-->
     <% }else{ %>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class = "container-fluid">
-            <!-- Navbar Branding -->
-            <div class = "navbar-header">
-                <a class="navbar-brand" href="/">Kenyon Car Connect</a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class = "container-fluid">
+                <!-- Navbar Branding -->
+                <div class = "navbar-header">
+                    <a class="navbar-brand" href="/">Kenyon Car Connect</a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="nav navbar-nav ml-auto">
+                            <!-- Post Trip Button Information -->
+                            <li class = "nav-item">
+                                <a href="/Trips/createTrip" class="btn btn-info me-3" role="button">
+                                    <i class="fa-solid fa-car"></i> Post a Trip
+                                </a>
+                            </li>
+                            <!-- Your Trips Button Information -->
+                            <li class = "nav-item">
+                                <a href="/" class="btn btn-info me-3" role="button">
+                                    <i class="fa-solid fa-bell"></i> Your Trips
+                                </a>
+                            </li>
+                            <!-- Dropdown for profile and logout-->
+                            <div class="dropdown">
+                                <!-- Drop down button information -->
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa-solid fa-bars"></i> <!-- Hamburger Icon for dropdown -->
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
+                                    <!-- Profile Button Information -->
+                                    <li>
+                                        <a href="/User/Profile" class="dropdown-item" role="button">
+                                            <i class="fa-solid fa-user"></i> Profile
+                                        </a>
+                                    </li>
+                                    <!-- Logout Button Information -->
+                                    <li>
+                                        <a href="/User/LogoutUser" class="dropdown-item" role="button">
+                                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>                        
+                       </ul>
+                </div>
             </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="nav navbar-nav ml-auto">
-                        <!-- Profile Button Information -->
-                        <li class = "nav-item">
-                            <a href="/User/UserSignupPage" class="btn btn-info me-3" role="button">
-                                <i class="fa-solid fa-user"></i> Sign Up
-                            </a>
-                        </li>
-                        <!-- Logout Button Information -->
-                        <li class = "nav-item">
-                            <a href="/User/UserLoginPage" class="btn btn-info" role="button">
-                                <i class="fa-solid fa-right-from-bracket"></i> Login
-                            </a>
-                        </li>
-                    </ul>
-            </div>
-        </div>
-    </nav>
+        </nav>  
     
 
+    <!-- Direct user to verify their email if they have not done so and are trying to post a trip-->
     <div class = "d-flex align-items-center">
         <div class="container mt-4 text-center">
-            <h1 id = "welcomeMessage" class = "fade-text">So... you aren't supposed to be here 0_0</h1>
+            <h1 id = "welcomeMessage" class = "fade-text">Post a Trip</h1>
+            <h5>You need a verified account to be able to post a trip, please click the button below to verify your email.</h5>
+            <a href="/User/VerifyEmailPage" class="btn btn-primary" role="button">Verify Email</a>
         </div>
     </div>
     <% } %>
@@ -232,12 +268,11 @@
 <!-- Awesome scripts for making this page dynamic-->
 
     <!-- Script to provide google maps API-->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%=GoogleMapsAPIKey%>&libraries=places&callback=initMap" async defer></script>
-    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%=GoogleMapsAPIKey%>&libraries=places&callback=initMap"></script>    
     <!-- Script to make the form dynamic -->
     <script>
         // Global variables
-        let map, leavingMap, providingLeavingMap, providingMap, marker, leavingMarker, providingLeavingMarker, providingMapMarker, geocoder;
+        let map, leavingMap, providingLeavingMap, providingMap, marker, leavingMarker, providingLeavingMarker, providingMapMarker, geocoder, autocompleteDestination, autocompleteLeavingFrom, autocompleteProvidingLeavingFrom;
 
         // Initialize maps for form
         function initMap() {
@@ -283,6 +318,18 @@
 
             updateLocation(marker.getPosition());
 
+            // Initialize Autocomplete for destination input
+            const destinationInput = document.getElementById("destination");
+            autocompleteDestination = new google.maps.places.Autocomplete(destinationInput);
+            autocompleteDestination.addListener("place_changed", function () {
+                const place = autocompleteDestination.getPlace();
+                if (place.geometry) {
+                    map.setCenter(place.geometry.location);
+                    marker.setPosition(place.geometry.location);
+                    updateLocation(place.geometry.location);
+                }
+            });
+
             // ------ Second Map (Leaving From Selection, Requesting Ride) ------
             const mapLeavingElement = document.getElementById("mapLeaving");
             if (mapLeavingElement) {
@@ -321,6 +368,18 @@
                 });
 
                 updateLeavingLocation(leavingMarker.getPosition());
+
+                // Initialize Autocomplete for leaving from input
+                const leavingFromInput = document.getElementById("leavingFromDestination");
+                autocompleteLeavingFrom = new google.maps.places.Autocomplete(leavingFromInput);
+                autocompleteLeavingFrom.addListener("place_changed", function () {
+                    const place = autocompleteLeavingFrom.getPlace();
+                    if (place.geometry) {
+                        leavingMap.setCenter(place.geometry.location);
+                        leavingMarker.setPosition(place.geometry.location);
+                        updateLeavingLocation(place.geometry.location);
+                    }
+                });
             } else {
                 console.error("Could not find mapLeaving element");
             }
@@ -363,6 +422,18 @@
                 });
 
                 updateProvidingLeavingLocation(providingLeavingMarker.getPosition());
+
+                // Initialize Autocomplete for providing leaving from input
+                const providingLeavingFromInput = document.getElementById("providingLeavingDestination");
+                autocompleteProvidingLeavingFrom = new google.maps.places.Autocomplete(providingLeavingFromInput);
+                autocompleteProvidingLeavingFrom.addListener("place_changed", function () {
+                    const place = autocompleteProvidingLeavingFrom.getPlace();
+                    if (place.geometry) {
+                        providingLeavingMap.setCenter(place.geometry.location);
+                        providingLeavingMarker.setPosition(place.geometry.location);
+                        updateProvidingLeavingLocation(place.geometry.location);
+                    }
+                });
             } else {
                 console.error("Could not find providingMapLeaving element");
             }
@@ -405,6 +476,18 @@
                 });
 
                 updateProvidingMapLocation(providingMapMarker.getPosition());
+
+                // Initialize Autocomplete for providing destination input
+                const providingDestinationInput = document.getElementById("providingDestination");
+                autocompleteProvidingDestination = new google.maps.places.Autocomplete(providingDestinationInput);
+                autocompleteProvidingDestination.addListener("place_changed", function () {
+                    const place = autocompleteProvidingDestination.getPlace();
+                    if (place.geometry) {
+                        providingMap.setCenter(place.geometry.location);
+                        providingMapMarker.setPosition(place.geometry.location);
+                        updateProvidingMapLocation(place.geometry.location);
+                    }
+                });
             } else {
                 console.error("Could not find providingMap element");
             }
@@ -444,9 +527,19 @@
                 // Handle leaving from selection for requesting rides
                 const leavingFrom = document.getElementById("leavingFrom").value;
                 const leavingFromMapContainer = document.getElementById("leavingFromMapContainer");
+
+                //Make all the fields for providing a ride unrequired:
+                document.getElementById("providingLeavingFrom").required = false;
+                document.getElementById("meetingPoint").required = false;
+                document.getElementById("providingPayment").required = false;
+                document.getElementById("providingTime").required = false;
+                document.getElementById("providingDate").required = false;
+                document.getElementById("providingTitle").required = false;
+                document.getElementById("providingComments").required = false;
                         
                 if (leavingFrom === "Other") {
                     leavingFromMapContainer.style.display = "block";
+                    document.getElementById("leavingFromDestination").required = true;
                     
                     // Ensure map is visible and properly sized
                     setTimeout(() => {
@@ -457,6 +550,7 @@
                     }, 300);
                 } else {
                     leavingFromMapContainer.style.display = "none";
+                    document.getElementById("leavingFromDestination").required = false;
                 }
             } else if (rideType === "Providing a ride") {
                 provideRideFields.style.display = "block";
@@ -466,11 +560,21 @@
                 const providingLeavingFrom = document.getElementById("providingLeavingFrom").value;
                 const providingLeavingMapContainer = document.getElementById("providingLeavingMapContainer");
                 const providingLeavingFromCampusContainer = document.getElementById("providingLeavingFromCampusContainer");
+
+                //Make all fields from ride requesting unrequired:
+                document.getElementById("leavingFrom").required = false;
+                document.getElementById("requestingPayment").required = false;
+                document.getElementById("requestingTime").required = false;
+                document.getElementById("requestingDate").required = false;
+                document.getElementById("requestingTitle").required = false;
+                document.getElementById("requestingComments").required = false;
+                        
                         
                 if (providingLeavingFrom === "Other") {
                     providingLeavingMapContainer.style.display = "block";
                     providingLeavingFromCampusContainer.style.display = "none";
-
+                    document.getElementById("providingLeavingDestination").required = true;
+                    document.getElementById("meetingPoint").required = false;
                     
                     // Ensure map is visible and properly sized
                     setTimeout(() => {
@@ -479,9 +583,16 @@
                             providingLeavingMap.setCenter(providingLeavingMarker.getPosition());
                         }
                     }, 300);
-                } else {
+                } else if(providingLeavingFrom === "Campus") {
                     providingLeavingMapContainer.style.display = "none";
                     providingLeavingFromCampusContainer.style.display = "block";
+                    document.getElementById("providingLeavingDestination").required = false;
+                    document.getElementById("meetingPoint").required = true;
+                } else {
+                    providingLeavingMapContainer.style.display = "none";
+                    providingLeavingFromCampusContainer.style.display = "none";
+                    document.getElementById("providingLeavingDestination").required = false;
+                    document.getElementById("meetingPoint").required = false;
                 }
             } else {
                 provideRideFields.style.display = "none";
