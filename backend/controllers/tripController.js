@@ -40,7 +40,12 @@ exports.createTrip = async (req, res) => {
                 }
             }else{ //If the user is providing a ride...
                 const car = await Car.getCarByUserID(posterID); //Get the car information for the user
-
+                const {providingLeavingFrom, meetingPoint, providingLeavingDestination, providingLeavingFromLat, providingLeavingFromLng, providingDestination, providingDestinationLat, providingDestinationLng, providingRoundtrip, providingPayment, providingTime, providingDate, providingTitle, providingComments} = req.body; //Get input from the providing portion of the trip posting form
+                const result = await Trip.createTrip({providingLeavingFrom, meetingPoint, providingLeavingDestination, providingLeavingFromLat, providingLeavingFromLng, providingDestination, providingDestinationLat, providingDestinationLng, providingRoundtrip, providingPayment, providingTime, providingDate, providingTitle, providingComments},
+                                                    posterID, rideType, car); //Create the trip
+                if(result){
+                    res.redirect("/"); //If the trip is successfully added to the database, redirect to the homepage
+                }
             }
         }catch(err){
             console.log(err);

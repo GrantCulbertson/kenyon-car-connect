@@ -112,7 +112,7 @@
                 <input type="hidden" id="lng" name="lng">
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="1" id="requestingRoundtrip" name = "requestingRoundtrip">
+                <input class="form-check-input" type="checkbox" value="Yes" id="requestingRoundtrip" name = "requestingRoundtrip">
                 <label class="form-check-label" for="roundtripHelp">Will this be a round trip?</label>
                 <small id="roundtripHelp" class="form-text text-muted">Are you wanting to come back to your destination of origin at the end of the trip?</small>
             </div>
@@ -162,7 +162,7 @@
             <!-- Will ask where on campus they are leaving from if leaving from campus -->
             <div id = "providingLeavingFromCampusContainer" style = "display: none;">
                 <div class="form-group">
-                    <label for="name" class="form-label">Where on campus are you leaving from?</label>
+                    <label for="meetingPoint" class="form-label">Where on campus are you leaving from?</label>
                     <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascension Circle, etc." class="form-control" required>
                     <small id="meetingPointHelp" class="form-text text-muted">This is where passengers will meet you, please be precise.</small>
                 </div>
@@ -171,21 +171,21 @@
             <div id="providingLeavingMapContainer" style="display: none;">
                 <div class="form-group">
                     <label for="providingLeavingDestination">Select where exactly you are leaving from</label>
-                    <input type="text" id="providingLeavingDestination" name="leavingFromDestination" class="form-control" required>
+                    <input type="text" id="providingLeavingDestination" name="providingLeavingDestination" class="form-control" required>
                     <div id="providingMapLeaving" style="height: 400px; width: 100%;"></div>
-                    <input type="hidden" id="providingLeavingFromLat" name="leavingFromLat">
-                    <input type="hidden" id="providingLeavingFromLng" name="leavingFromLng">
+                    <input type="hidden" id="providingLeavingFromLat" name="providingLeavingFromLat">
+                    <input type="hidden" id="providingLeavingFromLng" name="providingLeavingFromLng">
                 </div>
             </div>
             <div class="form-group">
                 <label for="destination">Where are you going?</label>
-                <input type="text" id="providingDestination" name="destination" class="form-control" required>
+                <input type="text" id="providingDestination" name="providingDestination" class="form-control" required>
                 <div id="providingMap" style="height: 400px; width: 100%;"></div>
-                <input type="hidden" id="providingDestinationLat" name="lat">
-                <input type="hidden" id="providingDestinationLng" name="lng">
+                <input type="hidden" id="providingDestinationLat" name="providingDestinationLat">
+                <input type="hidden" id="providingDestinationLng" name="providingDestinationLat">
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="1" id="providingRoundtrip" name = "providingRoundtrip">
+                <input class="form-check-input" type="checkbox" value="Yes" id="providingRoundtrip" name = "providingRoundtrip">
                 <label class="form-check-label" for="roundtripHelp">Will this be a round trip?</label>
                 <small id="roundtripHelp" class="form-text text-muted">Are you returning to your destination of origin at the end of this trip?</small>
             </div>
@@ -567,6 +567,15 @@
                 document.getElementById("providingTitle").required = false;
                 document.getElementById("providingComments").required = false;
 
+                // Make all fields from ride requesting required:
+                document.getElementById("leavingFrom").required = true;
+                document.getElementById("requestingPayment").required = true;
+                document.getElementById("requestingTime").required = true;
+                document.getElementById("requestingDate").required = true;
+                document.getElementById("requestingTitle").required = true;
+                document.getElementById("requestingComments").required = true;
+
+
                 if (leavingFrom === "Other") {
                     leavingFromMapContainer.style.display = "block";
                     document.getElementById("leavingFromDestination").required = true;
@@ -609,6 +618,16 @@
                     document.getElementById("requestingDate").required = false;
                     document.getElementById("requestingTitle").required = false;
                     document.getElementById("requestingComments").required = false;
+
+
+                    //Make all fields for ride providing required:
+                    document.getElementById("providingLeavingFrom").required = true;
+                    document.getElementById("meetingPoint").required = true;
+                    document.getElementById("providingPayment").required = true;
+                    document.getElementById("providingTime").required = true;
+                    document.getElementById("providingDate").required = true;
+                    document.getElementById("providingTitle").required = true;
+                    document.getElementById("providingComments").required = true;
 
                     if (providingLeavingFrom === "Other") {
                         providingLeavingMapContainer.style.display = "block";

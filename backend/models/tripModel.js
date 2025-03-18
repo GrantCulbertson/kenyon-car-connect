@@ -36,18 +36,22 @@ class Trip {
 static async createTrip(tripData, posterID, rideType, car){
     try{
         console.log("tripModel... createTrip... running");
+        const tripStatus = "Open"; //Trip status is open by default
+        let origin = null; //Declare origin variable
         if(rideType === "Requesting a ride"){ //Handle input for ride request fields
-            const tripStatus = "Open"; //Trip status is open by default
             const tripInfo = await Trip.calculateDistanceAndTime(tripData.leavingFromLat, tripData.leavingFromLng, tripData.lat, tripData.lng); //Calculate trip driving time & distance
             if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
-                tripInfo.distance = (parseFloat(tripInfo.distance) * 2).toString();
-                tripInfo.duration = (parseFloat(tripInfo.duration) * 2).toString();
+                tripInfo.distance = Trip.doubleDistance(tripInfo.distance);
+                tripInfo.duration = Trip.doubleDuration(tripInfo.duration);
             }
             if(tripData.leavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
-                tripData.leavingFrom = tripData.leavingFromDestination[0];
+                origin = tripData.leavingFromDestination[0];
+            }
+            if(tripData.leavingFrom === "Campus"){
+                origin = "Campus"; //Set origin to campus if the trip is from campus
             }
             const sql = 'INSERT INTO tripData (posterID, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
-            const params = [posterID,tripData.leavingFrom, tripData.destination[0], tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, tripData.requestingRoundtrip];
+            const params = [posterID, origin, tripData.destination[0], tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, tripData.requestingRoundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
             if(input.affectedRows === 1){
                 return true;
@@ -56,6 +60,18 @@ static async createTrip(tripData, posterID, rideType, car){
             }
 
         }else{ //Handle input for ride provider fields
+            const tripInfo = await Trip.calculateDistanceAndTime(tripData.providingLeavingFromLat, tripData.providingLeavingFromLng, tripData.providingDestinationLat, tripData.providingDestinationLng); //Calculate trip driving time & distance
+            if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
+                tripInfo.distance = (parseFloat(tripInfo.distance) * 2).toString();
+                tripInfo.duration = (parseFloat(tripInfo.duration) * 2).toString();
+            }
+            if(tripData.providingLeavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
+                const origin = tripData.providingLeavingDestination[0];
+            }
+            if(tripData.providingLeavingFrom === "Campus"){ //If the trip is from campus, the ride provider will be providing a meeting point for the ride.
+                const origin = tripData.meetingPoint;
+            }
+
 
         }
 
@@ -66,6 +82,8 @@ static async createTrip(tripData, posterID, rideType, car){
     }
 }
 
+
+//--------------------------- MISCELLANEOUS FUNCTIONS ---------------------------//
 // Function to calculate driving time and distance
 static async calculateDistanceAndTime(originLat, originLng, destinationLat, destinationLng){
     console.log("tripModel... calculateDistanceAndTime... running");
@@ -100,6 +118,44 @@ static async calculateDistanceAndTime(originLat, originLng, destinationLat, dest
     }
 }
 
+//Function to double trip distance & retain syntax for roundtrips
+static doubleDistance(distance) {
+    const distanceValue = parseFloat(distance.split(' ')[0]);
+    const distanceUnit = distance.split(' ')[1];
+    const doubledDistance = (distanceValue * 2).toFixed(1);
+    return `${doubledDistance} ${distanceUnit}`;
+}
+
+//Function to double trip time & retain syntax for roundtrips
+static doubleDuration(duration) {
+    const durationParts = duration.split(' ');
+    let totalMinutes = 0;
+
+    for (let i = 0; i < durationParts.length; i += 2) {
+        const value = parseInt(durationParts[i]);
+        const unit = durationParts[i + 1];
+        if (unit.includes('hour')) {
+            totalMinutes += value * 60;
+        } else if (unit.includes('min')) {
+            totalMinutes += value;
+        }
+    }
+
+    totalMinutes *= 2;
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    let doubledDuration = '';
+    if (hours > 0) {
+        doubledDuration += `${hours} hour${hours > 1 ? 's' : ''} `;
+    }
+    if (minutes > 0) {
+        doubledDuration += `${minutes} min${minutes > 1 ? 's' : ''}`;
+    }
+
+    return doubledDuration.trim();
+}
 
 //Bottom of trip class here:
 };
