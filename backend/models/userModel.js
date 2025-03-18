@@ -25,8 +25,8 @@ class User {
 
             const emailValidationCode = await User.generateEmailVerificationCode();
             console.log("userModel... addUser... running");
-            const sql = 'INSERT INTO userData (firstName, lastName, email, password, age, gender, has_car, emailValidationCode) VALUES (?,?,?,?,?,?,?,?)';
-            const params = [userData.firstName, userData.lastName, userData.email, userData.password, userData.age, userData.gender, userData.has_car, emailValidationCode];
+            const sql = 'INSERT INTO userData (firstName, lastName, email, password, age, gender, emailValidationCode) VALUES (?,?,?,?,?,?,?)';
+            const params = [userData.firstName, userData.lastName, userData.email, userData.password, userData.age, userData.gender, emailValidationCode];
             const user = await User.getUserByEmail(userData.email);
 
             if (user instanceof User){

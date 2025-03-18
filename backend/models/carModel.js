@@ -38,12 +38,15 @@ static async getCarByUserID(userID){
 static async addCarToDatabase(carData){
     try{
         console.log("carModel... addCarToDatabase... running");
-        const query = 'INSERT INTO carData (userID, make, model, year, color, licensePlate, seatsInCar) VALUES (?,?,?,?,?,?,?)';
-        const params = [carData.userID, carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar];
-        const insert = await db.query(query, params); //Insert car into database
+        const carQuery = 'INSERT INTO carData (userID, make, model, year, color, licensePlate, seatsInCar) VALUES (?,?,?,?,?,?,?)';
+        const carParams = [carData.userID, carData.make, carData.model, carData.year, carData.color, carData.licensePlate, carData.seatsInCar];
+        const insert = await db.query(carQuery, carParams); //Insert car into database
         const car = await Car.getCarByUserID(carData.userID); //Grab car from database to verify it was added correctly
         console.log("Car added to database for user:", carData.userID);
         console.log("Car object received:", car);
+        let userQuery = "UPDATE userData SET has_car = 'yes' WHERE id = ?";
+        let userParams = [carData.userID];
+        const updateProfile = await db.query(userQuery, userParams);
         return car;
     }catch(error){
         console.log("error in addCarToDatabase");

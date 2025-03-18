@@ -11,7 +11,7 @@
 <body>
 
 
-    <!-- Homepage that is shown if the user is logged in (has cookies associated with them)-->
+<!-- Posting page that is shown if the user is verified and has cookies associated with them-->
 <% if(isUser && user.verificationStatus === "Yes"){ %>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class = "container-fluid">
@@ -72,6 +72,8 @@
 <!-- Trip Posting Form -->
 <div class = "container-md justify-content-center">
     <form action="/Trips/createTrip" method="POST">
+        <!-- Hidden field to store user's car status -->
+        <input type="hidden" id="userHasCar" value="<%= user.has_car %>">
         <!-- Selction of ride type -->
         <div class="form-group">
             <label for="rideType" class="form-label">First, are you requesting or providing a ride?</label>
@@ -109,6 +111,11 @@
                 <input type="hidden" id="lat" name="lat">
                 <input type="hidden" id="lng" name="lng">
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="requestingRoundtrip" name = "requestingRoundtrip">
+                <label class="form-check-label" for="roundtripHelp">Will this be a round trip?</label>
+                <small id="roundtripHelp" class="form-text text-muted">Are you wanting to come back to your destination of origin at the end of the trip?</small>
+            </div>
             <div class="form-group">
                 <label for="requestingPayment" class="form-label">How much are you willing to pay?</label>
                 <input type="text" name="requestingPayment" id="requestingPayment" class="form-control" placeholder = "$10, I'll bring snacks, pay half of gas, etc." required>
@@ -131,7 +138,18 @@
             </div>
         </div>
 
-        <!-- Form if user is providing a ride -->
+<!-- Form if user is providing a ride -->
+        <!-- Show warning if user does not have a car and is trying to provide a ride-->
+        <% if(user.has_car === "no"){ %>
+        <div id = "provideRideWarning" style = "display: none;">
+            <div class="alert alert-warning" role="alert">
+                <strong>Warning!</strong> You are trying to post a trip but you have not indicated that you have a car. Please go to your <a href = "/User/Profile">profile</a> and update your car status.
+            </div>
+        </div>
+        <% }else{%>
+        <!-- Empty provideRideWarning div so javascript does not find null if user has a car-->
+        <div id = "provideRideWarning" style = "display: none;"></div>
+        <% } %>
         <div id = "provideRideFields" style="display: none;">
             <div class="form-group">
                 <label for="providingLeavingFrom" class="form-label">Where are you leaving from?</label>
@@ -166,6 +184,11 @@
                 <input type="hidden" id="providingDestinationLat" name="lat">
                 <input type="hidden" id="providingDestinationLng" name="lng">
             </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="providingRoundtrip" name = "providingRoundtrip">
+                <label class="form-check-label" for="roundtripHelp">Will this be a round trip?</label>
+                <small id="roundtripHelp" class="form-text text-muted">Are you returning to your destination of origin at the end of this trip?</small>
+            </div>
             <div class="form-group">
                 <label for="providingPayment" class="form-label">How much would you like passengers to pay?</label>
                 <input type="text" name="providingPayment" id="providingPayment" class="form-control" placeholder = "$10, please bring snacks, pay for some gas, etc." required>
@@ -187,9 +210,11 @@
                 <input type="text" name="providingComments" id="providingComments" class="form-control" placeholder = "Write a little bit here about the trip you are going on, include anything you think is relevant." required>
             </div>
         </div>
+        <!-- Submit Button for Form-->
         <div class = "mt-5 text-center">
-            <button type="submit" class="btn btn-primary btn-block">Post Trip</button>
+            <button type="submit" class="btn btn-primary btn-block" id = "postTripButton">Post Trip</button>
         </div>
+        
     </form>
 </div>
 
@@ -518,17 +543,22 @@
             const rideType = document.getElementById("rideType").value;
             const provideRideFields = document.getElementById("provideRideFields");
             const requestingTripFields = document.getElementById("requestingTripFields");
-            
+            const provideRideWarning = document.getElementById("provideRideWarning");
+            const userHasCar = document.getElementById("userHasCar").value;
+
             // Handle ride type selection
             if (rideType === "Requesting a ride") {
                 provideRideFields.style.display = "none";
                 requestingTripFields.style.display = "block";
-                
+                provideRideWarning.style.display = "none";
+                document.getElementById("postTripButton").style.display = "block";
+
+
                 // Handle leaving from selection for requesting rides
                 const leavingFrom = document.getElementById("leavingFrom").value;
                 const leavingFromMapContainer = document.getElementById("leavingFromMapContainer");
 
-                //Make all the fields for providing a ride unrequired:
+                // Make all the fields for providing a ride unrequired:
                 document.getElementById("providingLeavingFrom").required = false;
                 document.getElementById("meetingPoint").required = false;
                 document.getElementById("providingPayment").required = false;
@@ -536,11 +566,11 @@
                 document.getElementById("providingDate").required = false;
                 document.getElementById("providingTitle").required = false;
                 document.getElementById("providingComments").required = false;
-                        
+
                 if (leavingFrom === "Other") {
                     leavingFromMapContainer.style.display = "block";
                     document.getElementById("leavingFromDestination").required = true;
-                    
+
                     // Ensure map is visible and properly sized
                     setTimeout(() => {
                         if (leavingMap) {
@@ -553,46 +583,57 @@
                     document.getElementById("leavingFromDestination").required = false;
                 }
             } else if (rideType === "Providing a ride") {
-                provideRideFields.style.display = "block";
-                requestingTripFields.style.display = "none";
-                
-                // Handle leaving from selection for providing rides
-                const providingLeavingFrom = document.getElementById("providingLeavingFrom").value;
-                const providingLeavingMapContainer = document.getElementById("providingLeavingMapContainer");
-                const providingLeavingFromCampusContainer = document.getElementById("providingLeavingFromCampusContainer");
-
-                //Make all fields from ride requesting unrequired:
-                document.getElementById("leavingFrom").required = false;
-                document.getElementById("requestingPayment").required = false;
-                document.getElementById("requestingTime").required = false;
-                document.getElementById("requestingDate").required = false;
-                document.getElementById("requestingTitle").required = false;
-                document.getElementById("requestingComments").required = false;
-                        
-                        
-                if (providingLeavingFrom === "Other") {
-                    providingLeavingMapContainer.style.display = "block";
-                    providingLeavingFromCampusContainer.style.display = "none";
-                    document.getElementById("providingLeavingDestination").required = true;
-                    document.getElementById("meetingPoint").required = false;
-                    
-                    // Ensure map is visible and properly sized
-                    setTimeout(() => {
-                        if (providingLeavingMap) {
-                            google.maps.event.trigger(providingLeavingMap, "resize");
-                            providingLeavingMap.setCenter(providingLeavingMarker.getPosition());
-                        }
-                    }, 300);
-                } else if(providingLeavingFrom === "Campus") {
-                    providingLeavingMapContainer.style.display = "none";
-                    providingLeavingFromCampusContainer.style.display = "block";
-                    document.getElementById("providingLeavingDestination").required = false;
-                    document.getElementById("meetingPoint").required = true;
+                if (userHasCar === "no") { // Hide all fields if user does not have car and is trying to provide a trip
+                    provideRideFields.style.display = "none";
+                    requestingTripFields.style.display = "none";
+                    provideRideWarning.style.display = "block";
+                    document.getElementById("postTripButton").style.display = "none";
+                    //alert("You cannot provide a ride because you do not have a car associated with your account. Please update your car status in your profile.");
                 } else {
-                    providingLeavingMapContainer.style.display = "none";
-                    providingLeavingFromCampusContainer.style.display = "none";
-                    document.getElementById("providingLeavingDestination").required = false;
-                    document.getElementById("meetingPoint").required = false;
+                    provideRideFields.style.display = "block";
+                    requestingTripFields.style.display = "none";
+                    provideRideWarning.style.display = "none";
+                    document.getElementById("postTripButton").style.display = "block";
+
+
+
+                    // Handle leaving from selection for providing rides
+                    const providingLeavingFrom = document.getElementById("providingLeavingFrom").value;
+                    const providingLeavingMapContainer = document.getElementById("providingLeavingMapContainer");
+                    const providingLeavingFromCampusContainer = document.getElementById("providingLeavingFromCampusContainer");
+
+                    // Make all fields from ride requesting unrequired:
+                    document.getElementById("leavingFrom").required = false;
+                    document.getElementById("requestingPayment").required = false;
+                    document.getElementById("requestingTime").required = false;
+                    document.getElementById("requestingDate").required = false;
+                    document.getElementById("requestingTitle").required = false;
+                    document.getElementById("requestingComments").required = false;
+
+                    if (providingLeavingFrom === "Other") {
+                        providingLeavingMapContainer.style.display = "block";
+                        providingLeavingFromCampusContainer.style.display = "none";
+                        document.getElementById("providingLeavingDestination").required = true;
+                        document.getElementById("meetingPoint").required = false;
+
+                        // Ensure map is visible and properly sized
+                        setTimeout(() => {
+                            if (providingLeavingMap) {
+                                google.maps.event.trigger(providingLeavingMap, "resize");
+                                providingLeavingMap.setCenter(providingLeavingMarker.getPosition());
+                            }
+                        }, 300);
+                    } else if (providingLeavingFrom === "Campus") {
+                        providingLeavingMapContainer.style.display = "none";
+                        providingLeavingFromCampusContainer.style.display = "block";
+                        document.getElementById("providingLeavingDestination").required = false;
+                        document.getElementById("meetingPoint").required = true;
+                    } else {
+                        providingLeavingMapContainer.style.display = "none";
+                        providingLeavingFromCampusContainer.style.display = "none";
+                        document.getElementById("providingLeavingDestination").required = false;
+                        document.getElementById("meetingPoint").required = false;
+                    }
                 }
             } else {
                 provideRideFields.style.display = "none";
@@ -603,6 +644,7 @@
         // Ensure maps initialize when Google Maps API is loaded
         document.addEventListener("DOMContentLoaded", function() {
             console.log("DOM fully loaded");
+            initMap();
         });
     </script>
     

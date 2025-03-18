@@ -11,9 +11,9 @@ dotenv.config();
 
 // ----------------------- DEFINE TRIP CLASS ------------------------//
 class Trip {
-    constructor({id, posterID, passengers, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType}){
+    constructor({id, posterID, passengers, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
         this.id = id;
-        this.poserID = posterID;
+        this.posterID = posterID;
         this.passengers = passengers;
         this.openSeats = openSeats;
         this.origin = origin;
@@ -26,20 +26,34 @@ class Trip {
         this.time = time;
         this.tripStatus = tripStatus;
         this.tripType = tripType;
+        this.roundtrip = roundtrip;
 
     }
 
 //----------------------------------- DEFINE TRIP CLASS FUNCTIONS ---------------------------//
 
 //Function to create a trip
-static async createTrip(tripData, posterID, rideType){
+static async createTrip(tripData, posterID, rideType, car){
     try{
         console.log("tripModel... createTrip... running");
         if(rideType === "Requesting a ride"){ //Handle input for ride request fields
-            const sql = 'INSERT INTO tripData (posterID, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType) VALUES (?)';
             const tripStatus = "Open"; //Trip status is open by default
             const tripInfo = await Trip.calculateDistanceAndTime(tripData.leavingFromLat, tripData.leavingFromLng, tripData.lat, tripData.lng); //Calculate trip driving time & distance
-            console.log(tripInfo);
+            if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
+                tripInfo.distance = (parseFloat(tripInfo.distance) * 2).toString();
+                tripInfo.duration = (parseFloat(tripInfo.duration) * 2).toString();
+            }
+            if(tripData.leavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
+                tripData.leavingFrom = tripData.leavingFromDestination[0];
+            }
+            const sql = 'INSERT INTO tripData (posterID, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+            const params = [posterID,tripData.leavingFrom, tripData.destination[0], tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, tripData.requestingRoundtrip];
+            const input = await db.query(sql, params) //Input the trip into the database
+            if(input.affectedRows === 1){
+                return true;
+            }else{
+                throw new Error("Error inserting trip into database");
+            }
 
         }else{ //Handle input for ride provider fields
 

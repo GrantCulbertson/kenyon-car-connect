@@ -3,6 +3,7 @@
 const e = require("express");
 const jwt = require("jsonwebtoken");
 const Trip = require("../models/tripModel").Trip; //Require User model
+const Car = require("../models/carModel").Car; //Require car model
 require('dotenv').config();
 
 
@@ -31,11 +32,15 @@ exports.createTrip = async (req, res) => {
             const posterID = decoded.id; //Get the user id from the decoded token
             const rideType = req.body.rideType; //Get input from the trip posting form
             if(rideType === "Requesting a ride"){ // If the user is requesting or providing a ride the information needed will be different
-                const {leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments} = req.body; //Get input from the trip posting form
-                const input = await Trip.createTrip({leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments}, 
-                                                    posterID, rideType);
-                
-            }else{
+                const {leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments, requestingRoundtrip} = req.body; //Get input from the trip posting form
+                const result = await Trip.createTrip({leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments, requestingRoundtrip}, 
+                                                    posterID, rideType, null); //Create the trip
+                if(result){
+                    res.redirect("/"); //If the trip is successfully added to the database, redirect to the homepage
+                }
+            }else{ //If the user is providing a ride...
+                const car = await Car.getCarByUserID(posterID); //Get the car information for the user
+
             }
         }catch(err){
             console.log(err);
