@@ -38,11 +38,15 @@ static async createTrip(tripData, posterID, rideType, car){
         console.log("tripModel... createTrip... running");
         const tripStatus = "Open"; //Trip status is open by default
         let origin = null; //Declare origin variable
+        let roundtrip = null; //Declare roundtrip variable
         if(rideType === "Requesting a ride"){ //Handle input for ride request fields
             const tripInfo = await Trip.calculateDistanceAndTime(tripData.leavingFromLat, tripData.leavingFromLng, tripData.lat, tripData.lng); //Calculate trip driving time & distance
             if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
                 tripInfo.distance = Trip.doubleDistance(tripInfo.distance);
                 tripInfo.duration = Trip.doubleDuration(tripInfo.duration);
+                roundtrip = "Yes";
+            }else{
+                roundtrip = "No";
             }
             if(tripData.leavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
                 origin = tripData.leavingFromDestination[0];
@@ -51,7 +55,7 @@ static async createTrip(tripData, posterID, rideType, car){
                 origin = "Campus"; //Set origin to campus if the trip is from campus
             }
             const sql = 'INSERT INTO tripData (posterID, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
-            const params = [posterID, origin, tripData.destination[0], tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, tripData.requestingRoundtrip];
+            const params = [posterID, origin, tripData.destination, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
             if(input.affectedRows === 1){
                 return true;
@@ -62,17 +66,26 @@ static async createTrip(tripData, posterID, rideType, car){
         }else{ //Handle input for ride provider fields
             const tripInfo = await Trip.calculateDistanceAndTime(tripData.providingLeavingFromLat, tripData.providingLeavingFromLng, tripData.providingDestinationLat, tripData.providingDestinationLng); //Calculate trip driving time & distance
             if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
-                tripInfo.distance = (parseFloat(tripInfo.distance) * 2).toString();
-                tripInfo.duration = (parseFloat(tripInfo.duration) * 2).toString();
+                tripInfo.distance = Trip.doubleDistance(tripInfo.distance);
+                tripInfo.duration = Trip.doubleDuration(tripInfo.duration);
+                roundtrip = "Yes";
+            }else{
+                roundtrip = "No";
             }
             if(tripData.providingLeavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
-                const origin = tripData.providingLeavingDestination[0];
+                origin = tripData.providingLeavingDestination;
             }
             if(tripData.providingLeavingFrom === "Campus"){ //If the trip is from campus, the ride provider will be providing a meeting point for the ride.
-                const origin = tripData.meetingPoint;
+                origin = tripData.meetingPoint;
             }
-
-
+            const sql = 'INSERT INTO tripData (posterID, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            const params = [posterID, car.seatsInCar, origin, tripData.providingDestination, tripInfo.distance, 1, tripInfo.duration, tripData.providingPayment, tripData.providingDate, tripData.providingTime, tripStatus, rideType, roundtrip];
+            const input = await db.query(sql, params) //Input the trip into the database
+            if(input.affectedRows === 1){
+                return true;
+            }else{
+                throw new Error("Error inserting trip into database");
+            }
         }
 
 
@@ -87,8 +100,8 @@ static async createTrip(tripData, posterID, rideType, car){
 // Function to calculate driving time and distance
 static async calculateDistanceAndTime(originLat, originLng, destinationLat, destinationLng){
     console.log("tripModel... calculateDistanceAndTime... running");
-    const origin = { lat: originLat[0], lng: originLng[0] };
-    const destination = { lat: destinationLat[0], lng: destinationLng[0] };
+    const origin = { lat: originLat, lng: originLng };
+    const destination = { lat: destinationLat, lng: destinationLng};
     console.log(origin, destination);
     const client = new Client({});
     

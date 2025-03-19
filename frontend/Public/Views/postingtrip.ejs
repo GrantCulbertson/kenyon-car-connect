@@ -182,7 +182,7 @@
                 <input type="text" id="providingDestination" name="providingDestination" class="form-control" required>
                 <div id="providingMap" style="height: 400px; width: 100%;"></div>
                 <input type="hidden" id="providingDestinationLat" name="providingDestinationLat">
-                <input type="hidden" id="providingDestinationLng" name="providingDestinationLat">
+                <input type="hidden" id="providingDestinationLng" name="providingDestinationLng">
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="Yes" id="providingRoundtrip" name = "providingRoundtrip">
@@ -219,7 +219,7 @@
 </div>
 
 
-<!-- Trip posting page that is shown if the user is not logged in (does not have cookies associated with them, shouldn't be here anyways)-->
+<!-- Trip posting page that is shown if the user is not verified (will ask them to verify their email) -->
     <% }else{ %>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class = "container-fluid">

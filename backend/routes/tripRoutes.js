@@ -9,6 +9,9 @@ const tripController = require('../controllers/tripController');
 //Route to page to post a trip
 router.get("/postTrip", tripController.postTripPage);
 
+//Route to render your trips page
+router.get("/yourTrips", tripController.yourTripsPage);
+
 //----------------------- ROUTES TO HANDLE TRIP DATA ------------------------//
 
 router.post("/createTrip", tripController.createTrip);
