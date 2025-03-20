@@ -64,10 +64,22 @@ app.use('/Trips',tripRoutes);
 
 
 
+//Import the Trip Model
+const {Trip} = require('./backend/models/tripModel');
 
-// Serving the webpage
-app.get('/', (req, res) => {
-  res.render('homepage');
+// Serving the homepage and trip feed
+app.get('/', async (req, res) => {
+  try{
+    const trips = await Trip.getAllTrips();
+    if(trips){
+      res.render('homepage', {trips});
+    }else{
+      res.render('homepage', {trips: []});
+    }
+  } catch (error){
+    console.log("Error in rendering homepage:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 const PORT = process.env.PORT || 5000;

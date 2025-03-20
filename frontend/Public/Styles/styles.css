@@ -13,7 +13,7 @@ h1 {
     color: #FFFADE; /* Change the text color */
     font-size: 1rem; /* Adjust the font size */
     padding: 0.5rem 1rem; /* Adjust the padding */
-    border-radius: 0.25rem; /* Adjust the border radius */
+    border-radius: 0.5rem; /* Adjust the border radius */
     transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
 }
 
@@ -112,12 +112,36 @@ h1 {
 
 /* --------------- Styles for profile page ---------------- */
 .username-box {
+    background-color: #FCF7FF !important; /* Light gray background */
+    color: #000000 !important; /* Dark gray text */
+    font-family: 'Helvetica', sans-serif !important;
     border-radius: 0 5px 5px 0; /* Smooth transition to the right */
     border-left: none; /* Removes double border effect */
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+    width: 275px; /* Set a fixed width for the label and username boxes */
+    height: 38px; /* Set a fixed height for the label and username boxes */
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .label-box {
+    background-color:#9989B4 !important;
+    color: #ffffff !important; /* White text */
+    font-family: 'Helvetica', sans-serif !important;
     border-radius: 5px 0 0 5px; /* Smooth transition to the left */
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
+    width: 250px; /* Set a fixed width for the label and username boxes */
+    height: 38px; /* Set a fixed height for the label and username boxes */
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 .verify-text {
@@ -142,6 +166,11 @@ h1 {
     font-weight: bold !important;
 }
 
+.card.ride-profile{
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
 .card .card-body .card-title{
     color: #432C91 !important;
     font-weight: bold !important;
@@ -159,41 +188,6 @@ h1 {
     font-weight: italic !important;
     margin-top: 30px;
     text-align: left;
-}
-
-/* First box i.e email */
-.label-box{
-    background-color:#9989B4 !important;
-    color: #ffffff !important; /* White text */
-    font-family: 'Helvetica', sans-serif !important;
-}
-
-/* Second box i.e johndoe@school.edu */
-.username-box {
-    background-color: #FCF7FF !important; /* Light gray background */
-    color: #000000 !important; /* Dark gray text */
-    font-family: 'Helvetica', sans-serif !important;
-}
-
-/* Standardize the size of the account information text boxes */
-.label-box{
-    width: 250px; /* Set a fixed width for the label and username boxes */
-    height: 38px; /* Set a fixed height for the label and username boxes */
-    display: flex;
-    margin-top: 20px;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-
-.username-box{
-    width: 275px; /* Set a fixed width for the label and username boxes */
-    height: 38px; /* Set a fixed height for the label and username boxes */
-    display: flex;
-    margin-top: 20px;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 /*Specific styling for button on profile page */
@@ -214,6 +208,7 @@ h1 {
 .btn.btn-primary[data-target="#updateRideProfileModal"] {
     margin-top: 50px; /* adjust margin above button */
     background-color:#432C91 !important;
+    
 }
 
 .btn.btn-primary[data-target="#updateRideProfileModal"]:hover{

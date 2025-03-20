@@ -34,7 +34,7 @@ exports.createTrip = async (req, res) => {
             if(rideType === "Requesting a ride"){ // If the user is requesting or providing a ride the information needed will be different
                 const {leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments, requestingRoundtrip} = req.body; //Get input from the trip posting form
                 const result = await Trip.createTrip({leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments, requestingRoundtrip}, 
-                                                    posterID, rideType, null); //Create the trip
+                                                    posterID, rideType); //Create the trip
                 if(result){
                     res.redirect("/"); //If the trip is successfully added to the database, redirect to the homepage
                 }

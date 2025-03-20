@@ -11,7 +11,7 @@ dotenv.config();
 
 // ----------------------- DEFINE TRIP CLASS ------------------------//
 class Trip {
-    constructor({id, posterID, title, comments, passengers, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
+    constructor({id, posterID, title, comments, passengers, openSeats, origin, originLat, originLng, destination, destinationLat, destinationLng, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
         this.id = id;
         this.posterID = posterID;
         this.title = title;
@@ -19,7 +19,12 @@ class Trip {
         this.passengers = passengers;
         this.openSeats = openSeats;
         this.origin = origin;
+        this.originLat = originLat;
+        this.originLng = originLng;
         this.destination = destination;
+        this.destinationLat = destinationLat;
+        this.destinationLng = destinationLng;
+        this.tripInfo = tripInfo;
         this.distance = distance;
         this.stops = stops;
         this.length = length;
@@ -106,13 +111,30 @@ static async getTripsByUserID(userID){
         const trips = await db.query(sql, params);
         if(trips.length > 0){
             const tripMap = trips.map(trip => new Trip(trip));
-            console.log(tripMap);
             return tripMap
         }else{
             return false;    
         }
     }catch(error){
         console.log("Error in getTripsByUserID:", error);
+        throw error;
+    }
+}
+
+//Function to pull all trips from database (used for trip feed)
+static async getAllTrips(){
+    console.log("tripModel... getAllTrips... running");
+    try{
+        const sql = 'SELECT * FROM tripData';
+        const trips = await db.query(sql);
+        if(trips.length > 0){
+            const tripMap = trips.map(trip => new Trip(trip));
+            return tripMap;
+        }else{
+            return false;
+        }
+    }catch (error){
+        console.log("Error in getAllTrips:", error);
         throw error;
     }
 }
@@ -191,6 +213,7 @@ static doubleDuration(duration) {
 
     return doubledDuration.trim();
 }
+
 
 //Bottom of trip class here:
 };
