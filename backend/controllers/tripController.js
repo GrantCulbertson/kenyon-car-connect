@@ -54,6 +54,29 @@ exports.createTrip = async (req, res) => {
     }
 };
 
+//Function to render the your trips page
+exports.yourTripsPage = async (req, res) => {
+    console.log("tripController... yourTripsPage... running");
+    const token = req.cookies.auth_token; // Get token from cookies
+    if(!token){
+        return res.redirect("/"); //Send user back to homepage if they don't have cookies associated with them, they should not be able to access this page.
+    }else{
+        try{
+            const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+            const userID = decoded.id; //Get the user id from the decoded token
+            const trips = await Trip.getTripsByUserID(userID); //Get all trips associated with the user
+            if(trips){
+                res.render("yourtrips", {trips}); //Render the your trips page and pass the trips associated with the user
+            }else{
+                res.render("yourtrips", {trips: []}); //Render the page with no trips if nothing is found for the user
+            }
+        }catch(err){
+            console.log(err);
+            res.redirect("/"); //If error, redirect to homepage
+        }
+    }
+};
+
 
 
 

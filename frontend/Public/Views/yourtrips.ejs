@@ -25,13 +25,13 @@
                     <ul class="nav navbar-nav ml-auto">
                         <!-- Post Trip Button Information -->
                         <li class = "nav-item">
-                            <a href="/Trips/createTrip" class="btn btn-info me-3" role="button">
+                            <a href="/Trips/postTrip" class="btn btn-info me-3" role="button">
                                 <i class="fa-solid fa-car"></i> Post a Trip
                             </a>
                         </li>
                         <!-- Your Trips Button Information -->
                         <li class = "nav-item">
-                            <a href="/" class="btn btn-info me-3" role="button">
+                            <a href="/Trips/yourTrips" class="btn btn-info me-3" role="button">
                                 <i class="fa-solid fa-bell"></i> Your Trips
                             </a>
                         </li>
@@ -62,11 +62,45 @@
         </div>
     </nav>  
 
+    <!-- Page Header -->
+    <div class="container-md justify-content-center text-center">
+        <span class = "yourTripsHeader">
+            <h1>Your Trips</h1>
+        </span>
+    </div>
+
+    <!-- Your Trips Feed -->
+    <% if(trips.length > 0){ %>
+    <div class="trips-container justify-content-center">
+        <!-- Iterate through trips passed to page-->
+        <% trips.forEach(trip => { %>
+            <% if(trip.posterID == user.id) { %>
+                <div class = "poster-trip-box px-3 py-2">
+                    <div id = "trip-box-text">
+                        <p> <%= trip.title %> </p>
+                    </div>
+                    <button class = "btn btn-info manage-button " onclick="location.href='/Trips/ViewTrip/<%= trip.id %>'">Manage Trip</button>
+                </div>
+            <% } %>
+        <% }); %>
+    </div>
+    <!-- What is shown if you have no trips associated with your ID-->
+    <% } else { %>
+        <div class="container-md mt-5 justify-content-center text-center">
+            <span id = "noTrips">
+                <h2>Nothing to see here... you have no trips posted.</h2>
+            </span>
+        </div>
+    <% } %>
+
 
 <% } %>
 
 
 
-
+<!-- Scripts for page necessities -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>

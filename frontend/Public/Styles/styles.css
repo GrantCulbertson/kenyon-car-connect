@@ -110,8 +110,6 @@ h1 {
 
 
 
-
-
 /* --------------- Styles for profile page ---------------- */
 .username-box {
     border-radius: 0 5px 5px 0; /* Smooth transition to the right */
@@ -248,6 +246,75 @@ h1 {
 }
 
 
+/* --------------- Styles for Your Trips page ---------------- */
+.poster-trip-box {
+    background-color: #432C91 !important; /* Background color */
+    color: #FCF7FF !important; /* Text color */
+    font-family: 'Helvetica', sans-serif !important;
+    
+    /* Make the box take up a consistent width percentage */
+    width: 60%; /* Adjust percentage based on design preference */
+    max-width: 800px; /* Prevent it from getting too wide on large screens */
+    min-width: 300px; /* Ensure it doesn’t become too small */
+    
+    /* Ensure height adjusts based on content */
+    height: auto; 
+
+    /* Flexbox to keep text and button in a row */
+    display: flex;
+    align-items: center; /* Center align items vertically */
+    justify-content: space-between; /* Space items apart */
+    
+    /* Margin for responsiveness */
+    margin: 40px auto; /* Center the box horizontally */
+
+    /* Padding and border radius */
+    padding: 10px 20px;
+    border-radius: 0.5rem;
+    
+    /* Ensure box-sizing includes padding and border */
+    box-sizing: border-box;
+}
+
+/* Ensure the text section takes up available space without pushing the button down */
+#trip-box-text {
+    flex-grow: 1; /* Allow text to take up remaining space */
+    font-family: 'Roboto', sans-serif !important;
+    text-align: center; /* Centers text horizontally */
+    display: flex;
+    justify-content: center; /* Ensures text remains centered in available space */
+    align-items: center; /* Ensures text aligns with button text */
+}
+
+#trip-box-text p {
+    margin: 0; /* Remove default margins */
+    font-size: 1rem; /* Adjust to match button text size */
+    line-height: 1.5rem; /* Match button text height */
+}
+
+/* Make sure the button does not shrink and remains aligned */
+.poster-button {
+    white-space: nowrap; /* Prevent text wrapping inside button */
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+.btn.btn-info.manage-button{
+    background-color:#FCF7FF;;
+    border-color: #FCF7FF;
+    color: #432C91;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif !important;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
+}
+
+.btn.btn-info.manage-button:hover{
+    background-color: #9989B4; /* Change the background color on hover */
+    border-color: #9989B4; /* Change the border color on hover */
+    color: #FCF7FF;
+    font-family: 'Roboto', sans-serif !important;
+}
 
 
 

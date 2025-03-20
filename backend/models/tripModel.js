@@ -11,9 +11,11 @@ dotenv.config();
 
 // ----------------------- DEFINE TRIP CLASS ------------------------//
 class Trip {
-    constructor({id, posterID, passengers, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
+    constructor({id, posterID, title, comments, passengers, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
         this.id = id;
         this.posterID = posterID;
+        this.title = title;
+        this.comments = comments;
         this.passengers = passengers;
         this.openSeats = openSeats;
         this.origin = origin;
@@ -54,8 +56,8 @@ static async createTrip(tripData, posterID, rideType, car){
             if(tripData.leavingFrom === "Campus"){
                 origin = "Campus"; //Set origin to campus if the trip is from campus
             }
-            const sql = 'INSERT INTO tripData (posterID, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
-            const params = [posterID, origin, tripData.destination, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
+            const sql = 'INSERT INTO tripData (posterID, title, comments, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            const params = [posterID, tripData.requestingTitle, tripData.requestingComments, origin, tripData.destination, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
             if(input.affectedRows === 1){
                 return true;
@@ -78,8 +80,8 @@ static async createTrip(tripData, posterID, rideType, car){
             if(tripData.providingLeavingFrom === "Campus"){ //If the trip is from campus, the ride provider will be providing a meeting point for the ride.
                 origin = tripData.meetingPoint;
             }
-            const sql = 'INSERT INTO tripData (posterID, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
-            const params = [posterID, car.seatsInCar, origin, tripData.providingDestination, tripInfo.distance, 1, tripInfo.duration, tripData.providingPayment, tripData.providingDate, tripData.providingTime, tripStatus, rideType, roundtrip];
+            const sql = 'INSERT INTO tripData (posterID, title, comments, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            const params = [posterID, tripData.providingTitle, tripData.providingComments, car.seatsInCar, origin, tripData.providingDestination, tripInfo.distance, 1, tripInfo.duration, tripData.providingPayment, tripData.providingDate, tripData.providingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
             if(input.affectedRows === 1){
                 return true;
@@ -91,6 +93,26 @@ static async createTrip(tripData, posterID, rideType, car){
 
     }catch(error){
         console.log("Error in createTrip:", error);
+        throw error;
+    }
+}
+
+//Function to get all trips associated with a user
+static async getTripsByUserID(userID){
+    console.log("tripModel... getTripsByUserID... running for userID:", userID);
+    try{
+        const sql = 'SELECT * FROM tripData WHERE posterID = ?';
+        const params = [userID];
+        const trips = await db.query(sql, params);
+        if(trips.length > 0){
+            const tripMap = trips.map(trip => new Trip(trip));
+            console.log(tripMap);
+            return tripMap
+        }else{
+            return false;    
+        }
+    }catch(error){
+        console.log("Error in getTripsByUserID:", error);
         throw error;
     }
 }
