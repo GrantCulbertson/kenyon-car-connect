@@ -11,7 +11,7 @@ dotenv.config();
 
 // ----------------------- DEFINE TRIP CLASS ------------------------//
 class Trip {
-    constructor({id, posterID, title, comments, passengers, openSeats, origin, originLat, originLng, destination, destinationLat, destinationLng, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
+    constructor({id, posterID, title, comments, passengers, openSeats, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip}){
         this.id = id;
         this.posterID = posterID;
         this.title = title;
@@ -19,12 +19,8 @@ class Trip {
         this.passengers = passengers;
         this.openSeats = openSeats;
         this.origin = origin;
-        this.originLat = originLat;
-        this.originLng = originLng;
         this.destination = destination;
-        this.destinationLat = destinationLat;
-        this.destinationLng = destinationLng;
-        this.tripInfo = tripInfo;
+        this.locationDetails = locationDetails;
         this.distance = distance;
         this.stops = stops;
         this.length = length;
@@ -61,8 +57,9 @@ static async createTrip(tripData, posterID, rideType, car){
             if(tripData.leavingFrom === "Campus"){
                 origin = "Campus"; //Set origin to campus if the trip is from campus
             }
-            const sql = 'INSERT INTO tripData (posterID, title, comments, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-            const params = [posterID, tripData.requestingTitle, tripData.requestingComments, origin, tripData.destination, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
+            const locationDetails = JSON.stringify({"originLat": tripData.leavingFromLat, "originLng": tripData.leavingFromLng, "destinationLat": tripData.lat, "destinationLng": tripData.lng}); //Create JSON with location details for origin & destination
+            const sql = 'INSERT INTO tripData (posterID, title, comments, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            const params = [posterID, tripData.requestingTitle, tripData.requestingComments, origin, tripData.destination, locationDetails, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
             if(input.affectedRows === 1){
                 return true;
@@ -85,8 +82,9 @@ static async createTrip(tripData, posterID, rideType, car){
             if(tripData.providingLeavingFrom === "Campus"){ //If the trip is from campus, the ride provider will be providing a meeting point for the ride.
                 origin = tripData.meetingPoint;
             }
-            const sql = 'INSERT INTO tripData (posterID, title, comments, openSeats, origin, destination, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-            const params = [posterID, tripData.providingTitle, tripData.providingComments, car.seatsInCar, origin, tripData.providingDestination, tripInfo.distance, 1, tripInfo.duration, tripData.providingPayment, tripData.providingDate, tripData.providingTime, tripStatus, rideType, roundtrip];
+            const locationDetails = JSON.stringify({"originLat": tripData.providingLeavingFromLat, "originLng": tripData.providingLeavingFromLng, "destinationLat": tripData.providingDestinationLat, "destinationLng": tripData.providingDestinationLng}); //Create JSON with location details for origin & destination
+            const sql = 'INSERT INTO tripData (posterID, title, comments, openSeats, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            const params = [posterID, tripData.providingTitle, tripData.providingComments, car.seatsInCar, origin, tripData.providingDestination, locationDetails, tripInfo.distance, 1, tripInfo.duration, tripData.providingPayment, tripData.providingDate, tripData.providingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
             if(input.affectedRows === 1){
                 return true;
@@ -125,7 +123,7 @@ static async getTripsByUserID(userID){
 static async getAllTrips(){
     console.log("tripModel... getAllTrips... running");
     try{
-        const sql = 'SELECT * FROM tripData';
+        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open"'; //Only pull trips that are open, trips in progress aren't joinable.
         const trips = await db.query(sql);
         if(trips.length > 0){
             const tripMap = trips.map(trip => new Trip(trip));

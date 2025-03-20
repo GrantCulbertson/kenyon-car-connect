@@ -72,7 +72,7 @@ app.get('/', async (req, res) => {
   try{
     const trips = await Trip.getAllTrips();
     if(trips){
-      res.render('homepage', {trips});
+      res.render('homepage', {trips, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
     }else{
       res.render('homepage', {trips: []});
     }
