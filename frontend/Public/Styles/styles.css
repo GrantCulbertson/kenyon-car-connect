@@ -93,17 +93,45 @@ h1 {
 }
 
 /* -------------- Styles for homepage ---------------- */
+
 /* Styling for the homepage header */
 .fade-text {
     transition: opacity 1s ease-in-out;
+    margin-top: auto;
 }
 
-.card .card-body .trip-feed-card-field p{
+.card.trip-card{
+    margin-top: 30px;
+}
+
+.card.trip-card .card-body .trip-feed-card-field p{
     color: #000000 !important;
     font-weight: italic !important;
-    margin-top: 30px;
+    margin-top: 25px;
     text-align: left;
 }
+
+/* Styling for badges at top of trip cards */
+.badge.badge-primary.trip-card.trip-provided{
+    background-color: #432C91;
+    border-radius: .5rem;
+}
+
+.badge.badge-primary.trip-card.trip-request{
+    background-color: #9989B4;
+    border-radius: .5rem;
+}
+
+
+/* Styling for buttons on cards in trip feed */
+.btn.btn-primary.trip-feed.ms-2{
+    background-color:#00523A !important;
+}
+
+.btn.btn-primary.trip-feed.ms-2:hover{
+    background-color:#008699 !important;
+}
+
 
 
 

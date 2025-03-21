@@ -119,6 +119,7 @@
             <div class="form-group">
                 <label for="requestingPayment" class="form-label">How much are you willing to pay?</label>
                 <input type="text" name="requestingPayment" id="requestingPayment" class="form-control" placeholder = "$10, I'll bring snacks, pay half of gas, etc." required>
+                <small id="requestingPaymentCounter" class="form-text text-muted">50 characters remaining</small>
             </div>
             <div class="form-group">
                 <label for="requestingTime" class="form-label">What time do you want to leave?</label>
@@ -131,6 +132,7 @@
             <div class="form-group">
                 <label for="requestingTitle" class="form-label">Trip title</label>
                 <input type="text" name="requestingTitle" id="requestingTitle" class="form-control" placeholder = "Trip to Walmart, Driving to Columbus, etc." required>
+                <small id="requestingTitleCounter" class="form-text text-muted">50 characters remaining</small>
             </div>
             <div class="form-group">
                 <label for="requestingComments" class="form-label">Trip comments</label>
@@ -166,6 +168,7 @@
                     <label for="meetingPoint" class="form-label">Where on campus are you leaving from?</label>
                     <input type="text" name="meetingPoint" id="meetingPoint" placeholder = "Watson Lot, South 1, Ascension Circle, etc." class="form-control" required>
                     <small id="meetingPointHelp" class="form-text text-muted">This is where passengers will meet you, please be precise.</small>
+                    <small id="meetingPointCounter" class="form-text text-muted">50 characters remaining</small>
                 </div>
             </div>
             <!-- Extra map to choose leaving destination if they aren't leaving from campus -->
@@ -193,6 +196,7 @@
             <div class="form-group">
                 <label for="providingPayment" class="form-label">How much would you like passengers to pay?</label>
                 <input type="text" name="providingPayment" id="providingPayment" class="form-control" placeholder = "$10, please bring snacks, pay for some gas, etc." required>
+                <small id="providingPaymentCounter" class="form-text text-muted">50 characters remaining</small>
             </div>
             <div class="form-group">
                 <label for="providingTime" class="form-label">What time are you leaving?</label>
@@ -205,6 +209,7 @@
             <div class="form-group">
                 <label for="providingTitle" class="form-label">Trip title</label>
                 <input type="text" name="providingTitle" id="providingTitle" class="form-control" placeholder = "Trip to Walmart, Driving to Columbus, etc." required>
+                <small id="providingTitleCounter" class="form-text text-muted">50 characters remaining</small>
             </div>
             <div class="form-group">
                 <label for="providingComments" class="form-label">Trip comments</label>
@@ -763,10 +768,26 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const maxCommentsLength = 200; // Set the maximum character count
+            const maxTitleLength = 50; // Set the maximum character count for the trip title
+            const maxPaymentLength = 50; // Set the maximum character count for the payment field
+            const maxMeetingPointLength = 50; // Set the maximum character count for the meeting point field    
 
             //Set max length of fields:
-            document.getElementById("requestingComments").setAttribute("maxlength", maxCommentsLength);
-            document.getElementById("providingComments").setAttribute("maxlength", maxCommentsLength);
+                //Comments
+                document.getElementById("requestingComments").setAttribute("maxlength", maxCommentsLength);
+                document.getElementById("providingComments").setAttribute("maxlength", maxCommentsLength);
+
+                //Titles
+                document.getElementById("requestingTitle").setAttribute("maxlength", maxTitleLength);
+                document.getElementById("providingTitle").setAttribute("maxlength", maxTitleLength);
+
+                //Payment
+                document.getElementById("requestingPayment").setAttribute("maxlength", maxTitleLength);
+                document.getElementById("providingPayment").setAttribute("maxlength", maxTitleLength);
+
+                //Meeting Point
+                document.getElementById("meetingPoint").setAttribute("maxlength", maxMeetingPointLength);
+
 
 
     
@@ -777,22 +798,61 @@
             }
     
             // Add event listeners to the comments fields
-            const requestingComments = document.getElementById("requestingComments");
-            const providingComments = document.getElementById("providingComments");
-            const requestingCommentsCounter = document.getElementById("requestingCommentsCounter");
-            const providingCommentsCounter = document.getElementById("providingCommentsCounter");
-    
-            requestingComments.addEventListener("input", function() {
+
+                //Comments
+                const requestingComments = document.getElementById("requestingComments");
+                const providingComments = document.getElementById("providingComments");
+                const requestingCommentsCounter = document.getElementById("requestingCommentsCounter");
+                const providingCommentsCounter = document.getElementById("providingCommentsCounter");
+                requestingComments.addEventListener("input", function() {
                 updateCharacterCount(requestingComments, requestingCommentsCounter, maxCommentsLength);
             });
     
-            providingComments.addEventListener("input", function() {
+                providingComments.addEventListener("input", function() {
                 updateCharacterCount(providingComments, providingCommentsCounter, maxCommentsLength);
             });
-    
-            // Initial update of character count
-            updateCharacterCount(requestingComments, requestingCommentsCounter, maxCommentsLength);
-            updateCharacterCount(providingComments, providingCommentsCounter, maxCommentsLength);
+                // Initial update of character count
+                updateCharacterCount(requestingComments, requestingCommentsCounter, maxCommentsLength);
+                updateCharacterCount(providingComments, providingCommentsCounter, maxCommentsLength);
+
+                //Titles
+                const requestingTitle = document.getElementById("requestingTitle");
+                const providingTitle = document.getElementById("providingTitle");
+                const requestingTitleCounter = document.getElementById("requestingTitleCounter");
+                const providingTitleCounter = document.getElementById("providingTitleCounter");
+                requestingTitle.addEventListener("input", function() {
+                    updateCharacterCount(requestingTitle, requestingTitleCounter, maxTitleLength);
+                });
+        
+                providingTitle.addEventListener("input", function() {
+                    updateCharacterCount(providingTitle, providingTitleCounter, maxTitleLength);
+                });
+                    
+                    updateCharacterCount(requestingTitle, requestingTitleCounter, maxTitleLength);
+                    updateCharacterCount(providingTitle, providingTitleCounter, maxTitleLength);
+                
+                //Payment
+                const requestingPayment = document.getElementById("requestingPayment");
+                const providingPayment = document.getElementById("providingPayment");
+                const requestingPaymentCounter = document.getElementById("requestingPaymentCounter");
+                const providingPaymentCounter = document.getElementById("providingPaymentCounter");
+                requestingPayment.addEventListener("input", function() {
+                    updateCharacterCount(requestingPayment, requestingPaymentCounter, maxPaymentLength);
+                });
+        
+                providingPayment.addEventListener("input", function() {
+                    updateCharacterCount(providingPayment, providingPaymentCounter, maxPaymentLength);
+                });
+                updateCharacterCount(requestingPayment, requestingPaymentCounter, maxPaymentLength);
+                updateCharacterCount(providingPayment, providingPaymentCounter, maxPaymentLength);
+
+                //Meeting Point
+                const meetingPoint = document.getElementById("meetingPoint");
+                const meetingPointCounter = document.getElementById("meetingPointCounter");
+                meetingPoint.addEventListener("input", function() {
+                    updateCharacterCount(meetingPoint, meetingPointCounter, maxMeetingPointLength);
+                });
+                updateCharacterCount(meetingPoint, meetingPointCounter, maxMeetingPointLength);
         });
     </script>
 
