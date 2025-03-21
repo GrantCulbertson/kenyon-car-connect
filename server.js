@@ -74,7 +74,7 @@ app.get('/', async (req, res) => {
     if(trips){
       res.render('homepage', {trips, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
     }else{
-      res.render('homepage', {trips: []});
+      res.render('homepage', {trips: [], GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
     }
   } catch (error){
     console.log("Error in rendering homepage:", error);

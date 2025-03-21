@@ -26,7 +26,7 @@
                     <ul class="nav navbar-nav ml-auto">
                         <!-- Post Trip Button Information -->
                         <li class = "nav-item">
-                            <a href="/Trips/createTrip" class="btn btn-info me-3" role="button">
+                            <a href="/Trips/postTrip" class="btn btn-info me-3" role="button">
                                 <i class="fa-solid fa-car"></i> Post a Trip
                             </a>
                         </li>
@@ -298,12 +298,13 @@
     <script>
         // Global variables
         let map, leavingMap, providingLeavingMap, providingMap, marker, leavingMarker, providingLeavingMarker, providingMapMarker, geocoder, autocompleteDestination, autocompleteLeavingFrom, autocompleteProvidingLeavingFrom;
+        // Default location (Kenyon College)
+        const defaultLocation = { lat: 40.3755, lng: -82.3977 };
 
         // Initialize maps for form
         function initMap() {
             console.log("Map initialization started");
-            // Default location (Kenyon College)
-            const defaultLocation = { lat: 40.3755, lng: -82.3977 };
+
             
             geocoder = new google.maps.Geocoder();
 
@@ -343,15 +344,34 @@
 
             updateLocation(marker.getPosition());
 
-            // Initialize Autocomplete for destination input
+            // Initialize Autocomplete for destination input (requesting ride)
             const destinationInput = document.getElementById("destination");
-            autocompleteDestination = new google.maps.places.Autocomplete(destinationInput);
+            autocompleteDestination = new google.maps.places.Autocomplete(destinationInput, {
+                fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
+            });
+
             autocompleteDestination.addListener("place_changed", function () {
                 const place = autocompleteDestination.getPlace();
                 if (place.geometry) {
                     map.setCenter(place.geometry.location);
                     marker.setPosition(place.geometry.location);
-                    updateLocation(place.geometry.location);
+                    
+                    // Update lat/lng values
+                    document.getElementById("lat").value = place.geometry.location.lat();
+                    document.getElementById("lng").value = place.geometry.location.lng();
+                    
+                    // Check if it's a business/establishment and names differ
+                    const isEstablishment = place.types && 
+                        (place.types.includes('establishment') || 
+                        place.types.includes('point_of_interest') ||
+                        place.types.includes('food') ||
+                        place.types.includes('store'));
+                        
+                    if (isEstablishment && place.name && place.name !== place.formatted_address) {
+                        document.getElementById("destination").value = place.name + ", " + place.formatted_address;
+                    } else {
+                        document.getElementById("destination").value = place.formatted_address;
+                    }
                 }
             });
 
@@ -394,20 +414,37 @@
 
                 updateLeavingLocation(leavingMarker.getPosition());
 
-                // Initialize Autocomplete for leaving from input
+                // Initialize Autocomplete for leaving from input (requesting ride)
                 const leavingFromInput = document.getElementById("leavingFromDestination");
-                autocompleteLeavingFrom = new google.maps.places.Autocomplete(leavingFromInput);
-                autocompleteLeavingFrom.addListener("place_changed", function () {
-                    const place = autocompleteLeavingFrom.getPlace();
+                autocompleteDestination = new google.maps.places.Autocomplete(leavingFromInput, {
+                    fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
+                });
+
+                autocompleteDestination.addListener("place_changed", function () {
+                    const place = autocompleteDestination.getPlace();
                     if (place.geometry) {
-                        leavingMap.setCenter(place.geometry.location);
-                        leavingMarker.setPosition(place.geometry.location);
-                        updateLeavingLocation(place.geometry.location);
+                        map.setCenter(place.geometry.location);
+                        marker.setPosition(place.geometry.location);
+                        
+                        // Update lat/lng values
+                        document.getElementById("leavingFromLat").value = place.geometry.location.lat();
+                        document.getElementById("leavingFromLng").value = place.geometry.location.lng();
+                        
+                        // Check if it's a business/establishment and names differ
+                        const isEstablishment = place.types && 
+                            (place.types.includes('establishment') || 
+                            place.types.includes('point_of_interest') ||
+                            place.types.includes('food') ||
+                            place.types.includes('store'));
+                            
+                        if (isEstablishment && place.name && place.name !== place.formatted_address) {
+                            document.getElementById("leavingFromDestination").value = place.name + ", " + place.formatted_address;
+                        } else {
+                            document.getElementById("leavingFromDestination").value = place.formatted_address;
+                        }
                     }
                 });
-            } else {
-                console.error("Could not find mapLeaving element");
-            }
+
 
             // ------ Third Map (Leaving From Selection, Providing a ride) ------
             const providingMapLeavingElement = document.getElementById("providingMapLeaving");
@@ -448,20 +485,37 @@
 
                 updateProvidingLeavingLocation(providingLeavingMarker.getPosition());
 
-                // Initialize Autocomplete for providing leaving from input
+
+                // Initialize Autocomplete for leaving from input (providing a ride)
                 const providingLeavingFromInput = document.getElementById("providingLeavingDestination");
-                autocompleteProvidingLeavingFrom = new google.maps.places.Autocomplete(providingLeavingFromInput);
-                autocompleteProvidingLeavingFrom.addListener("place_changed", function () {
-                    const place = autocompleteProvidingLeavingFrom.getPlace();
+                autocompleteDestination = new google.maps.places.Autocomplete(providingLeavingFromInput, {
+                    fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
+                });
+
+                autocompleteDestination.addListener("place_changed", function () {
+                    const place = autocompleteDestination.getPlace();
                     if (place.geometry) {
-                        providingLeavingMap.setCenter(place.geometry.location);
-                        providingLeavingMarker.setPosition(place.geometry.location);
-                        updateProvidingLeavingLocation(place.geometry.location);
+                        map.setCenter(place.geometry.location);
+                        marker.setPosition(place.geometry.location);
+                        
+                        // Update lat/lng values
+                        document.getElementById("providingLeavingFromLat").value = place.geometry.location.lat();
+                        document.getElementById("providingLeavingFromLng").value = place.geometry.location.lng();
+                        
+                        // Check if it's a business/establishment and names differ
+                        const isEstablishment = place.types && 
+                            (place.types.includes('establishment') || 
+                            place.types.includes('point_of_interest') ||
+                            place.types.includes('food') ||
+                            place.types.includes('store'));
+                            
+                        if (isEstablishment && place.name && place.name !== place.formatted_address) {
+                            document.getElementById("providingLeavingDestination").value = place.name + ", " + place.formatted_address;
+                        } else {
+                            document.getElementById("providingLeavingDestination").value = place.formatted_address;
+                        }
                     }
                 });
-            } else {
-                console.error("Could not find providingMapLeaving element");
-            }
 
             // ------ Fourth Map (Destination Selection, Providing a ride) ------
             const providingMapElement = document.getElementById("providingMap");
@@ -502,20 +556,36 @@
 
                 updateProvidingMapLocation(providingMapMarker.getPosition());
 
-                // Initialize Autocomplete for providing destination input
+                // Initialize Autocomplete for destination input (providing a ride)
                 const providingDestinationInput = document.getElementById("providingDestination");
-                autocompleteProvidingDestination = new google.maps.places.Autocomplete(providingDestinationInput);
-                autocompleteProvidingDestination.addListener("place_changed", function () {
-                    const place = autocompleteProvidingDestination.getPlace();
+                autocompleteDestination = new google.maps.places.Autocomplete(providingDestinationInput, {
+                    fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
+                });
+
+                autocompleteDestination.addListener("place_changed", function () {
+                    const place = autocompleteDestination.getPlace();
                     if (place.geometry) {
-                        providingMap.setCenter(place.geometry.location);
-                        providingMapMarker.setPosition(place.geometry.location);
-                        updateProvidingMapLocation(place.geometry.location);
+                        map.setCenter(place.geometry.location);
+                        marker.setPosition(place.geometry.location);
+                        
+                        // Update lat/lng values
+                        document.getElementById("providingDestinationLat").value = place.geometry.location.lat();
+                        document.getElementById("providingDestinationLng").value = place.geometry.location.lng();
+                        
+                        // Check if it's a business/establishment and names differ
+                        const isEstablishment = place.types && 
+                            (place.types.includes('establishment') || 
+                            place.types.includes('point_of_interest') ||
+                            place.types.includes('food') ||
+                            place.types.includes('store'));
+                            
+                        if (isEstablishment && place.name && place.name !== place.formatted_address) {
+                            document.getElementById("providingDestination").value = place.name + ", " + place.formatted_address;
+                        } else {
+                            document.getElementById("providingDestination").value = place.formatted_address;
+                        }
                     }
                 });
-            } else {
-                console.error("Could not find providingMap element");
-            }
 
             // Add event listeners for dropdown changes
             const rideTypeSelect = document.getElementById("rideType");
@@ -535,7 +605,10 @@
             
             // Initial call to set correct visibility
             toggleFields();
+            }
         }
+    }
+}
 
         // Update the toggleFields function to handle both map containers
         function toggleFields() {
@@ -545,6 +618,8 @@
             const requestingTripFields = document.getElementById("requestingTripFields");
             const provideRideWarning = document.getElementById("provideRideWarning");
             const userHasCar = document.getElementById("userHasCar").value;
+            const leavingFrom = document.getElementById("leavingFrom").value;
+            const leavingFromMapContainer = document.getElementById("leavingFromMapContainer");
 
             // Handle ride type selection
             if (rideType === "Requesting a ride") {
@@ -658,12 +733,121 @@
                 provideRideFields.style.display = "none";
                 requestingTripFields.style.display = "none";
             }
+
+            // Make sure campus lat and lng is passed if they say they are leaving from campus
+            if (leavingFrom === "Other") {
+                leavingFromMapContainer.style.display = "block";
+                document.getElementById("leavingFromDestination").required = true;
+                // Map is shown, user sets location manually
+            } else if (leavingFrom === "Campus") {
+                leavingFromMapContainer.style.display = "none";
+                document.getElementById("leavingFromDestination").required = false;
+                
+                // Set coordinates to campus default
+                document.getElementById("leavingFromLat").value = defaultLocation.lat;
+                document.getElementById("leavingFromLng").value = defaultLocation.lng;
+            }
         }
 
         // Ensure maps initialize when Google Maps API is loaded
         document.addEventListener("DOMContentLoaded", function() {
             console.log("DOM fully loaded");
             initMap();
+        });
+    </script>
+
+    <!-- Restrict input for date field so it has to be a date today or later-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get today's date in YYYY-MM-DD format using local time
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const localToday = `${year}-${month}-${day}`;
+    
+            // Set the min attribute for the date input fields
+            document.getElementById("requestingDate").setAttribute("min", localToday);
+            document.getElementById("providingDate").setAttribute("min", localToday);
+
+            // Custom messages for when input date is invalid
+            document.getElementById("requestingDate").addEventListener("input", function() {
+                if (this.validity.rangeUnderflow) {
+                    this.setCustomValidity("Please select a date that is today or later.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+
+            document.getElementById("providingDate").addEventListener("input", function() {
+                if (this.validity.rangeUnderflow) {
+                    this.setCustomValidity("Please select a date that is today or later.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+        });
+    </script>
+    
+    <!-- Restrict input for time field so that you can only put a time later than the current one if you are posting for today's date -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get today's date in YYYY-MM-DD format using local time
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const localToday = `${year}-${month}-${day}`;
+    
+            // Set the min attribute for the date input fields
+            document.getElementById("requestingDate").setAttribute("min", localToday);
+            document.getElementById("providingDate").setAttribute("min", localToday);
+    
+            // Function to set the minimum time
+            function setMinTime() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const currentTime = `${hours}:${minutes}`;
+    
+                if (document.getElementById("requestingDate").value === localToday) {
+                    document.getElementById("requestingTime").setAttribute("min", currentTime);
+                } else {
+                    document.getElementById("requestingTime").removeAttribute("min");
+                }
+    
+                if (document.getElementById("providingDate").value === localToday) {
+                    document.getElementById("providingTime").setAttribute("min", currentTime);
+                } else {
+                    document.getElementById("providingTime").removeAttribute("min");
+                }
+            }
+    
+            // Add event listeners to date input fields
+            document.getElementById("requestingDate").addEventListener("change", setMinTime);
+            document.getElementById("providingDate").addEventListener("change", setMinTime);
+    
+            // Initial call to set the minimum time if the date is already set to today
+            setMinTime();
+
+            // Custom messages for when time input is wrong
+            document.getElementById("requestingTime").addEventListener("input", function() {
+                if (this.validity.rangeUnderflow) {
+                    this.setCustomValidity("Because you are planning this trip for today, please select a time that is later than the current time.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+
+            document.getElementById("providingTime").addEventListener("input", function() {
+                if (this.validity.rangeUnderflow) {
+                    this.setCustomValidity("Because you are planning this trip for today, please select a time that is later than the current time.");
+                } else {
+                    this.setCustomValidity("");
+                }
+            });
+
+
         });
     </script>
     

@@ -42,6 +42,8 @@ static async createTrip(tripData, posterID, rideType, car){
         const tripStatus = "Open"; //Trip status is open by default
         let origin = null; //Declare origin variable
         let roundtrip = null; //Declare roundtrip variable
+        let locationDetails = null; //Declare location details variable
+        const defaultLocation = { lat: 40.3755, lng: -82.3977 }; //Default location is Kenyon College
         if(rideType === "Requesting a ride"){ //Handle input for ride request fields
             const tripInfo = await Trip.calculateDistanceAndTime(tripData.leavingFromLat, tripData.leavingFromLng, tripData.lat, tripData.lng); //Calculate trip driving time & distance
             if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
@@ -53,11 +55,12 @@ static async createTrip(tripData, posterID, rideType, car){
             }
             if(tripData.leavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
                 origin = tripData.leavingFromDestination[0];
+                locationDetails = JSON.stringify({"originLat": tripData.leavingFromLat, "originLng": tripData.leavingFromLng, "destinationLat": tripData.lat, "destinationLng": tripData.lng}); //Create JSON with location details for origin & destination
             }
             if(tripData.leavingFrom === "Campus"){
                 origin = "Campus"; //Set origin to campus if the trip is from campus
+                locationDetails = JSON.stringify({"originLat": tripData.leavingFromLat, "originLng": tripData.leavingFromLng, "destinationLat": tripData.lat, "destinationLng": tripData.lng}); //Create JSON with location details for origin & destination
             }
-            const locationDetails = JSON.stringify({"originLat": tripData.leavingFromLat, "originLng": tripData.leavingFromLng, "destinationLat": tripData.lat, "destinationLng": tripData.lng}); //Create JSON with location details for origin & destination
             const sql = 'INSERT INTO tripData (posterID, title, comments, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             const params = [posterID, tripData.requestingTitle, tripData.requestingComments, origin, tripData.destination, locationDetails, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
@@ -81,6 +84,7 @@ static async createTrip(tripData, posterID, rideType, car){
             }
             if(tripData.providingLeavingFrom === "Campus"){ //If the trip is from campus, the ride provider will be providing a meeting point for the ride.
                 origin = tripData.meetingPoint;
+
             }
             const locationDetails = JSON.stringify({"originLat": tripData.providingLeavingFromLat, "originLng": tripData.providingLeavingFromLng, "destinationLat": tripData.providingDestinationLat, "destinationLng": tripData.providingDestinationLng}); //Create JSON with location details for origin & destination
             const sql = 'INSERT INTO tripData (posterID, title, comments, openSeats, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
