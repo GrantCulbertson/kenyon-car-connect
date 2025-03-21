@@ -17,7 +17,22 @@ h1 {
     transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
 }
 
-/* Button Hover Styling for whole program */
+/* Button Hover Styling for whole program (primary buttons) */
+.btn.btn-primary:hover{
+    background-color: #008699; /* Change the background color on hover */
+    border-color: #008699; /* Change the border color on hover */
+}
+
+.btn.btn-secondary{
+    background-color: #00523A; /* Change the background color */
+    border-color: #00523A; /* Change the border color */
+    color: #FFFADE; /* Change the text color */
+    font-size: 1rem; /* Adjust the font size */
+    padding: 0.5rem 1rem; /* Adjust the padding */
+    border-radius: 0.5rem; /* Adjust the border radius */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
+}
+
 .btn.btn-primary:hover{
     background-color: #008699; /* Change the background color on hover */
     border-color: #008699; /* Change the border color on hover */
@@ -100,15 +115,28 @@ h1 {
     margin-top: auto;
 }
 
-.card.trip-card{
-    margin-top: 30px;
+/* Styling for the trip feed */
+.trip-feed-container{
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.trip-feed-container .card.trip-card{
+    border-radius: 1rem !important;
+    max-width: 750px !important;
+}
+
+.trip-feed-container .card.trip-card + .card.trip-card{
+    margin-top: 3rem;
 }
 
 .card.trip-card .card-body .trip-feed-card-field p{
     color: #000000 !important;
     font-weight: italic !important;
     margin-top: 25px;
-    text-align: left;
+    text-align: left !important;
 }
 
 /* Styling for badges at top of trip cards */
@@ -126,9 +154,21 @@ h1 {
 /* Styling for buttons on cards in trip feed */
 .btn.btn-primary.trip-feed.ms-2{
     background-color:#00523A !important;
+    width: 100%;
 }
 
 .btn.btn-primary.trip-feed.ms-2:hover{
+    background-color:#008699 !important;
+}
+
+/* Styling for buttons on cards in trip feed */
+.btn.btn-secondary.trip-feed.ms-2{
+    background-color:#00523A !important;
+    margin-left: 50px;
+    width: 100%;
+}
+
+.btn.btn-secondary.trip-feed.ms-2:hover{
     background-color:#008699 !important;
 }
 
