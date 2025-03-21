@@ -135,6 +135,7 @@
             <div class="form-group">
                 <label for="requestingComments" class="form-label">Trip comments</label>
                 <input type="text" name="requestingComments" id="requestingComments" class="form-control" placeholder = "Write a little bit here about why you are requesting the ride or any other information you think is relevant." required>
+                <small id="requestingCommentsCounter" class="form-text text-muted">200 characters remaining</small>
             </div>
         </div>
 
@@ -208,6 +209,7 @@
             <div class="form-group">
                 <label for="providingComments" class="form-label">Trip comments</label>
                 <input type="text" name="providingComments" id="providingComments" class="form-control" placeholder = "Write a little bit here about the trip you are going on, include anything you think is relevant." required>
+                <small id="providingCommentsCounter" class="form-text text-muted">200 characters remaining</small>
             </div>
         </div>
         <!-- Submit Button for Form-->
@@ -416,15 +418,15 @@
 
                 // Initialize Autocomplete for leaving from input (requesting ride)
                 const leavingFromInput = document.getElementById("leavingFromDestination");
-                autocompleteDestination = new google.maps.places.Autocomplete(leavingFromInput, {
+                autocompleteLeavingFrom = new google.maps.places.Autocomplete(leavingFromInput, {
                     fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
                 });
 
-                autocompleteDestination.addListener("place_changed", function () {
-                    const place = autocompleteDestination.getPlace();
+                autocompleteLeavingFrom.addListener("place_changed", function () {
+                    const place = autocompleteLeavingFrom.getPlace();
                     if (place.geometry) {
-                        map.setCenter(place.geometry.location);
-                        marker.setPosition(place.geometry.location);
+                        leavingMap.setCenter(place.geometry.location);
+                        leavingMarker.setPosition(place.geometry.location);
                         
                         // Update lat/lng values
                         document.getElementById("leavingFromLat").value = place.geometry.location.lat();
@@ -488,15 +490,15 @@
 
                 // Initialize Autocomplete for leaving from input (providing a ride)
                 const providingLeavingFromInput = document.getElementById("providingLeavingDestination");
-                autocompleteDestination = new google.maps.places.Autocomplete(providingLeavingFromInput, {
+                autocompleteProvidingLeaving = new google.maps.places.Autocomplete(providingLeavingFromInput, {
                     fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
                 });
 
-                autocompleteDestination.addListener("place_changed", function () {
-                    const place = autocompleteDestination.getPlace();
+                autocompleteProvidingLeaving.addListener("place_changed", function () {
+                    const place = autocompleteProvidingLeaving.getPlace();
                     if (place.geometry) {
-                        map.setCenter(place.geometry.location);
-                        marker.setPosition(place.geometry.location);
+                        providingLeavingMap.setCenter(place.geometry.location);
+                        providingLeavingMarker.setPosition(place.geometry.location);
                         
                         // Update lat/lng values
                         document.getElementById("providingLeavingFromLat").value = place.geometry.location.lat();
@@ -558,15 +560,15 @@
 
                 // Initialize Autocomplete for destination input (providing a ride)
                 const providingDestinationInput = document.getElementById("providingDestination");
-                autocompleteDestination = new google.maps.places.Autocomplete(providingDestinationInput, {
+                autocompleteProvidingDestination = new google.maps.places.Autocomplete(providingDestinationInput, {
                     fields: ['formatted_address', 'geometry', 'name', 'place_id', 'types']
                 });
 
-                autocompleteDestination.addListener("place_changed", function () {
-                    const place = autocompleteDestination.getPlace();
+                autocompleteProvidingDestination.addListener("place_changed", function () {
+                    const place = autocompleteProvidingDestination.getPlace();
                     if (place.geometry) {
-                        map.setCenter(place.geometry.location);
-                        marker.setPosition(place.geometry.location);
+                        providingMap.setCenter(place.geometry.location);
+                        providingMapMarker.setPosition(place.geometry.location);
                         
                         // Update lat/lng values
                         document.getElementById("providingDestinationLat").value = place.geometry.location.lat();
@@ -753,6 +755,44 @@
         document.addEventListener("DOMContentLoaded", function() {
             console.log("DOM fully loaded");
             initMap();
+        });
+    </script>
+
+<!-- INPUT VERIFICIATION & RESTRICTIONS FOR FORM FIELDS-->
+    <!-- Restricting # of characters allowed for input fields-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const maxCommentsLength = 200; // Set the maximum character count
+
+            //Set max length of fields:
+            document.getElementById("requestingComments").setAttribute("maxlength", maxCommentsLength);
+            document.getElementById("providingComments").setAttribute("maxlength", maxCommentsLength);
+
+
+    
+            // Function to update the character count
+            function updateCharacterCount(input, counter, maxLength) {
+                const remaining = maxLength - input.value.length;
+                counter.textContent = `${remaining} characters remaining`;
+            }
+    
+            // Add event listeners to the comments fields
+            const requestingComments = document.getElementById("requestingComments");
+            const providingComments = document.getElementById("providingComments");
+            const requestingCommentsCounter = document.getElementById("requestingCommentsCounter");
+            const providingCommentsCounter = document.getElementById("providingCommentsCounter");
+    
+            requestingComments.addEventListener("input", function() {
+                updateCharacterCount(requestingComments, requestingCommentsCounter, maxCommentsLength);
+            });
+    
+            providingComments.addEventListener("input", function() {
+                updateCharacterCount(providingComments, providingCommentsCounter, maxCommentsLength);
+            });
+    
+            // Initial update of character count
+            updateCharacterCount(requestingComments, requestingCommentsCounter, maxCommentsLength);
+            updateCharacterCount(providingComments, providingCommentsCounter, maxCommentsLength);
         });
     </script>
 
