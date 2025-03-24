@@ -44,6 +44,7 @@ static async createTrip(tripData, posterID, rideType, car){
         let roundtrip = null; //Declare roundtrip variable
         let locationDetails = null; //Declare location details variable
         const defaultLocation = { lat: 40.3755, lng: -82.3977 }; //Default location is Kenyon College
+
         if(rideType === "Requesting a ride"){ //Handle input for ride request fields
             const tripInfo = await Trip.calculateDistanceAndTime(tripData.leavingFromLat, tripData.leavingFromLng, tripData.lat, tripData.lng); //Calculate trip driving time & distance
             if(tripData.requestingRoundtrip === "Yes"){ //Double the distance and trip length if roundtrip
@@ -127,7 +128,7 @@ static async getTripsByUserID(userID){
 static async getAllTrips(){
     console.log("tripModel... getAllTrips... running");
     try{
-        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open"'; //Only pull trips that are open, trips in progress aren't joinable.
+        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" ORDER BY postDate DESC' ; //Only pull trips that are open, trips in progress aren't joinable.
         const trips = await db.query(sql);
         if(trips.length > 0){
             const tripMap = trips.map(trip => new Trip(trip));

@@ -20,6 +20,8 @@ exports.postTripPage = (req, res) => {
     }
 };
 
+//Function to render the trip info page
+
 //Function to create a trip from the posting page
 exports.createTrip = async (req, res) => {
     console.log("tripController... createTrip... running");
