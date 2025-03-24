@@ -13,7 +13,7 @@ router.get("/postTrip", tripController.postTripPage);
 router.get("/yourTrips", tripController.yourTripsPage);
 
 //Route to render a trip info page
-router.get("/viewTrip/:id", tripController.yourTripsPage);
+router.get("/viewTrip/:id", tripController.viewTripPage);
 
 //----------------------- ROUTES TO HANDLE TRIP DATA ------------------------//
 

@@ -309,8 +309,7 @@
             <!-- Car Information -->
             <div class="container mt-4">
                 <!-- Header for Car Information-->
-                <h2> Your Car </h2>
-            
+                <span class = "profile-header"><h2> Your Car </h2></span>
                 <!-- Text & Button to add car-->
                 <div class="d-flex align-items-center">
                     <span class = "add-car-text">
@@ -501,17 +500,6 @@
                         <label for="lastName" class="form-label">Last Name</label>
                         <input type="text" name="lastName" id="lastName" value = "<%= user.lastName %>" placeholder = "Last Name" class="form-control" required>
                     </div>
-                    <div class="form-group">
-                        <label for="gender" class="form-label">Gender</label>
-                        <select name="gender" id="gender" class="form-control" required>
-                            <option value="" disabled selected>Select an option:</option>
-                            <option value="Male" <%= user.gender === 'Male' ? 'selected' : '' %>>Male</option>
-                            <option value="Female" <%= user.gender === 'Female' ? 'selected' : '' %>>Female</option>
-                            <option value="Nonbinary" <%= user.gender === 'Nonbinary' ? 'selected' : '' %>>Nonbinary</option>
-                            <option value="Other" <%= user.gender === 'Other' ? 'selected' : '' %>>Other</option>
-                            <option value="Prefer not to say" <%= user.gender === 'Prefer not to say' ? 'selected' : '' %>>Prefer not to say</option>
-                        </select>
-                    </div>
                     <div class = "mt-5 text-center">
                         <button type="submit" class="btn btn-primary btn-block">Submit</button>
                     </div>
@@ -523,7 +511,7 @@
 
 
 <!-- Modal for updating ride profile information -->
- <% if (userHasRideProfile){ %>
+<% if (userHasRideProfile){ %>
 <div class="modal fade" id="updateRideProfileModal" tabindex="-1" aria-labelledby="updateRideProfileModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -578,7 +566,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addRideProfileModalLabel"></h5>
+                    <h5 class="modal-title" id="addRideProfileModalLabel">Add a ride profile</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

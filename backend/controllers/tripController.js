@@ -21,6 +21,9 @@ exports.postTripPage = (req, res) => {
 };
 
 //Function to render the trip info page
+exports.viewTripPage = (req,res) => {
+    
+}
 
 //Function to create a trip from the posting page
 exports.createTrip = async (req, res) => {

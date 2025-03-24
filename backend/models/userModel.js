@@ -25,8 +25,8 @@ class User {
 
             const emailValidationCode = await User.generateEmailVerificationCode();
             console.log("userModel... addUser... running");
-            const sql = 'INSERT INTO userData (firstName, lastName, email, password, age, gender, emailValidationCode) VALUES (?,?,?,?,?,?,?)';
-            const params = [userData.firstName, userData.lastName, userData.email, userData.password, userData.age, userData.gender, emailValidationCode];
+            const sql = 'INSERT INTO userData (firstName, lastName, email, password, age, emailValidationCode) VALUES (?,?,?,?,?,?)';
+            const params = [userData.firstName, userData.lastName, userData.email, userData.password, userData.age, emailValidationCode];
             const user = await User.getUserByEmail(userData.email);
 
             if (user instanceof User){
@@ -116,8 +116,8 @@ class User {
     //Function to update user profile:
     static async updateProfile(id, updateData){
         try{
-            const query = 'UPDATE userData SET firstName = ?, lastName = ?, password = ?, gender = ? WHERE id = ?';
-            const params = [updateData.firstName, updateData.lastName, updateData.password, updateData.gender, id];
+            const query = 'UPDATE userData SET firstName = ?, lastName = ?, password = ? WHERE id = ?';
+            const params = [updateData.firstName, updateData.lastName, updateData.password, id];
             const update = await db.query(query, params);
             if((update.affectedRows > 0)){
                 return true; //Return true if user profile is updated successfully

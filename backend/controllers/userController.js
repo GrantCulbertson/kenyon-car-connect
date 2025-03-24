@@ -9,13 +9,13 @@ const jwt = require("jsonwebtoken");
 //Control for addUser Function, User is redirected to verification page if user is new, and redirected to homepage if they already exist.
 exports.addUser = async (req, res) => {
     console.log("userController.. addUser... running");
-    const {firstName, lastName, email, age, gender, password} = req.body;
+    const {firstName, lastName, email, age, password} = req.body;
     try {
-        const user = await User.addUser({ firstName, lastName, email, age, gender, password});
+        const user = await User.addUser({ firstName, lastName, email, age, password});
 
         if (user instanceof User) {
             // Generate a token (e.g., user ID encrypted)
-            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, gender: user.gender, verificationStatus: user.verificationStatus, has_car: user.has_car }, 
+            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, verificationStatus: user.verificationStatus, has_car: user.has_car }, 
                                      process.env.JWT_SECRET,
                                      { expiresIn: "1d" });
                         // Cookie options
@@ -83,7 +83,7 @@ exports.verifyEmail = async (req, res) => {
         const verificationStatus = await User.verifyEmail(decoded.email, inputCode); //Function returns true if user gets verified and vice versa
         if (verificationStatus){
             //Update user verification status in cookie
-            const newToken = jwt.sign({ id: decoded.id, firstName: decoded.firstName, lastName: decoded.lastName, gender: decoded.gender, email: decoded.email, has_car: decoded.has_car, verificationStatus: "Yes" }, 
+            const newToken = jwt.sign({ id: decoded.id, firstName: decoded.firstName, lastName: decoded.lastName, email: decoded.email, has_car: decoded.has_car, verificationStatus: "Yes" }, 
                                         process.env.JWT_SECRET, 
                                         { expiresIn: "1d" });
 
@@ -121,7 +121,7 @@ exports.loginUser = async (req, res) => {
         const user = await User.logInUser(email, password); //User object is returned if login is successful.
         if (user instanceof User){
             // Generate a token (encrped user ID)
-            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, gender: user.gender, has_car: user.has_car, verificationStatus: user.verificationStatus}, 
+            const token = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, has_car: user.has_car, verificationStatus: user.verificationStatus}, 
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" });
             // Cookie options
@@ -178,19 +178,19 @@ exports.profilePage = async (req, res) => {
 //Function to update user profile information
 exports.updateProfile = async (req, res) => {
     const token = req.cookies.auth_token; //Get cookies from user
-    const {firstName, lastName, password, gender} = req.body; //Get user input from form
+    const {firstName, lastName, password} = req.body; //Get user input from form
     if(!token){ //Return user to homepage if they have no cookies, they should not be performing this function.
         return res.redirect("/");
     }
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode token
         console.log("userController... updateProfile... is running for user:", decoded.id);
-        const result = await User.updateProfile(decoded.id, {firstName, lastName, password, gender}); //Update user profile information, result is true if successfuly update and false if not
+        const result = await User.updateProfile(decoded.id, {firstName, lastName, password}); //Update user profile information, result is true if successfuly update and false if not
         if(result){
             //Get new user information
             const user = await User.getUserByID(decoded.id);
             //Generate new token
-            const newToken = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, gender: user.gender, verificationStatus: user.verificationStatus}, 
+            const newToken = jwt.sign({ id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, verificationStatus: user.verificationStatus}, 
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" });
             // Cookie options
