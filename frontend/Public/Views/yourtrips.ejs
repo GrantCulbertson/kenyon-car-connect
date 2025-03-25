@@ -76,6 +76,9 @@
         <% trips.forEach(trip => { %>
             <% if(trip.posterID == user.id) { %>
                 <div class = "poster-trip-box px-3 py-2">
+                    <div id = "trip-badge">
+                        <span class="badge badge-primary your-trips poster d-block">Poster</span>
+                    </div>
                     <div id = "trip-box-text">
                         <p> <%= trip.title %> </p>
                     </div>

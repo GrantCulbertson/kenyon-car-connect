@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenyon Car Connect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/cc3b2bd0f4.js" crossorigin="anonymous"></script> <!-- Add Fontawesome Symbols -->
+    <link rel="stylesheet" href="../Styles/styles.css">
+</head>
+<body>
+<!-- Page that is shown if user has cookies (you need cookies to see this page anyways)-->
+<% if(isUser){ %>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class = "container-fluid">
+        <!-- Navbar Branding -->
+        <div class = "navbar-header">
+            <a class="navbar-brand" href="/">Kenyon Car Connect</a>
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="nav navbar-nav ml-auto">
+                    <!-- Post Trip Button Information -->
+                    <li class = "nav-item">
+                        <a href="/Trips/postTrip" class="btn btn-info me-3" role="button">
+                            <i class="fa-solid fa-car"></i> Post a Trip
+                        </a>
+                    </li>
+                    <!-- Your Trips Button Information -->
+                    <li class = "nav-item">
+                        <a href="/Trips/yourTrips" class="btn btn-info me-3" role="button">
+                            <i class="fa-solid fa-bell"></i> Your Trips
+                        </a>
+                    </li>
+                    <!-- Dropdown for profile and logout-->
+                    <div class="dropdown">
+                        <!-- Drop down button information -->
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i> <!-- Hamburger Icon for dropdown -->
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
+                            <!-- Profile Button Information -->
+                            <li>
+                                <a href="/User/Profile" class="dropdown-item" role="button">
+                                    <i class="fa-solid fa-user"></i> Profile
+                                </a>
+                            </li>
+                            <!-- Logout Button Information -->
+                            <li>
+                                <a href="/User/LogoutUser" class="dropdown-item" role="button">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>                        
+               </ul>
+        </div>
+    </div>
+</nav> 
+
+<!--- TRIP INFO PORTION OF PAGE -->
+
+
+
+
+
+<% } %>
+
+
+
+<!-- Scripts for page necessities -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>

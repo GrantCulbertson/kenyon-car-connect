@@ -21,8 +21,25 @@ exports.postTripPage = (req, res) => {
 };
 
 //Function to render the trip info page
-exports.viewTripPage = (req,res) => {
-    
+exports.viewTripPage = async (req,res) => {
+    console.log("tripController... viewTripPage... running");
+    const tripId = req.params.id; //Grab trip ID from page URL
+    const token = req.cookies.auth_token;
+    if(!token){
+        return res.redirect("/"); //Return to homepage if they have no cookies, they should not be able to access this page
+    }else{
+        try{
+            const trip = await Trip.getTripById(tripId);
+            if(trip){
+                return res.render("trip", {trip});
+            }else{
+                res.status(404).send('Oops... trip not found');
+            }
+        }catch (err){
+            console.log(err);
+            res.redirect("/"); //Return to homepage if there is an error
+        }
+    }
 }
 
 //Function to create a trip from the posting page

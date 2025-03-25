@@ -175,9 +175,6 @@ h1 {
 
 
 
-
-
-
 /* --------------- Styles for profile page ---------------- */
 .username-box {
     background-color: #FCF7FF !important; /* Light gray background */
@@ -377,6 +374,24 @@ h1 {
     border-color: #9989B4; /* Change the border color on hover */
     color: #FCF7FF;
     font-family: 'Roboto', sans-serif !important;
+}
+
+
+/* STYLES FOR YOUR TRIPS PAGE */
+.badge.badge-primary.your-trips.rider{
+    background-color: #432C91;
+    border-radius: .5rem;
+    font-size: 1.25rem;
+    padding: .5rem 1rem;
+    display: inline-block;
+}
+
+.badge.badge-primary.your-trips.poster{
+    background-color: #9989B4;
+    border-radius: .5rem;
+    font-size: 1.25rem;
+    padding: .5rem 1rem;
+    display: inline-block;
 }
 
 

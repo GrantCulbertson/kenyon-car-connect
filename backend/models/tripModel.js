@@ -124,11 +124,28 @@ static async getTripsByUserID(userID){
     }
 }
 
+//Function to get a trip by tripID
+static async getTripById(tripId) {
+    try {
+        console.log(tripId);
+        const sql = 'SELECT * FROM tripData WHERE id = ?';
+        const trips = await db.query(sql, [tripId]);
+        if (trips.length > 0) {
+            return new Trip(trips[0]);
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.log("Error in getTripById:", error);
+        throw error;
+    }
+}
+
 //Function to pull all trips from database (used for trip feed)
 static async getAllTrips(){
     console.log("tripModel... getAllTrips... running");
     try{
-        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" ORDER BY postDate DESC' ; //Only pull trips that are open, trips in progress aren't joinable.
+        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" ORDER BY date ASC, time ASC' ; //Only pull trips that are open, trips in progress aren't joinable.
         const trips = await db.query(sql);
         if(trips.length > 0){
             const tripMap = trips.map(trip => new Trip(trip));
