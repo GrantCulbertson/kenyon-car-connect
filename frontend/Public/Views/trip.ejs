@@ -6,7 +6,7 @@
     <title>Kenyon Car Connect</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/cc3b2bd0f4.js" crossorigin="anonymous"></script> <!-- Add Fontawesome Symbols -->
-    <link rel="stylesheet" href="../Styles/styles.css">
+    <link rel="stylesheet" href="/Styles/styles.css">
 </head>
 <body>
 <!-- Page that is shown if user has cookies (you need cookies to see this page anyways)-->
@@ -63,7 +63,47 @@
 </nav> 
 
 <!--- TRIP INFO PORTION OF PAGE -->
+<!-- Two-Column Layout -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+            <div class="border p-3">
+                <h2 class="text-center">Left Column</h2>
+                <p class="text-center">This is the left column placeholder.</p>
+            </div>
+        </div>
 
+        <!-- Right Column -->
+        <div class="col-md-6 d-flex flex-column">
+            <!-- Card that is shown if this is a ride that is being provided -->
+            <% if(trip.tripType === "Providing a ride"){ %>
+                <div class = "card trip-information">
+                   <div class = "card text-center">
+                       <div class = "card-body">
+                               <h2 class="card-title">Car Information</h2>
+                               <span class = "ride-profile-subtext">
+                                   <p>Here is the information your trip's car and passengers</p>
+                               </span>
+                       </div>
+                   </div>
+                </div>
+            <!-- Card that is shown if the ride is only a request as of now -->
+            <% }else{ %>
+                <div class = "card trip-information">
+                    <div class = "card text-center">
+                        <div class = "card-body">
+                                <h2 class="card-title">Car Information</h2>
+                                <span class = "ride-profile-subtext">
+                                    <p>As this trip is only a request right now there is no car information</p>
+                                </span>
+                        </div>
+                    </div>
+                 </div>
+            <% } %>
+        </div>
+    </div>
+</div>
 
 
 
