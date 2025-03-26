@@ -143,13 +143,12 @@
                                             src="https://maps.googleapis.com/maps/api/staticmap?size=400x200&markers=color:green|label:A|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>&markers=color:red|label:B|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>&path=color:0x0000ff|weight:5|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>&key=<%=GoogleMapsAPIKey%>" 
                                             alt="Trip route map"
                                             class="img-fluid rounded"
-                                            style="width: 100%; height: auto; object-fit: cover;"
+                                            style="width: 100%; height: auto; object-fit: cover; border-radius: 1rem;"
                                         >
                                     <% } else { %>
                                         <div class="alert alert-warning">Map data unavailable</div>
                                     <% } %>
                                 </div>
-
                                 <!-- Column with Ride Info-->
                                 <div class="col-md-6 d-flex flex-column align-items-start justify-content-center h-100 mb-3">
                                     <span class = "trip-feed-card-field">
@@ -159,16 +158,16 @@
                                         <p class="card-text trip-field"><b>Leaving from:</b> <%= trip.origin %> </p>
                                     </span>
                                     <span class = "trip-feed-card-field">
-                                        <p class="card-text"><b>Destination:</b> <%= trip.destination %> </p>
+                                        <p class="card-text trip-field"><b>Destination:</b> <%= trip.destination %> </p>
                                     </span>
                                     <span class = "trip-feed-card-field">
-                                        <p class="card-text"><b>Price:</b> <%= trip.payment %> </p>
+                                        <p class="card-text trip-field"><b>Price:</b> <%= trip.payment %> </p>
                                     </span>
                                     <span class = "trip-feed-card-field">
-                                        <p class="card-text"><b>Date:</b> <span class="trip-date"> <%= trip.date %> </span> </p>
+                                        <p class="card-text trip-field"><b>Date:</b> <span class="trip-date"> <%= trip.date %> </span> </p>
                                     </span>
                                     <span class = "trip-feed-card-field">
-                                        <p class="card-text"><b>Time:</b> <span class="trip-time"> <%= trip.time %> </span></p>
+                                        <p class="card-text trip-field"><b>Time:</b> <span class="trip-time"> <%= trip.time %> </span></p>
                                     </span>
                                 </div>
                             </div>

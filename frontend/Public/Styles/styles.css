@@ -395,6 +395,23 @@ h1 {
 }
 
 
+/* Styling for trip page */
+.btn.btn-primary.trip-info{
+    width: 75%;
+}
+
+.btn.btn-primary.trip-info-delete{
+    background-color: #FF0000;
+    border-color: #FF0000;
+    margin-left: 10%;
+    width: 75%
+}
+
+.btn.btn-primary.trip-info-delete:hover{
+    background-color: #ff5a5a;
+}
+
+
 
 
 

@@ -31,7 +31,7 @@ exports.viewTripPage = async (req,res) => {
         try{
             const trip = await Trip.getTripById(tripId);
             if(trip){
-                return res.render("trip", {trip});
+                return res.render("trip", {trip, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
             }else{
                 res.status(404).send('Oops... trip not found');
             }

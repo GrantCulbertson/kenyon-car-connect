@@ -66,15 +66,71 @@
 <!-- Two-Column Layout -->
 <div class="container-fluid mt-4">
     <div class="row">
-        <!-- Left Column -->
+        <!-- Left Column (Trip Information) -->
         <div class="col-md-6">
-            <div class="border p-3">
-                <h2 class="text-center">Left Column</h2>
-                <p class="text-center">This is the left column placeholder.</p>
+            <!-- Header for trip info page portion-->
+            <h2 class="text-center">
+                <span class = "trip-info-title">Trip info for "<%= trip.title %>"</span>
+            </h2>
+            <!-- Badge for trip type-->
+            <h3 class="trip-info-badge">
+                <% if(trip.tripType === "Providing a ride"){ %>
+                    <span class="badge badge-primary trip-card trip-provided d-block">Trip</span>
+                <% }else{ %>
+                    <span class="badge badge-primary trip-card trip-request d-block">Trip Request</span>
+                <%}%>
+            </h3>
+            <!-- Row to contain trip image and essential information-->
+            <div class = "row g-0 h-100">
+                <!-- Column containing Google Map-->
+                <div class="col-md-6 d-flex align-items-center justify-content-center h-100 mb-3">
+                    <% if(trip.locationDetails) { %>
+                        <img 
+                            src="https://maps.googleapis.com/maps/api/staticmap?size=400x200&markers=color:green|label:A|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>&markers=color:red|label:B|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>&path=color:0x0000ff|weight:5|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>&key=<%=GoogleMapsAPIKey%>" 
+                            alt="Trip route map"
+                            class="img-fluid rounded"
+                            style="width: 100%; height: auto; object-fit: cover; "
+                        >
+                    <% } else { %>
+                        <div class="alert alert-warning">Map data unavailable</div>
+                    <% } %>
+                </div>
+                <!-- Column containing ride info-->
+                <div class="col-md-6 d-flex flex-column align-items-start justify-content-center h-100 mb-3">
+                    <span class = "trip-feed-card-field">
+                        <p class="trip-field"><b>Trip Length:</b> <%= trip.length %> </p>
+                    </span>
+                    <span class = "trip-feed-card-field">
+                        <p class="trip-field"><b>Leaving from:</b> <%= trip.origin %> </p>
+                    </span>
+                    <span class = "trip-feed-card-field">
+                        <p class="trip-field"><b>Destination:</b> <%= trip.destination %> </p>
+                    </span>
+                    <span class = "trip-feed-card-field">
+                        <p class="trip-field"><b>Price:</b> <%= trip.payment %> </p>
+                    </span>
+                    <span class = "trip-feed-card-field">
+                        <p class="trip-field"><b>Date:</b> <span class="trip-date"> <%= trip.date %> </span> </p>
+                    </span>
+                    <span class = "trip-feed-card-field">
+                        <p class="trip-field"><b>Time:</b> <span class="trip-time"> <%= trip.time %> </span></p>
+                    </span>
+                </div>
+            </div>
+            <!-- Bottom area with trip comments and buttons -->
+            <span class = "trip-feed-card-field">
+                <p class="trip-field"><b>Comment:</b> <%= trip.comments %> </p>
+            </span>
+            <div class = "buttonContainer d-flex justify-content-center">
+                <% if(user.id === trip.posterID){ %>
+                    <button class="btn btn-primary trip-info ms-2">Edit Trip</button>
+                    <button class="btn btn-primary trip-info-delete ms-2">Delete Trip</button>
+                <% }else if(trip.tripType === "Providing a ride"){ %>
+                <button class="btn btn-primary trip-info ms-2">Join Trip</button>
+                <% } %>
             </div>
         </div>
-
-        <!-- Right Column -->
+        <!-- Right Column (Car Information) -->
         <div class="col-md-6 d-flex flex-column">
             <!-- Card that is shown if this is a ride that is being provided -->
             <% if(trip.tripType === "Providing a ride"){ %>
@@ -82,9 +138,6 @@
                    <div class = "card text-center">
                        <div class = "card-body">
                                <h2 class="card-title">Car Information</h2>
-                               <span class = "ride-profile-subtext">
-                                   <p>Here is the information your trip's car and passengers</p>
-                               </span>
                        </div>
                    </div>
                 </div>
