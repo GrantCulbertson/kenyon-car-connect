@@ -19,8 +19,6 @@ const createTransporter = () => {
 //Function to send a email to a user with their verification code:
 // Function to send a verification email
 async function sendVerificationEmail(userEmail, verificationCode) {
-    console.log(process.env.BREVO_USER);
-    console.log(process.env.BREVO_SMTP_KEY);
     try {
       const transporter = createTransporter();
       

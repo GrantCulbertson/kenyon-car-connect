@@ -159,6 +159,30 @@ static async getAllTrips(){
     }
 }
 
+//------------------- Trip management functions ---------------------------------//
+//Function for a passenger to request to join a trip
+static async passengerRequestToJoinTrip(tripID, userID){
+    console.log("tripModel... passengerRequestToJoinTrip... running");
+    try{
+        const sql = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)"
+    }catch (error){
+        console.log("Error in tripModel... passengerRequestToJoinTrip");
+        throw error;
+    }
+}
+
+//Function to add a passenger to a trip
+static async addPassengerToTrip(tripID, userID){
+    console.log("tripModel... addPassengerToTrip... running");
+    try{
+        const sql = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)"
+    }catch (error){
+        console.log("Erorr in tripModel... addPassengerToTrip");
+        throw error;
+    }
+};
+
+
 
 //--------------------------- MISCELLANEOUS FUNCTIONS ---------------------------//
 // Function to calculate driving time and distance

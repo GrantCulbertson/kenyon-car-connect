@@ -234,6 +234,7 @@ h1 {
 .card.ride-profile{
     margin-top: 10px;
     margin-bottom: 50px;
+    height: 100%;
 }
 
 .card .card-body .card-title{
