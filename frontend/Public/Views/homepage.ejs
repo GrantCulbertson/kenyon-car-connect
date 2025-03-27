@@ -187,7 +187,7 @@
                                 <% if(trip.posterID === user.id){ %>
                                     <button class="btn btn-primary trip-feed ms-2" onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage your trip</button>
                                 <% }else{ %>
-                                    <button class="btn btn-primary trip-feed ms-2">Request to join (<%= trip.openSeats%> seats open)</button>
+                                    <button class="btn btn-primary trip-feed ms-2" onclick="location.href='/Trips/passengerRequestToJoinTrip/<%= trip.id %>'">Request to join (<%= trip.openSeats%> seats open)</button>
                                     <button class="btn btn-secondary trip-feed ms-2" onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Trip Info</button>
                                 <% } %>
                             </div>

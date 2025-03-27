@@ -9,6 +9,8 @@ require('dotenv').config();
 
 //----------------------- DEFINE TRIP CONTROLLER ------------------------// 
 
+//---------------------- FUNCTIONS THAT RENDER PAGES -------------------//
+
 //Function to render the trip posting page
 exports.postTripPage = (req, res) => {
     console.log("tripController... postTripPage... running");
@@ -41,6 +43,31 @@ exports.viewTripPage = async (req,res) => {
         }
     }
 }
+
+//Function to render the your trips page
+exports.yourTripsPage = async (req, res) => {
+    console.log("tripController... yourTripsPage... running");
+    const token = req.cookies.auth_token; // Get token from cookies
+    if(!token){
+        return res.redirect("/"); //Send user back to homepage if they don't have cookies associated with them, they should not be able to access this page.
+    }else{
+        try{
+            const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+            const userID = decoded.id; //Get the user id from the decoded token
+            const trips = await Trip.getTripsByUserID(userID); //Get all trips associated with the user
+            if(trips){
+                res.render("yourtrips", {trips}); //Render the your trips page and pass the trips associated with the user
+            }else{
+                res.render("yourtrips", {trips: []}); //Render the page with no trips if nothing is found for the user
+            }
+        }catch(err){
+            console.log(err);
+            res.redirect("/"); //If error, redirect to homepage
+        }
+    }
+};
+
+//---------------------- FUNCTIONS THAT HANDLE DATA -------------------//
 
 //Function to create a trip from the posting page
 exports.createTrip = async (req, res) => {
@@ -76,25 +103,24 @@ exports.createTrip = async (req, res) => {
     }
 };
 
-//Function to render the your trips page
-exports.yourTripsPage = async (req, res) => {
-    console.log("tripController... yourTripsPage... running");
-    const token = req.cookies.auth_token; // Get token from cookies
+//Function for a passenger to request to join a trip
+exports.passengerRequestToJoinTrip = async (req,res) => {
+    console.log("tripController... passengerRequestToJoinTrip... running");
+    const token = req.cookies.auth_token;
+    const tripID = req.params.id; //Grab trip ID from page URL
     if(!token){
-        return res.redirect("/"); //Send user back to homepage if they don't have cookies associated with them, they should not be able to access this page.
+        res.redirect("/") //Send to homepage if they have no cookies, should not be able to request to join a trip
     }else{
         try{
-            const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
-            const userID = decoded.id; //Get the user id from the decoded token
-            const trips = await Trip.getTripsByUserID(userID); //Get all trips associated with the user
-            if(trips){
-                res.render("yourtrips", {trips}); //Render the your trips page and pass the trips associated with the user
-            }else{
-                res.render("yourtrips", {trips: []}); //Render the page with no trips if nothing is found for the user
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const userID = decoded.id;
+            const insert = Trip.passengerRequestToJoinTrip(tripID, userID);
+            if(insert){
+                //Redirect to homepage with a success query paramater
             }
         }catch(err){
-            console.log(err);
-            res.redirect("/"); //If error, redirect to homepage
+            console.log("Error in tripController... passengerRequestToJoinTrip..." , err);
+            res.redirect("/") //If error, redirect to homepage
         }
     }
 };

@@ -165,19 +165,35 @@ static async passengerRequestToJoinTrip(tripID, userID){
     console.log("tripModel... passengerRequestToJoinTrip... running");
     try{
         const sql = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)"
+        const passengerStatus = "Requesting"
+        const pararms = [tripID, userID, passengerStatus];
+        const insert = await db.query(sql,params);
+        if(insert.affectedRows){
+            return true;
+        }else{
+            return false;
+        }
     }catch (error){
         console.log("Error in tripModel... passengerRequestToJoinTrip");
         throw error;
     }
 }
 
-//Function to add a passenger to a trip
+//Function to add a passenger to a trip (updating their status to accepted)
 static async addPassengerToTrip(tripID, userID){
     console.log("tripModel... addPassengerToTrip... running");
     try{
-        const sql = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)"
+        const sql = "UPDATE tripPassengers SET passengerStatus = ? WHERE tripID = ? AND userID = ?"
+        const passengerStatus = "Accepted";
+        const params = [passengerStatus, tripID, userID];
+        const update = await db.query(sql,params)
+        if(update.affectedRows){
+            return true
+        }else{
+            return false
+        }
     }catch (error){
-        console.log("Erorr in tripModel... addPassengerToTrip");
+        console.log("Error in tripModel... addPassengerToTrip");
         throw error;
     }
 };
