@@ -34,6 +34,11 @@
                         <li class = "nav-item">
                             <a href="/Trips/yourTrips" class="btn btn-info me-3" role="button">
                                 <i class="fa-solid fa-bell"></i> Your Trips
+                                <% if (requestCount > 0) { %>
+                                    <span class="badge badge-danger badge-requests position-absolute top-0 start-100 translate-middle">
+                                        <%= requestCount %>
+                                    </span>
+                                <% } %>
                             </a>
                         </li>
                         <!-- Dropdown for profile and logout-->

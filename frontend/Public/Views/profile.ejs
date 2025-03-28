@@ -32,6 +32,11 @@
                     <li class = "nav-item">
                         <a href="/Trips/yourTrips" class="btn btn-info me-3" role="button">
                             <i class="fa-solid fa-bell"></i> Your Trips
+                            <% if (requestCount > 0) { %>
+                                <span class="badge badge-danger badge-requests position-absolute top-0 start-100 translate-middle">
+                                    <%= requestCount %>
+                                </span>
+                            <% } %>
                         </a>
                     </li>
                     <!-- Dropdown for profile and logout-->
@@ -44,13 +49,13 @@
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
                             <!-- Profile Button Information -->
                             <li>
-                                <a href="/User/Profile" class="dropdown-item">
+                                <a href="/User/Profile" class="dropdown-item" role="button">
                                     <i class="fa-solid fa-user"></i> Profile
                                 </a>
                             </li>
                             <!-- Logout Button Information -->
                             <li>
-                                <a href="/User/LogoutUser" class="dropdown-item">
+                                <a href="/User/LogoutUser" class="dropdown-item" role="button">
                                     <i class="fa-solid fa-right-from-bracket"></i> Logout
                                 </a>
                             </li>

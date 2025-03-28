@@ -131,7 +131,7 @@ static async getTripsByUserID(userID){
 //Function to get a trip by tripID
 static async getTripById(tripId) {
     try {
-        console.log(tripId);
+        console.log("tripMode... getTripById... running");
         const sql = 'SELECT * FROM tripData WHERE id = ?';
         const trips = await db.query(sql, [tripId]);
         if (trips.length > 0) {
@@ -176,6 +176,24 @@ static async getAllTrips(){
         }
     }catch (error){
         console.log("Error in getAllTrips:", error);
+        throw error;
+    }
+}
+
+
+//Function to get trip requests for a given userID
+static async countTripRequestsByUser(userID) {
+    try {
+        const sql = `
+            SELECT COUNT(*) AS requestCount
+            FROM tripPassengers tp
+            JOIN tripData td ON tp.tripID = td.id
+            WHERE td.posterID = ? AND tp.passengerStatus = 'Requesting'
+        `;
+        const result = await db.query(sql, [userID]);
+        return result[0].requestCount; // Return the count
+    } catch (error) {
+        console.log("Error in countTripRequestsByUser:", error);
         throw error;
     }
 }

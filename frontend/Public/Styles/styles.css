@@ -107,6 +107,14 @@ h1 {
     color: #FCF7FF !important;
 }
 
+.badge.badge-requests {
+    background-color: #dc3545 !important; /* Red color */
+    color: white;
+    font-size: 0.75rem;
+    border-radius: 50%;
+    position: absolute;
+}
+
 /* -------------- Styles for homepage ---------------- */
 
 /* Styling for the homepage header */

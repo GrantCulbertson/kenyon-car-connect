@@ -32,6 +32,28 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware to make user request count available on every page
+app.use(async (req, res, next) => {
+  if (req.cookies.auth_token) {
+    try {
+      const decoded = jwt.verify(req.cookies.auth_token, process.env.JWT_SECRET);
+      const userID = decoded.id;
+
+      // Fetch the trip request count
+      const requestCount = await Trip.countTripRequestsByUser(userID);
+
+      // Make the request count available to all views
+      res.locals.requestCount = requestCount;
+    } catch (error) {
+      console.log("Error in fetching trip request count:", error);
+      res.locals.requestCount = 0; // Default to 0 if there's an error
+    }
+  } else {
+    res.locals.requestCount = 0; // Default to 0 if the user is not logged in
+  }
+  next();
+});
+
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'frontend/Public/Views'));
@@ -64,7 +86,7 @@ app.use('/Trips',tripRoutes);
 
 
 
-//Import the Trip Model
+//Import the Trip & User Model
 const {Trip} = require('./backend/models/tripModel');
 
 // Serving the homepage and trip feed
