@@ -151,7 +151,27 @@ h1 {
 }
 
 
+
+
 /* Styling for buttons on cards in trip feed */
+.buttonContainer{
+    width: 100% !important; /* Ensure the container spans the full width of the card */
+    margin-top: 1rem; /* Optional: Add spacing above the buttons */
+    margin-bottom: 1rem; /* Optional: Add spacing below the buttons */
+}
+
+.buttonContainer form {
+    width: 100%; /* Ensure the form spans the full width of the container */
+    display: flex; /* Use flexbox to align buttons side by side */
+    justify-content: space-between; /* Add spacing between buttons */
+}
+
+.buttonContainer .btn {
+    width: 100% !important;
+    flex: 1;
+    padding: 1rem 1.5rem;
+}
+
 .btn.btn-primary.trip-feed.ms-2{
     background-color:#00523A !important;
     width: 100%;
@@ -164,8 +184,7 @@ h1 {
 /* Styling for buttons on cards in trip feed */
 .btn.btn-secondary.trip-feed.ms-2{
     background-color:#00523A !important;
-    margin-left: 50px;
-    width: 100%;
+    margin-left: 10% !important;
 }
 
 .btn.btn-secondary.trip-feed.ms-2:hover{
@@ -396,7 +415,7 @@ h1 {
 }
 
 
-/* Styling for trip page */
+/* ----------------- Styling for trip page ----------------------- */
 .btn.btn-primary.trip-info{
     width: 75%;
 }

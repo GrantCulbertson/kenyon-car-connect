@@ -4,6 +4,10 @@
 const e = require('express');
 let db = require('../../db');
 
+//Load in email service:
+let emailServices = require('../../email');
+
+
 //Setup google maps api for trip calculations
 const { Client } = require("@googlemaps/google-maps-services-js");
 const dotenv = require("dotenv");
@@ -141,6 +145,23 @@ static async getTripById(tripId) {
     }
 }
 
+static async getEmailByPosterID(posterID){
+    console.log("tripModel... getEmailByPosterID... running");
+    try{
+        const sql = 'SELECT email FROM userData WHERE id = ?';
+        const params = [posterID];
+        const result = await db.query(sql,params);
+        if(result.length > 0){
+            const posterEmail = result[0].email;
+            return posterEmail
+        }else{
+            return false
+        }
+    }catch (error){
+        console.log("Error in tripModel... getEmailByPosterID")
+    }
+}
+
 //Function to pull all trips from database (used for trip feed)
 static async getAllTrips(){
     console.log("tripModel... getAllTrips... running");
@@ -161,17 +182,39 @@ static async getAllTrips(){
 
 //------------------- Trip management functions ---------------------------------//
 //Function for a passenger to request to join a trip
-static async passengerRequestToJoinTrip(tripID, userID){
+static async passengerRequestToJoinTrip(tripID, userID, user){
     console.log("tripModel... passengerRequestToJoinTrip... running");
     try{
+        // Check if the user is already requesting or has joined the trip
+        const checkSql = "SELECT * FROM tripPassengers WHERE tripID = ? AND userID = ?";
+        const checkParams = [tripID, userID];
+        const existingRequest = await db.query(checkSql, checkParams);
+
+        if (existingRequest.length > 0) {
+            console.log("User is already requesting or has joined this trip.");
+            return { success: false};
+        }
+
+        //If no existing trip request add the request to the database
         const sql = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)"
         const passengerStatus = "Requesting"
-        const pararms = [tripID, userID, passengerStatus];
-        const insert = await db.query(sql,params);
+        const params = [tripID, userID, passengerStatus];
+        const insert = await db.query(sql, params);
+
         if(insert.affectedRows){
-            return true;
+            //Send an email to the poster of the trip that someone has requested to join it
+            const trip = await Trip.getTripById(tripID);
+            const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
+            console.log(posterEmail);
+            const acceptUrl = "/Trips/addPassengerToTrip/" + userID;
+            const rejectUrl = "Trips/rejectPassengerRequest/" + userID;
+            if(posterEmail){
+                const sendEmail = await emailServices.sendRideRequestEmail(posterEmail, trip.title, acceptUrl, rejectUrl)
+            }
+            //Return true if passenger requested successfully
+            return { success: true};
         }else{
-            return false;
+            return { success: false};
         }
     }catch (error){
         console.log("Error in tripModel... passengerRequestToJoinTrip");

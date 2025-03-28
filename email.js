@@ -46,4 +46,43 @@ async function sendVerificationEmail(userEmail, verificationCode) {
     }
   };
 
-module.exports = {sendVerificationEmail};
+
+//Function to send an email that someone has requested to join your ride:
+async function sendRideRequestEmail(userEmail, tripName, acceptUrl, rejectUrl) {
+  try {
+      const transporter = createTransporter();
+      console.log(userEmail, tripName, acceptUrl, rejectUrl)
+      
+      const mailOptions = {
+          from: process.env.FROM_EMAIL,
+          to: userEmail,
+          subject: "KCC - Someone wants to join your ride!",
+          text: `Someone has requested to join your ride. Trip: "${tripName}". Accept: ${acceptUrl} Reject: ${rejectUrl}`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2>Ride Request</h2>
+                  <p>Someone has requested to join your ride:</p>
+                  <p>${tripName}</p>
+                  <p>Click below to accept or reject the request:</p>
+                  <p>
+                      <a href="${acceptUrl}" style="padding:10px 20px; background-color:green; color:white; text-decoration:none;">Accept</a>
+                      &nbsp;&nbsp;
+                      <a href="${rejectUrl}" style="padding:10px 20px; background-color:red; color:white; text-decoration:none;">Reject</a>
+                  </p>
+                  <p>Thanks,</p>
+                  <p>Kenyon Car-Connect</p>
+              </div>
+          `
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.messageId);
+      return true;
+  } catch (error) {
+      console.error('Error sending ride request email:', error);
+      return false;
+  }
+}
+
+
+module.exports = {sendVerificationEmail, sendRideRequestEmail};

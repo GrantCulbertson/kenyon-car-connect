@@ -114,15 +114,23 @@ exports.passengerRequestToJoinTrip = async (req,res) => {
         try{
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userID = decoded.id;
-            const insert = Trip.passengerRequestToJoinTrip(tripID, userID);
-            if(insert){
+            const result = Trip.passengerRequestToJoinTrip(tripID, userID, decoded);
+            if(result.success){
                 //Redirect to homepage with a success query paramater
+                return res.redirect("/?success=joinTrip");
+            }else{
+                // Redirect to homepage with an error query parameter
+                return res.redirect(`/?error=joinTrip`);
             }
         }catch(err){
             console.log("Error in tripController... passengerRequestToJoinTrip..." , err);
-            res.redirect("/") //If error, redirect to homepage
+            res.redirect("/?error=serverError") //If error, redirect to homepage.
         }
     }
+};
+
+exports.acceptPassengerRequest = async (req, res) => {
+
 };
 
 
