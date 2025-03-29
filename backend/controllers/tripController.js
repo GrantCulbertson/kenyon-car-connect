@@ -56,13 +56,21 @@ exports.yourTripsPage = async (req, res) => {
             const userID = decoded.id; //Get the user id from the decoded token
             const trips = await Trip.getTripsByUserID(userID); //Get all trips associated with the user
             if(trips){
+                //Iterate through trips and add passengers requesting to join
+                for(const trip of trips){
+                    if(trip.posterID === userID && trip.tripType === "Providing a ride"){
+                        trip.passengersRequesting = await Trip.getPassengersRequestingByTripID(trip.id);
+                    }else{
+                        trip.passengersRequesting = [];
+                    }
+                }
                 res.render("yourtrips", {trips}); //Render the your trips page and pass the trips associated with the user
             }else{
                 res.render("yourtrips", {trips: []}); //Render the page with no trips if nothing is found for the user
             }
         }catch(err){
-            console.log(err);
-            res.redirect("/"); //If error, redirect to homepage
+            console.log("Error in tripController... yourTripsPage...", err);
+            res.redirect('/?error=serverError') //If error, redirect to homepage
         }
     }
 };

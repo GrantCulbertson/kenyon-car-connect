@@ -355,6 +355,7 @@ h1 {
     
     /* Margin for responsiveness */
     margin: 40px auto; /* Center the box horizontally */
+    margin-bottom: 0 !important;
 
     /* Padding and border radius */
     padding: 10px 20px;
@@ -362,6 +363,64 @@ h1 {
     
     /* Ensure box-sizing includes padding and border */
     box-sizing: border-box;
+}
+
+/* Remove bottom border radius if there is a passenger box below */
+.poster-trip-box.no-bottom-radius {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Styling for passenger request box under each of your trips */
+.passengers-requesting-box {
+    margin: 0 auto; /* Remove top margin */
+    background-color: #9989B4 !important; /* Background color */
+    color: #FCF7FF !important; /* Text color */
+    font-family: 'Helvetica', sans-serif !important;
+    
+    /* Make the box take up a consistent width percentage */
+    width: 60%; /* Adjust percentage based on design preference */
+    max-width: 800px; /* Prevent it from getting too wide on large screens */
+    min-width: 300px; /* Ensure it doesn’t become too small */
+    
+    /* Ensure height adjusts based on content */
+    height: auto; 
+
+    /* Center the box horizontally */
+
+
+    /* Flexbox to keep text and button in a row */
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    padding: 10px 20px;
+    border-radius: 0 0 0.5rem 0.5rem; /* Rounded corners on bottom */
+    border-top: none;
+    box-sizing: border-box; /* Ensure padding and border are included in width/height */
+}
+
+.passengers-requesting-box h6 {
+    font-weight: bold;
+    margin-bottom: 1rem; 
+    text-align: center;   
+}
+
+.passengers-requesting-box ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.passengers-requesting-box li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.passengers-requesting-box li:last-child {
+    border-bottom: none; /* Remove border for the last item */
+}
+
+.passengers-requesting-box .btn {
+    margin-left: 0.5rem;
 }
 
 /* Ensure the text section takes up available space without pushing the button down */

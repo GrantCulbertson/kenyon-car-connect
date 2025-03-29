@@ -145,6 +145,7 @@ static async getTripById(tripId) {
     }
 }
 
+//Function to get the email of the user who posted an ID
 static async getEmailByPosterID(posterID){
     console.log("tripModel... getEmailByPosterID... running");
     try{
@@ -194,6 +195,24 @@ static async countTripRequestsByUser(userID) {
         return result[0].requestCount; // Return the count
     } catch (error) {
         console.log("Error in countTripRequestsByUser:", error);
+        throw error;
+    }
+}
+
+//Function to get all passengers requesting to join a trip
+static async getPassengersRequestingByTripID(tripID) {
+    console.log("tripModel... getPassengersRequestingByTripID... running")
+    try {
+        const sql = `
+            SELECT u.id, u.firstName, u.lastName, u.email
+            FROM tripPassengers tp
+            JOIN userData u ON tp.userID = u.id
+            WHERE tp.tripID = ? AND tp.passengerStatus = 'Requesting'
+        `;
+        const passengers = await db.query(sql, [tripID]);
+        return passengers; // Return the list of passengers
+    } catch (error) {
+        console.log("Error in getPassengersRequestingByTripID:", error);
         throw error;
     }
 }

@@ -80,15 +80,39 @@
         <!-- Iterate through trips passed to page-->
         <% trips.forEach(trip => { %>
             <% if(trip.posterID == user.id) { %>
-                <div class = "poster-trip-box px-3 py-2">
-                    <div id = "trip-badge">
-                        <span class="badge badge-primary your-trips poster d-block">Poster</span>
+                <!-- What is shown if the user is providing a ride -->
+                    <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
+                        <div id = "trip-badge">
+                            <span class="badge badge-primary your-trips poster d-block">Poster</span>
+                        </div>
+                        <div id = "trip-box-text">
+                            <p> <%= trip.title %> </p>
+                        </div>
+                        <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
                     </div>
-                    <div id = "trip-box-text">
-                        <p> <%= trip.title %> </p>
-                    </div>
-                    <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
-                </div>
+                    <!-- Show passengers requesting to join trip if they are providing a ride-->
+                    <% if (trip.tripType === "Providing a ride" && trip.passengersRequesting.length > 0) { %>
+                        <div class="passengers-requesting-box px-3 py-2">
+                            <h6>Passengers Requesting to Join</h6>
+                            <ul class="list-unstyled">
+                                <% trip.passengersRequesting.forEach(passenger => { %>
+                                    <li class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>
+                                            <b><%= passenger.firstName %> <%= passenger.lastName %></b>
+                                        </span>
+                                        <div>
+                                            <form action="/Trips/acceptPassengerRequest/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                            </form>
+                                            <form action="/Trips/denyPassengerRequest/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm">Deny</button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    <% } %>
             <% } %>
         <% }); %>
     </div>
