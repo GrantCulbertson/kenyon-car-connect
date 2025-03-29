@@ -26,6 +26,10 @@ router.post("/passengerRequestToJoinTrip/:id", tripController.passengerRequestTo
 //Route for a driver to accept a request to join their trip
 router.post("/acceptPassengerRequest/:id" , tripController.acceptPassengerRequest);
 
+//Route for a driver to deny a request to join their trip
+router.post("/denyPassengerRequest/:id" , tripController.denyPassengerRequest);
+
+
 
 
 

@@ -217,6 +217,24 @@ static async getPassengersRequestingByTripID(tripID) {
     }
 }
 
+//Function to get all passengers accepted to a trip
+static async getTripPassengers(tripID){
+    console.log("tripModel... getTripPassengers running for trip: ", tripID);
+    try{
+        const sql = `
+            SELECT u.id, u.firstName, u.lastName, u.email
+            FROM tripPassengers tp
+            JOIN userData u ON tp.userID = u.id
+            WHERE tp.tripID = ? AND tp.passengerStatus = 'Accepted'
+        `;
+        const passengers = await db.query(sql, [tripID]);
+        return passengers; //Return the list of passengers;
+    }catch (error){
+        console.log("Error in tripModel... getTripPassengers... for trip:", tripID);
+        throw error;
+    }
+}
+
 //------------------- Trip management functions ---------------------------------//
 //Function for a passenger to request to join a trip
 static async passengerRequestToJoinTrip(tripID, userID, user){
@@ -226,7 +244,7 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
         const checkSql = "SELECT * FROM tripPassengers WHERE tripID = ? AND userID = ?";
         const checkParams = [tripID, userID];
         const existingRequest = await db.query(checkSql, checkParams);
-
+        
         if (existingRequest.length > 0) {
             console.log("User is already requesting or has joined this trip.");
             return { success: false};
@@ -240,15 +258,15 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
 
         if(insert.affectedRows){
             //Send an email to the poster of the trip that someone has requested to join it
-            const trip = await Trip.getTripById(tripID);
-            const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
-            console.log(posterEmail);
-            const acceptUrl = "/Trips/addPassengerToTrip/" + userID;
-            const rejectUrl = "Trips/rejectPassengerRequest/" + userID;
-            if(posterEmail){
-                const sendEmail = await emailServices.sendRideRequestEmail(posterEmail, trip.title, acceptUrl, rejectUrl)
-            }
+            // const trip = await Trip.getTripById(tripID);
+            // const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
+            // const acceptUrl = "/Trips/addPassengerToTrip/" + userID;
+            // const rejectUrl = "Trips/rejectPassengerRequest/" + userID;
+            // if(posterEmail){
+            //     const sendEmail = await emailServices.sendRideRequestEmail(posterEmail, trip.title, acceptUrl, rejectUrl)
+            // }
             //Return true if passenger requested successfully
+            console.log("User", userID, "successfully requested to join trip: ", tripID);
             return { success: true};
         }else{
             return { success: false};
@@ -260,17 +278,31 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
 }
 
 //Function to add a passenger to a trip (updating their status to accepted)
-static async addPassengerToTrip(tripID, userID){
-    console.log("tripModel... addPassengerToTrip... running");
+static async acceptPassengerRequest(tripID, userID){
+    console.log("tripModel... acceptPassengerRequest... running");
     try{
-        const sql = "UPDATE tripPassengers SET passengerStatus = ? WHERE tripID = ? AND userID = ?"
-        const passengerStatus = "Accepted";
-        const params = [passengerStatus, tripID, userID];
-        const update = await db.query(sql,params)
-        if(update.affectedRows){
-            return true
+        //Get # of open seats... don't allow request to be accepted if the car is full
+        trip = Trip.getTripById(tripID);
+        
+        if(trip.openSeats > 0){
+            //Update passenger status in the database to accepted
+            let sql = "UPDATE tripPassengers SET passengerStatus = ? WHERE tripID = ? AND userID = ?"
+            const passengerStatus = "Accepted";
+            let params = [passengerStatus, tripID, userID];
+            const updatePassengers = await db.query(sql,params)
+
+            //Update the number of open seats for the trip
+            sql = "UPDATE tripData SET openSeats = (openSeats - 1) WHERE id = ?";
+            params = [tripID];
+            const updateSeats = await db.query(sql,params);
+
+            if(updatePassengers.affectedRows > 0 && updateSeats.affectedRows > 0){
+                return {success: true, full: false};
+            }else{
+                return {success: false, full: false};
+            }
         }else{
-            return false
+            return {success: false, full: true};
         }
     }catch (error){
         console.log("Error in tripModel... addPassengerToTrip");

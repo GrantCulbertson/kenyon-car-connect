@@ -27,21 +27,29 @@ exports.viewTripPage = async (req,res) => {
     console.log("tripController... viewTripPage... running");
     const tripId = req.params.id; //Grab trip ID from page URL
     const token = req.cookies.auth_token;
+
     if(!token){
         return res.redirect("/"); //Return to homepage if they have no cookies, they should not be able to access this page
-    }else{
+    }
+
+    if (isNaN(tripId)){
+        return res.status(400).send("Invalid trip ID"); // Validate trip ID (recommendation of GPT)
+    }
+
         try{
             const trip = await Trip.getTripById(tripId);
             if(trip){
+                //Get passengers that are part of the trip (set  to empty array if no passengers)
+                trip.passengers = (await Trip.getTripPassengers(trip.id)) || [];
+                console.log(trip);
                 return res.render("trip", {trip, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
             }else{
                 res.status(404).send('Oops... trip not found');
             }
         }catch (err){
-            console.log(err);
+            console.log("Error in tripController... viewTripPage...", err);
             res.redirect("/"); //Return to homepage if there is an error
         }
-    }
 }
 
 //Function to render the your trips page
@@ -122,7 +130,8 @@ exports.passengerRequestToJoinTrip = async (req,res) => {
         try{
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const userID = decoded.id;
-            const result = Trip.passengerRequestToJoinTrip(tripID, userID, decoded);
+            const result = await Trip.passengerRequestToJoinTrip(tripID, userID, decoded);
+            console.log(result.success);
             if(result.success){
                 //Redirect to homepage with a success query paramater
                 return res.redirect("/?success=joinTrip");
@@ -138,7 +147,50 @@ exports.passengerRequestToJoinTrip = async (req,res) => {
 };
 
 exports.acceptPassengerRequest = async (req, res) => {
+    console.log("tripController... acceptPassengerRequest... running");
+    const token = req.cookies.auth_token;
+    if(!token){
+        res.redirect("/") //Shouldn't be able to accept if they aren't logged in
+    }else{
+        try{
+            const passengerID = req.params.id; //Get passed passengerID from URL
+            const tripID = req.query.tripID; //Get passed tripID from query param in URL
 
+            const requestStatus = await Trip.acceptPassengerRequest(tripID, passengerID);
+            //Redirect to yourTrips page with success if request was sent successfully
+            if(requestStatus.full === false && requestStatus.success){
+                res.redirect('/Trips/yourTrips');
+            //Redirect to yourTrips page with failure if request was not successful
+            }else if(requestStatus.full === false && requestStatus.success === false){
+                res.redirect('/Trips/yourTrips?error=acceptPassengerRequest');
+            //Redirect to yourTrips page with error that the trip is full and you can't accept more riders
+            }else if (requestStatus.full === true){
+                res.redirect('/Trips/yourTrips?error=tripFull');
+            }
+        }catch (error){
+            console.log("Error in tripController... acceptPassengerRequest...", error);
+            res.redirect('/Trips/yourTrips?error=serverError');
+        }
+    }
+};
+
+exports.denyPassengerRequest = async (req, res) => {
+    console.log("tripController... denyPassengerRequest... running");
+    const token = req.cookies.auth_token;
+    if(!token){
+        res.redirect("/") //Shouldn't be able to accept if they aren't logged in
+    }else{
+        try{
+            const passengerID = req.params.id; //Get passed passengerID from URL
+            const tripID = req.query.tripID; //Get passed tripID from query param in URL
+
+            await Trip.denyPassengerRequest(tripID, passengerID);
+            res.redirect('/Trips/yourTrips');
+        }catch (error){
+            console.log("Error in tripController... denyPassengerRequest...", error);
+            res.redirect('/Trips/yourTrips?error=serverError');
+        }
+    }
 };
 
 

@@ -50,9 +50,7 @@ async function sendVerificationEmail(userEmail, verificationCode) {
 //Function to send an email that someone has requested to join your ride:
 async function sendRideRequestEmail(userEmail, tripName, acceptUrl, rejectUrl) {
   try {
-      const transporter = createTransporter();
-      console.log(userEmail, tripName, acceptUrl, rejectUrl)
-      
+      const transporter = createTransporter();      
       const mailOptions = {
           from: process.env.FROM_EMAIL,
           to: userEmail,
