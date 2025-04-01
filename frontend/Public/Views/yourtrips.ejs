@@ -134,5 +134,47 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'joinTrip') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Successfully requested to join the trip!',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    //Popup for if you accept a passenger but the trip is full
+        if (urlParams.get('error') === 'tripFull') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'You cannot accept another passenger to this trip, the trip is full.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    //Popup for if rejecting a passenger request is not successful
+    if (urlParams.get('error') === 'denyPassengerRequest') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'Your attempt at rejecting the passenger request was unsuccessful. Please try again.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+</script>
 
 </body>

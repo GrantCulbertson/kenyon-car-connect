@@ -160,14 +160,48 @@
                                             <span>
                                                 <b><%= passenger.firstName %> <%= passenger.lastName %></b>
                                             </span>
-                                            <% if(user.id === trip.posterID){ %>
-                                                <div>
-                                                    <form action="/Trips/removePassenger/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
-                                                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                                                    </form>
-                                                </div>
-                                            <% } %>
+                                            <div>
+                                                <!-- Rider Profile Button -->
+                                                <button type="button" class="btn btn-primary ride-profile" data-toggle="modal" data-target="#riderProfileModal<%= passenger.id %>"> Ride Profile </button>
+                                                <!-- Remove Passenger Button (Only viewable for the trip poster)-->
+                                                <% if(user.id === trip.posterID){ %>
+                                                <form action="/Trips/removePassenger/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                                </form>
+                                                <% } %>
+                                            </div>
                                         </li>
+
+                                        <!-- Modal for each passengers Rider Profile-->
+                                            <div class="modal fade" id="riderProfileModal<%= passenger.id %>" tabindex="-1" role="dialog" aria-labelledby="riderProfileModalLabel<%= passenger.id %>" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="riderProfileModalLabel<%= passenger.id %>">
+                                                                <b>Ride Profile:</b> <%= passenger.firstName %> <%= passenger.lastName %>
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Ride Profile Information -->
+                                                            <% if (passenger.rideProfile) { %>
+                                                                <p><b>Pronouns:</b> <%= passenger.rideProfile.pronouns %></p>
+                                                                <p><b>Email:</b> <%= passenger.email %></p>
+                                                                <p><b>Preferred Conversation Level:</b> <%= passenger.rideProfile.conversationPreference %></p>
+                                                                <p><b>Preferred Music:</b> <%= passenger.rideProfile.preferredMusic %></p>
+                                                                <p><b>Bio:</b> <%= passenger.rideProfile.bio %></p>
+                                                            <% } else { %>
+                                                                <p>No ride profile information available for this passenger.</p>
+                                                            <% } %>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     <% }); %>
                                 </ul>
                             <!-- What is shown if a trip has no passengers-->
@@ -241,5 +275,29 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Script to parse date and time in trip postings -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Format the date for each trip
+        document.querySelectorAll('.trip-date').forEach(function(element) {
+            const date = new Date(element.textContent);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            element.textContent = date.toLocaleDateString('en-US', options);
+        });
+
+        // Format the time for each trip
+        document.querySelectorAll('.trip-time').forEach(function(element) {
+            const timeString = element.textContent.trim();
+            const [hours, minutes, seconds] = timeString.split(':');
+            const date = new Date();
+            date.setHours(hours);
+            date.setMinutes(minutes);
+            date.setSeconds(seconds.split('.')[0]); // Split to remove microseconds
+            const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+            element.textContent = date.toLocaleTimeString('en-US', options);
+        });
+    });
+</script>
 
 </body>

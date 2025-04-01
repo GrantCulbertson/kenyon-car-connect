@@ -163,6 +163,7 @@ exports.passengerRequestToJoinTrip = async (req,res) => {
     }
 };
 
+//Function to accept a passengers request to join a trip from the yourTrips page
 exports.acceptPassengerRequest = async (req, res) => {
     console.log("tripController... acceptPassengerRequest... running");
     const token = req.cookies.auth_token;
@@ -191,6 +192,7 @@ exports.acceptPassengerRequest = async (req, res) => {
     }
 };
 
+//Function to deny a passengers request from the yourTrips page
 exports.denyPassengerRequest = async (req, res) => {
     console.log("tripController... denyPassengerRequest... running");
     const token = req.cookies.auth_token;
@@ -201,14 +203,36 @@ exports.denyPassengerRequest = async (req, res) => {
             const passengerID = req.params.id; //Get passed passengerID from URL
             const tripID = req.query.tripID; //Get passed tripID from query param in URL
 
-            await Trip.denyPassengerRequest(tripID, passengerID);
-            res.redirect('/Trips/yourTrips');
+            const requestStatus = await Trip.denyPassengerRequest(tripID, passengerID);
+            //Redirect to yourTrips page with success if request was sent successfully
+            if(requestStatus.success){
+                res.redirect('/Trips/yourTrips');
+            }else{
+            //Redirect to yourTrips page with failure if request was not successful
+                res.redirect('/Trips/yourTrips?error=denyPassengerRequest');
+            }
         }catch (error){
             console.log("Error in tripController... denyPassengerRequest...", error);
             res.redirect('/Trips/yourTrips?error=serverError');
         }
     }
 };
+
+exports.deletePassengerFromTrip = async (req, res) => {
+    console.log("tripController... deletePassengerFromTrip... running");
+    const token = req.cookies.auth_token;
+    if(!token){
+        res.redirect("/") //Shouldn't be able to deny a passenger if you aren't logged in
+    }
+    try{
+        
+    }catch (error){
+        console.log("error in tripController... deletePassengerFromTrip...", error);
+        res.redirect('/Trips/viewTrip/' + tripID + '?error=serverError')
+    }
+}
+
+
 
 
 

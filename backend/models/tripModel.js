@@ -310,6 +310,47 @@ static async acceptPassengerRequest(tripID, userID){
     }
 };
 
+static async denyPassengerRequest(tripID, userID){
+    console.log("tripModel... denyPassengerRequest... running");
+    try{
+        //Delete the passenger request from the database
+        const sql = "DELETE FROM tripPassengers WHERE tripID = ? AND userID = ?";
+        const params = [tripID, userID];
+        const deleteRequest = await db.query(sql, params);
+
+        //Check if the deletion was successful (return success true if it was)
+        if(deleteRequest.affectedRows > 0){
+            return {success: true};
+        }else{
+            return {success: false};
+        }
+    }catch (error){
+        console.log("Error in tripModel... denyPassengerRequest");
+        throw error;
+    }
+}
+
+static async deletePassengerFromTrip(tripID, userID){
+    console.log("tripModel... deletePassengerFromTrip... running");
+    try{
+        //Delete the passenger request from the database
+        const sql = "DELETE FROM tripPassengers WHERE tripID = ? AND userID = ?";
+        const params = [tripID, userID];
+        const deleteRequest = await db.query(sql, params);
+
+        //Check if the deletion was successful (return success true if it was)
+        if(deleteRequest.affectedRows > 0){
+            return {success: true};
+        }else{
+            return {success: false};
+        }
+    }catch (error){
+        console.log("Error in tripModel... denyPassengerRequest");
+        throw error;
+    }
+
+}
+
 
 
 //--------------------------- MISCELLANEOUS FUNCTIONS ---------------------------//
