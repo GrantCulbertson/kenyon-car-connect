@@ -4,6 +4,7 @@ const e = require("express");
 const jwt = require("jsonwebtoken");
 const Trip = require("../models/tripModel").Trip; //Require User model
 const Car = require("../models/carModel").Car; //Require car model
+const RideProfile = require("../models/rideProfileModel").rideProfile; //Require ride profile model
 require('dotenv').config();
 
 
@@ -41,6 +42,22 @@ exports.viewTripPage = async (req,res) => {
             if(trip){
                 //Get passengers that are part of the trip (set  to empty array if no passengers)
                 trip.passengers = (await Trip.getTripPassengers(trip.id)) || [];
+                //Get ride profiles associated with trip passengers
+                for (const passenger of trip.passengers){
+                    const rideProfile = await RideProfile.getRideProfileByUserID(passenger.id);
+                    if(rideProfile){
+                        passenger.rideProfile = rideProfile;
+                    }else{
+                        passenger.rideProfile = null;
+                    }
+                }
+                //Get car information associated with the trip (if there is a car)
+                const car = await Car.getCarByUserID(trip.posterID);
+                if(car){
+                    trip.car = car;
+                }else{
+                    trip.car = null;
+                }
                 console.log(trip);
                 return res.render("trip", {trip, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
             }else{
@@ -150,7 +167,7 @@ exports.acceptPassengerRequest = async (req, res) => {
     console.log("tripController... acceptPassengerRequest... running");
     const token = req.cookies.auth_token;
     if(!token){
-        res.redirect("/") //Shouldn't be able to accept if they aren't logged in
+        res.redirect("/") //Shouldn't be able to accept passengers if they aren't logged in
     }else{
         try{
             const passengerID = req.params.id; //Get passed passengerID from URL

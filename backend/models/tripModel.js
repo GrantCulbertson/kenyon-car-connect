@@ -282,7 +282,7 @@ static async acceptPassengerRequest(tripID, userID){
     console.log("tripModel... acceptPassengerRequest... running");
     try{
         //Get # of open seats... don't allow request to be accepted if the car is full
-        trip = Trip.getTripById(tripID);
+        const trip = await Trip.getTripById(tripID);
         
         if(trip.openSeats > 0){
             //Update passenger status in the database to accepted
@@ -305,7 +305,7 @@ static async acceptPassengerRequest(tripID, userID){
             return {success: false, full: true};
         }
     }catch (error){
-        console.log("Error in tripModel... addPassengerToTrip");
+        console.log("Error in tripModel... acceptPassengerRequest");
         throw error;
     }
 };
