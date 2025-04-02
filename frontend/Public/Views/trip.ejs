@@ -230,6 +230,29 @@
 </div>
 
 
+<!-- Modal for deleting a trip -->
+<div class="modal fade" id="deleteTripModal" tabindex="-1" role="dialog" aria-labelledby="deleteTripModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTripModalLabel">Delete Trip</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this trip?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <form action="/Trips/deleteTrip/<%= trip.id %>" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
 
 <% }else{%>
@@ -275,6 +298,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <!-- Script to parse date and time in trip postings -->
 <script>
@@ -299,5 +324,26 @@
         });
     });
 </script>
+
+<!-- Scripts for success & error popups -->
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+
+    //Popup for if removing a passenger does not work
+    if (urlParams.get('error') === 'removePassenger') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'There was an error removing the passenger from your ride. Please try again.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+
+</script>
+
 
 </body>

@@ -58,7 +58,6 @@ exports.viewTripPage = async (req,res) => {
                 }else{
                     trip.car = null;
                 }
-                console.log(trip);
                 return res.render("trip", {trip, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
             }else{
                 res.status(404).send('Oops... trip not found');
@@ -100,7 +99,7 @@ exports.yourTripsPage = async (req, res) => {
     }
 };
 
-//---------------------- FUNCTIONS THAT HANDLE DATA -------------------//
+//---------------------- FUNCTIONS FOR TRIP MANAGEMENT -------------------//
 
 //Function to create a trip from the posting page
 exports.createTrip = async (req, res) => {
@@ -133,6 +132,27 @@ exports.createTrip = async (req, res) => {
             console.log(err);
             res.redirect("/Trips/postTrip"); //If error, redirect to post trip page
         }
+    }
+};
+
+exports.deleteTrip = async (req, res) => {
+    console.log("tripController... deleteTrip... running");
+    const token = req.cookies.auth_token; // Get token from cookies
+    if(!token){
+        return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to delete a trip
+    }
+
+    try{
+        const tripID = req.params.id; //Get trip ID from URL
+        const requestStatus = await Trip.deleteTrip(tripID); //Delete the trip from the database
+        if(requestStatus.success){
+            res.redirect('/Trips/yourTrips'); //Redirect to your trips page if trip is deleted successfully
+        }else{
+            res.redirect('/Trips/viewTrip/' + tripID + '?error=deleteTrip'); //Redirect to trip page with error if trip is not deleted successfully
+        }
+    }catch(error){
+        console.log("Error in tripController... deleteTrip...", error);
+        res.redirect("/Trips/viewTrip/" + tripID + '?error=serverError'); //If error, redirect to trip page with error message
     }
 };
 
@@ -225,7 +245,17 @@ exports.deletePassengerFromTrip = async (req, res) => {
         res.redirect("/") //Shouldn't be able to deny a passenger if you aren't logged in
     }
     try{
-        
+        const passengerID = req.params.id; //Get passed passengerID from URL
+        const tripID = req.query.tripID; //Get passed tripID from query param in URL
+
+        const requestStatus = await Trip.deletePassengerFromTrip(tripID, passengerID);
+        if(requestStatus.success){
+        //Redirect to trip page if passenger is removed successfully
+            res.redirect('/Trips/viewTrip/' + tripID);
+        }else{
+        //Redirect to trip page with failure if request was not successful
+            res.redirect('/Trips/viewTrip/' + tripID + '?error=removePassenger');
+        }
     }catch (error){
         console.log("error in tripController... deletePassengerFromTrip...", error);
         res.redirect('/Trips/viewTrip/' + tripID + '?error=serverError')

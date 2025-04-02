@@ -338,6 +338,11 @@ static async deletePassengerFromTrip(tripID, userID){
         const params = [tripID, userID];
         const deleteRequest = await db.query(sql, params);
 
+        //Update the number of open seats for the trip
+        sql = "UPDATE tripData SET openSeats = (openSeats + 1) WHERE id = ?";
+        params = [tripID];
+        const updateSeats = await db.query(sql,params);
+
         //Check if the deletion was successful (return success true if it was)
         if(deleteRequest.affectedRows > 0){
             return {success: true};
@@ -349,6 +354,35 @@ static async deletePassengerFromTrip(tripID, userID){
         throw error;
     }
 
+}
+
+static async deleteTrip (tripID){
+    console.log("tripModel... deleteTrip... running");
+    try{
+        //Delete the trip from the database
+        const sql = 'DELETE FROM tripData where ID = ?';
+        const params = [tripID];
+        const deleteTrip = await db.query(sql, params);
+
+        if(deleteTrip.affectedRows > 0 ){   
+            //Move ahead with deleting all passengers associated with the trip
+            const passengers = await Trip.getTripPassengers(tripID)   //Get number of passengers associated with the trip
+            if(passengers.length > 0){
+                //Delete all passengers associated with the trip
+                const sql = 'DELETE FROM tripPassengers where tripID = ?';
+                const params = [tripID];
+                const deletePassengers = await db.query(sql, params);
+                if(deletePassengers.affectedRows > 0){
+                    return {success: true};
+                }
+            }else{
+                return {success: true}; //If there are no passengers, return success true
+            }
+        }
+    }catch (error){
+        console.log("Error in tripModel... deleteTrip");
+        throw error;
+    }
 }
 
 

@@ -29,6 +29,11 @@ router.post("/acceptPassengerRequest/:id" , tripController.acceptPassengerReques
 //Route for a driver to deny a request to join their trip
 router.post("/denyPassengerRequest/:id" , tripController.denyPassengerRequest);
 
+//Route for a driver to remove a passenger from their trip
+router.post("/removePassenger/:id" , tripController.deletePassengerFromTrip)
+
+//Route for a driver to delete a trip:
+router.post("/deleteTrip/:id", tripController.deleteTrip);
 
 
 
