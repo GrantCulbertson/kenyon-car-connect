@@ -123,7 +123,7 @@
             </span>
             <div class = "buttonContainer d-flex justify-content-center">
                 <% if(user.id === trip.posterID){ %>
-                    <button class="btn btn-primary trip-info ms-2">Edit Trip</button>
+                    <!-- <button class="btn btn-primary trip-info ms-2">Edit Trip</button> -->
                     <button class="btn btn-primary trip-info-delete ms-2" data-toggle = "modal" data-target = "#deleteTripModal">Delete Trip</button>
                 <% }else if(trip.tripType === "Providing a ride"){ %>
                     <button class="btn btn-primary trip-info ms-2">Join Trip</button>
@@ -139,19 +139,34 @@
                        <div class = "card-body">
                             <h2 class="card-title">Car Information</h2>
                             <% if(trip.car != null){ %>
-                                <span class = "car-information-card-field">
-                                    <p class="card-text"><b>Make & Model:</b> <%= trip.car.make %> <%= trip.car.model %> </p>
-                                </span>
-                                <span class = "car-information-card-field">
-                                    <p class="card-text"><b>License Plate:</b> <%= trip.car.licensePlate %></p>
-                                </span>
-                                <span class = "car-information-card-field">
-                                    <p class="card-text"><b>Color:</b> <%= trip.car.color %></p>
-                                </span>
+                                <div class="d-flex align-items-center">
+                                    <div class="px-3 py-2 bg-secondary text-white trip-page-label-box border">
+                                        Make & Model:
+                                    </div>
+                                    <div class="px-3 py-2 bg-light border trip-page-info-box">
+                                        <%= trip.car.make %> <%= trip.car.model %>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="px-3 py-2 bg-secondary text-white trip-page-label-box border">
+                                        License Plate:
+                                    </div>
+                                    <div class="px-3 py-2 bg-light border trip-page-info-box">
+                                        <%= trip.car.licensePlate %>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="px-3 py-2 bg-secondary text-white trip-page-label-box border">
+                                        Color:
+                                    </div>
+                                    <div class="px-3 py-2 bg-light border trip-page-info-box">
+                                        <%= trip.car.color %>
+                                    </div>
+                                </div>
                             <% } %>
-                            <span class = "car-information-card-field">
-                            <p class="card-text"><b>Passengers</b></p>
                             <!-- List of passengers-->
+                            <h2 class="card-title-passengers">Passenger List</h2>
+                            <span class = "car-information-card-field">
                             <!-- What is shown if the trip does have passengers -->
                             <% if(trip.passengers.length > 0){ %>
                                 <ul class = "list-unstyled">
@@ -206,7 +221,7 @@
                                 </ul>
                             <!-- What is shown if a trip has no passengers-->
                             <% }else{ %>
-                                <p class = "no-passengers">No passengers yet</p>
+                                <p class = "no-passengers"><i>No passengers yet</i></p>
                             <% } %>   
                             </span>
                        </div>

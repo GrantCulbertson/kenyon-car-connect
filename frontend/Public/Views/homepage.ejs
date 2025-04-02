@@ -327,6 +327,33 @@
         const newUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, newUrl);
     }
+
+//General error message shown if the user has tried an action which they must be verified for and aren't.
+    if (urlParams.get('error') === 'notVerified') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'You need a verified email to perform this action. Please verify your email from your profile page.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+//Error message shown for if the user has already requested
+    if (urlParams.get('error') === 'alreadyRequested') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'You have already requested to join this ride. You cannot request again until your previous request is either accepted or denied.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+       
 </script>
 
 </body>

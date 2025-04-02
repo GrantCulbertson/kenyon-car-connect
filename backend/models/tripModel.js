@@ -235,6 +235,24 @@ static async getTripPassengers(tripID){
     }
 }
 
+//Function to check whether a user has already requested to join a trip
+static async checkForPassengerRequest(tripID, userID){
+    console.log("tripModel... checkForPassengerRequest... running");
+    try{
+        const sql = "SELECT * FROM tripPassengers WHERE tripID = ? AND userID = ? AND passengerStatus = 'Requesting'";
+        const params = [tripID, userID];
+        const existingRequest = await db.query(sql, params);
+        if (existingRequest.length > 0){
+            return {success: true};
+        }else{
+            return {success: false};
+        }
+    }catch (error){
+        console.log("Error in tripModel... checkForPassengerRequest");
+        throw error;
+    }
+}
+
 //------------------- Trip management functions ---------------------------------//
 //Function for a passenger to request to join a trip
 static async passengerRequestToJoinTrip(tripID, userID, user){
@@ -334,8 +352,8 @@ static async deletePassengerFromTrip(tripID, userID){
     console.log("tripModel... deletePassengerFromTrip... running");
     try{
         //Delete the passenger request from the database
-        const sql = "DELETE FROM tripPassengers WHERE tripID = ? AND userID = ?";
-        const params = [tripID, userID];
+        let sql = "DELETE FROM tripPassengers WHERE tripID = ? AND userID = ?";
+        let params = [tripID, userID];
         const deleteRequest = await db.query(sql, params);
 
         //Update the number of open seats for the trip

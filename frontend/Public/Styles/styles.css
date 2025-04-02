@@ -490,12 +490,54 @@ h1 {
 .btn.btn-primary.trip-info-delete{
     background-color: #FF0000;
     border-color: #FF0000;
-    margin-left: 10%;
-    width: 75%
+    width: 75%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .btn.btn-primary.trip-info-delete:hover{
     background-color: #ff5a5a;
+}
+
+.card .card-body .card-title-passengers{
+    color: #432C91 !important;
+    font-weight: bold !important;
+    margin-top: 30px;
+}
+
+.trip-page-label-box {
+    background-color:#9989B4 !important;
+    color: #ffffff !important; /* White text */
+    font-family: 'Helvetica', sans-serif !important;
+    border-radius: 5px 0 0 5px; /* Smooth transition to the left */
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
+    width: 250px; /* Set a fixed width for the label and username boxes */
+    height: 38px; /* Set a fixed height for the label and username boxes */
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    margin-left: 5%;
+}
+
+.trip-page-info-box {
+    background-color: #FCF7FF !important; /* Light gray background */
+    color: #000000 !important; /* Dark gray text */
+    font-family: 'Helvetica', sans-serif !important;
+    border-radius: 0 5px 5px 0; /* Smooth transition to the right */
+    border-left: none; /* Removes double border effect */
+    border-top-right-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+    width: 275px; /* Set a fixed width for the label and username boxes */
+    height: 38px; /* Set a fixed height for the label and username boxes */
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    margin-right: 5%;
 }
 
 

@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const Trip = require("../models/tripModel").Trip; //Require User model
 const Car = require("../models/carModel").Car; //Require car model
 const RideProfile = require("../models/rideProfileModel").rideProfile; //Require ride profile model
+const User = require("../models/userModel").User; //Require user model
 require('dotenv').config();
 
 
@@ -111,6 +112,12 @@ exports.createTrip = async (req, res) => {
         try{
             const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
             const posterID = decoded.id; //Get the user id from the decoded token
+
+            //Make sure that the user is verified and return them to the homepage if they are not:
+            if(decoded.verificationStatus === "No"){
+                return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
+            }
+
             const rideType = req.body.rideType; //Get input from the trip posting form
             if(rideType === "Requesting a ride"){ // If the user is requesting or providing a ride the information needed will be different
                 const {leavingFrom, leavingFromDestination, leavingFromLat, leavingFromLng, destination, lat, lng, requestingPayment, requestingTime, requestingDate, requestingTitle, requestingComments, requestingRoundtrip} = req.body; //Get input from the trip posting form
@@ -137,9 +144,15 @@ exports.createTrip = async (req, res) => {
 
 exports.deleteTrip = async (req, res) => {
     console.log("tripController... deleteTrip... running");
-    const token = req.cookies.auth_token; // Get token from cookies
+    const token = req.cookies.auth_token; // Get token from cookies 
     if(!token){
         return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to delete a trip
+    }
+
+    //Return user to homepage with error if they are not verified
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+    if(decoded.verificationStatus === "No"){
+        return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
     }
 
     try{
@@ -162,25 +175,39 @@ exports.passengerRequestToJoinTrip = async (req,res) => {
     const token = req.cookies.auth_token;
     const tripID = req.params.id; //Grab trip ID from page URL
     if(!token){
-        res.redirect("/") //Send to homepage if they have no cookies, should not be able to request to join a trip
-    }else{
-        try{
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const userID = decoded.id;
-            const result = await Trip.passengerRequestToJoinTrip(tripID, userID, decoded);
-            console.log(result.success);
-            if(result.success){
-                //Redirect to homepage with a success query paramater
-                return res.redirect("/?success=joinTrip");
-            }else{
-                // Redirect to homepage with an error query parameter
-                return res.redirect(`/?error=joinTrip`);
-            }
-        }catch(err){
-            console.log("Error in tripController... passengerRequestToJoinTrip..." , err);
-            res.redirect("/?error=serverError") //If error, redirect to homepage.
-        }
+        return res.redirect("/") //Send to homepage if they have no cookies, should not be able to request to join a trip
     }
+
+    //Return user to homepage with error if they are not verified
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+    if(decoded.verificationStatus === "No"){
+        return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
+    }
+
+    //Check whether the user has already requested to join the trip (return to homepage with error if they have)
+    const userID = decoded.id;
+    const request = await Trip.checkForPassengerRequest(tripID, userID);
+    if(request.success === true){
+        return res.redirect("/?error=alreadyRequested"); //Redirect to homepage if user has already requested to join the trip
+    }
+
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userID = decoded.id;
+        const result = await Trip.passengerRequestToJoinTrip(tripID, userID, decoded);
+        console.log(result.success);
+        if(result.success){
+            //Redirect to homepage with a success query paramater
+            return res.redirect("/?success=joinTrip");
+        }else{
+            // Redirect to homepage with an error query parameter
+            return res.redirect(`/?error=joinTrip`);
+        }
+    }catch(err){
+        console.log("Error in tripController... passengerRequestToJoinTrip..." , err);
+        res.redirect("/?error=serverError") //If error, redirect to homepage.
+    }
+
 };
 
 //Function to accept a passengers request to join a trip from the yourTrips page
@@ -189,27 +216,34 @@ exports.acceptPassengerRequest = async (req, res) => {
     const token = req.cookies.auth_token;
     if(!token){
         res.redirect("/") //Shouldn't be able to accept passengers if they aren't logged in
-    }else{
-        try{
-            const passengerID = req.params.id; //Get passed passengerID from URL
-            const tripID = req.query.tripID; //Get passed tripID from query param in URL
-
-            const requestStatus = await Trip.acceptPassengerRequest(tripID, passengerID);
-            //Redirect to yourTrips page with success if request was sent successfully
-            if(requestStatus.full === false && requestStatus.success){
-                res.redirect('/Trips/yourTrips');
-            //Redirect to yourTrips page with failure if request was not successful
-            }else if(requestStatus.full === false && requestStatus.success === false){
-                res.redirect('/Trips/yourTrips?error=acceptPassengerRequest');
-            //Redirect to yourTrips page with error that the trip is full and you can't accept more riders
-            }else if (requestStatus.full === true){
-                res.redirect('/Trips/yourTrips?error=tripFull');
-            }
-        }catch (error){
-            console.log("Error in tripController... acceptPassengerRequest...", error);
-            res.redirect('/Trips/yourTrips?error=serverError');
-        }
     }
+
+    //Return user to homepage with error if they are not verified
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+    if(decoded.verificationStatus === "No"){
+        return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
+    }
+
+    try{
+        const passengerID = req.params.id; //Get passed passengerID from URL
+        const tripID = req.query.tripID; //Get passed tripID from query param in URL
+
+        const requestStatus = await Trip.acceptPassengerRequest(tripID, passengerID);
+        //Redirect to yourTrips page with success if request was sent successfully
+        if(requestStatus.full === false && requestStatus.success){
+            res.redirect('/Trips/yourTrips');
+        //Redirect to yourTrips page with failure if request was not successful
+        }else if(requestStatus.full === false && requestStatus.success === false){
+            res.redirect('/Trips/yourTrips?error=acceptPassengerRequest');
+        //Redirect to yourTrips page with error that the trip is full and you can't accept more riders
+        }else if (requestStatus.full === true){
+            res.redirect('/Trips/yourTrips?error=tripFull');
+        }
+    }catch (error){
+        console.log("Error in tripController... acceptPassengerRequest...", error);
+        res.redirect('/Trips/yourTrips?error=serverError');
+    }
+    
 };
 
 //Function to deny a passengers request from the yourTrips page
@@ -218,36 +252,50 @@ exports.denyPassengerRequest = async (req, res) => {
     const token = req.cookies.auth_token;
     if(!token){
         res.redirect("/") //Shouldn't be able to accept if they aren't logged in
-    }else{
-        try{
-            const passengerID = req.params.id; //Get passed passengerID from URL
-            const tripID = req.query.tripID; //Get passed tripID from query param in URL
-
-            const requestStatus = await Trip.denyPassengerRequest(tripID, passengerID);
-            //Redirect to yourTrips page with success if request was sent successfully
-            if(requestStatus.success){
-                res.redirect('/Trips/yourTrips');
-            }else{
-            //Redirect to yourTrips page with failure if request was not successful
-                res.redirect('/Trips/yourTrips?error=denyPassengerRequest');
-            }
-        }catch (error){
-            console.log("Error in tripController... denyPassengerRequest...", error);
-            res.redirect('/Trips/yourTrips?error=serverError');
-        }
     }
+
+    //Return user to homepage with error if they are not verified
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+    if(decoded.verificationStatus === "No"){
+        return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
+    }
+
+    try{
+        const passengerID = req.params.id; //Get passed passengerID from URL
+        const tripID = req.query.tripID; //Get passed tripID from query param in URL
+
+        const requestStatus = await Trip.denyPassengerRequest(tripID, passengerID);
+        //Redirect to yourTrips page with success if request was sent successfully
+        if(requestStatus.success){
+            res.redirect('/Trips/yourTrips');
+        }else{
+        //Redirect to yourTrips page with failure if request was not successful
+            res.redirect('/Trips/yourTrips?error=denyPassengerRequest');
+        }
+    }catch (error){
+        console.log("Error in tripController... denyPassengerRequest...", error);
+        res.redirect('/Trips/yourTrips?error=serverError');
+    }
+
 };
 
 exports.deletePassengerFromTrip = async (req, res) => {
     console.log("tripController... deletePassengerFromTrip... running");
     const token = req.cookies.auth_token;
+    const passengerID = req.params.id; //Get passed passengerID from URL
+    const tripID = req.query.tripID; //Get passed tripID from query param in URL
     if(!token){
         res.redirect("/") //Shouldn't be able to deny a passenger if you aren't logged in
     }
-    try{
-        const passengerID = req.params.id; //Get passed passengerID from URL
-        const tripID = req.query.tripID; //Get passed tripID from query param in URL
 
+    //Return user to homepage with error if they are not verified
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+    if(decoded.verificationStatus === "No"){
+        return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
+    }
+
+    //Move ahead with deleting the passenger from the trip
+    try{
         const requestStatus = await Trip.deletePassengerFromTrip(tripID, passengerID);
         if(requestStatus.success){
         //Redirect to trip page if passenger is removed successfully
