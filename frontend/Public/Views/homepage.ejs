@@ -132,7 +132,9 @@
                                 <% if(trip.posterID === user.id){ %>
                                     <button class="btn btn-primary trip-feed ms-2" onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage your trip</button>
                                 <% }else{ %>
-                                    <button class="btn btn-primary trip-feed ms-2">Accept Request</button>
+                                    <form action="/Trips/acceptTripRequest/<%= trip.id %>" method="POST" class = "d-flex w-100">
+                                        <button type="submit" class="btn btn-primary trip-feed ms-2">Accept Request</button>
+                                    </form>
                                 <% } %>
                             </div>
                         </div>
@@ -308,7 +310,7 @@
         Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: 'Successfully requested to join the trip!',
+            text: 'You have successfully requested to join the trip!',
             timer: 3000,
             showConfirmButton: false
         });
@@ -316,11 +318,25 @@
         window.history.replaceState({}, document.title, newUrl);
     }
 
+    //Error message shown if the user has tried to request to join a trip and failed.
     if (urlParams.get('error') === 'joinTrip') {
         Swal.fire({
             icon: 'error',
             title: 'Request Failed',
             text: 'Failed to request to join the trip. You are either already a passenger or have already requested to join.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+    //Error message that is shown when there is a server error
+    if (urlParams.get('error') === 'serverError') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'Sorry, there was a server error with your request. Please try again later.',
             timer: 3000,
             showConfirmButton: false
         });

@@ -66,6 +66,7 @@ static async createTrip(tripData, posterID, rideType, car){
                 origin = "Campus"; //Set origin to campus if the trip is from campus
                 locationDetails = JSON.stringify({"originLat": tripData.leavingFromLat, "originLng": tripData.leavingFromLng, "destinationLat": tripData.lat, "destinationLng": tripData.lng}); //Create JSON with location details for origin & destination
             }
+            //Insert trip into the database
             const sql = 'INSERT INTO tripData (posterID, title, comments, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             const params = [posterID, tripData.requestingTitle, tripData.requestingComments, origin, tripData.destination, locationDetails, tripInfo.distance, 1, tripInfo.duration, tripData.requestingPayment, tripData.requestingDate, tripData.requestingTime, tripStatus, rideType, roundtrip];
             const input = await db.query(sql, params) //Input the trip into the database
@@ -91,11 +92,17 @@ static async createTrip(tripData, posterID, rideType, car){
                 origin = tripData.meetingPoint;
 
             }
+            //Insert trip into the database
             const locationDetails = JSON.stringify({"originLat": tripData.providingLeavingFromLat, "originLng": tripData.providingLeavingFromLng, "destinationLat": tripData.providingDestinationLat, "destinationLng": tripData.providingDestinationLng}); //Create JSON with location details for origin & destination
             const sql = 'INSERT INTO tripData (posterID, title, comments, openSeats, origin, destination, locationDetails, distance, stops, length, payment, date, time, tripStatus, tripType, roundtrip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             const params = [posterID, tripData.providingTitle, tripData.providingComments, car.seatsInCar, origin, tripData.providingDestination, locationDetails, tripInfo.distance, 1, tripInfo.duration, tripData.providingPayment, tripData.providingDate, tripData.providingTime, tripStatus, rideType, roundtrip];
-            const input = await db.query(sql, params) //Input the trip into the database
+            const input = await db.query(sql, params)
+
             if(input.affectedRows === 1){
+                //Insert trip poster as driver into the database
+                const sql2 = 'INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)';
+                const params2 = [input.insertId, posterID, "Driver"];
+                const input2 = await db.query(sql2, params2);
                 return true;
             }else{
                 throw new Error("Error inserting trip into database");
@@ -225,9 +232,9 @@ static async getTripPassengers(tripID){
             SELECT u.id, u.firstName, u.lastName, u.email
             FROM tripPassengers tp
             JOIN userData u ON tp.userID = u.id
-            WHERE tp.tripID = ? AND tp.passengerStatus = 'Accepted'
-        `;
+            WHERE tp.tripID = ? AND tp.passengerStatus = 'Accepted' OR tp.passengerStatus = 'Driver' ORDER BY tp.passengerStatus DESC`;
         const passengers = await db.query(sql, [tripID]);
+        console.log(passengers);
         return passengers; //Return the list of passengers;
     }catch (error){
         console.log("Error in tripModel... getTripPassengers... for trip:", tripID);

@@ -142,6 +142,37 @@ exports.createTrip = async (req, res) => {
     }
 };
 
+exports.acceptTripRequest = async (req, res) => {
+    console.log("tripController... acceptTripRequest... running");
+    const token = req.cookies.auth_token; // Get token from cookies
+    const tripID = req.params.id; //Grab trip ID from route
+    if(!token){
+        return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to accept a trip request
+    }
+
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+        const userID = decoded.id; //Get the user id from the decoded token
+
+        //Make sure that the user is verified and return them to the homepage if they are not:
+        if(decoded.verificationStatus === "No"){
+            return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
+        }
+
+        //Move ahead with accepting the trip request since user is verified
+        const requestStatus = await Trip.acceptTripRequest(tripID, userID); //Accept the trip request
+        if(requestStatus.success){
+            res.redirect('/Trips/yourTrips'); //Redirect to your trips page if trip is accepted successfully
+        }else{
+            res.redirect('/Trips/viewTrip/' + tripID + '?error=acceptTripRequest'); //Redirect to trip page with error if trip is not accepted successfully
+        }
+    }catch (error){
+        console.log("Error in tripController... acceptTripRequest...", error);
+        res.redirect("/?error=serverError"); //If error, redirect to homepage
+    }
+
+}
+
 exports.deleteTrip = async (req, res) => {
     console.log("tripController... deleteTrip... running");
     const token = req.cookies.auth_token; // Get token from cookies 
