@@ -7,6 +7,8 @@ let db = require('../../db');
 //Load in email service:
 let emailServices = require('../../email');
 
+//Load in user model for grabbing emails
+const User = require('./userModel').User;
 
 //Setup google maps api for trip calculations
 const { Client } = require("@googlemaps/google-maps-services-js");
@@ -120,8 +122,14 @@ static async createTrip(tripData, posterID, rideType, car){
 static async getTripsByUserID(userID){
     console.log("tripModel... getTripsByUserID... running for userID:", userID);
     try{
-        const sql = 'SELECT * FROM tripData WHERE posterID = ?';
-        const params = [userID];
+        const sql = `
+        SELECT * FROM tripData
+        WHERE posterID = ?
+        UNION
+        SELECT td.* FROM tripData td
+        JOIN tripPassengers tp ON td.id = tp.tripID
+        WHERE tp.userID = ?`;
+        const params = [userID, userID];
         const trips = await db.query(sql, params);
         if(trips.length > 0){
             const tripMap = trips.map(trip => new Trip(trip));
@@ -234,7 +242,6 @@ static async getTripPassengers(tripID){
             JOIN userData u ON tp.userID = u.id
             WHERE tp.tripID = ? AND tp.passengerStatus = 'Accepted' OR tp.passengerStatus = 'Driver' ORDER BY tp.passengerStatus DESC`;
         const passengers = await db.query(sql, [tripID]);
-        console.log(passengers);
         return passengers; //Return the list of passengers;
     }catch (error){
         console.log("Error in tripModel... getTripPassengers... for trip:", tripID);
@@ -260,7 +267,66 @@ static async checkForPassengerRequest(tripID, userID){
     }
 }
 
+
+
 //------------------- Trip management functions ---------------------------------//
+
+//Function to accept a trip request from the trip feed
+static async acceptTripRequest(tripID, userID, tripPosterID){
+    console.log("tripModel... acceptTripRequest... running");
+    let conn;
+    try{
+        //Get a connection from the pool
+        conn = await db.pool.getConnection();
+
+        //Start a transaction
+        await conn.beginTransaction();
+
+        //Update the trip type to "Providing a ride" in the database. Also set the posterID as the ID of the driver.
+        let sql = "UPDATE tripData SET tripType = 'Providing a ride', posterID = ? WHERE id = ?";
+        let params = [userID, tripID];
+        const updateTrip = await conn.query(sql, params);
+
+        //Add the person who accepted the trip to passengers as the driver
+        let sql2 = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)";
+        let params2 = [tripID, userID, "Driver"];
+        const insertDriver = await conn.query(sql2, params2);
+
+        //Add the person who requested the trip to the passenger list for the trip
+        let sql3 = "INSERT INTO tripPassengers (tripID, userID, passengerStatus) VALUES (?,?,?)";
+        let params3 = [tripID, tripPosterID, "Accepted"];
+        const addPassenger = await conn.query(sql3, params3);
+
+        //Update the number of seats open in the trip
+        let sql4 = `
+        UPDATE tripData td
+        JOIN carData cd ON cd.userID = ?
+        SET td.openSeats = (cd.seatsInCar - 1)
+        WHERE td.id = ?`;
+        let params4 = [userID, tripID];
+        const updateSeats = await conn.query(sql4, params4);
+
+        //Commit the transaction if all queries succed
+        await conn.commit();
+
+        //Send an email to the user who requested the trip that their request has been accepted
+
+        return {success: true};
+
+    }catch(error){
+        if (conn) {
+            await conn.rollback(); // Rollback the transaction on error
+        }
+        console.log("Error in tripModel... acceptTripRequest");
+        throw error;
+    } finally {
+        if (conn) {
+            conn.release(); // Release the connection back to the pool
+        }
+    }
+}
+
+
 //Function for a passenger to request to join a trip
 static async passengerRequestToJoinTrip(tripID, userID, user){
     console.log("tripModel... passengerRequestToJoinTrip... running");
@@ -283,13 +349,11 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
 
         if(insert.affectedRows){
             //Send an email to the poster of the trip that someone has requested to join it
-            // const trip = await Trip.getTripById(tripID);
-            // const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
-            // const acceptUrl = "/Trips/addPassengerToTrip/" + userID;
-            // const rejectUrl = "Trips/rejectPassengerRequest/" + userID;
-            // if(posterEmail){
-            //     const sendEmail = await emailServices.sendRideRequestEmail(posterEmail, trip.title, acceptUrl, rejectUrl)
-            // }
+            const trip = await Trip.getTripById(tripID);
+            const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
+            if(posterEmail){
+                const sendEmail = await emailServices.sendRideRequestEmail(posterEmail, trip.title)
+            }
             //Return true if passenger requested successfully
             console.log("User", userID, "successfully requested to join trip: ", tripID);
             return { success: true};
@@ -305,22 +369,37 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
 //Function to add a passenger to a trip (updating their status to accepted)
 static async acceptPassengerRequest(tripID, userID){
     console.log("tripModel... acceptPassengerRequest... running");
+    let conn;
     try{
         //Get # of open seats... don't allow request to be accepted if the car is full
         const trip = await Trip.getTripById(tripID);
+
+        //Establish connection to database;
+        conn = await db.pool.getConnection();
+        
+        //Start a transaction
+        await conn.beginTransaction();
         
         if(trip.openSeats > 0){
             //Update passenger status in the database to accepted
             let sql = "UPDATE tripPassengers SET passengerStatus = ? WHERE tripID = ? AND userID = ?"
             const passengerStatus = "Accepted";
             let params = [passengerStatus, tripID, userID];
-            const updatePassengers = await db.query(sql,params)
+            const updatePassengers = await conn.query(sql,params)
 
             //Update the number of open seats for the trip
             sql = "UPDATE tripData SET openSeats = (openSeats - 1) WHERE id = ?";
             params = [tripID];
-            const updateSeats = await db.query(sql,params);
+            const updateSeats = await conn.query(sql,params);
 
+            //Commit the transaction if all queries succeeded
+            await conn.commit();
+
+            //Send an email to the user who requested the trip that their request has been accepted
+            const user = await User.getUserByID(userID);
+            const sendEmail = await emailServices.sendRequestAcceptedEmail(user.email, trip.title);
+
+            //Return success if the passenger was accepted and the seats were updated
             if(updatePassengers.affectedRows > 0 && updateSeats.affectedRows > 0){
                 return {success: true, full: false};
             }else{
@@ -330,8 +409,15 @@ static async acceptPassengerRequest(tripID, userID){
             return {success: false, full: true};
         }
     }catch (error){
+        if(conn){
+            await conn.rollback(); // Rollback the transaction on error
+        }
         console.log("Error in tripModel... acceptPassengerRequest");
         throw error;
+    }finally{
+        if(conn){
+            conn.release(); //Release the connection back to the pool
+        }
     }
 };
 
@@ -345,6 +431,10 @@ static async denyPassengerRequest(tripID, userID){
 
         //Check if the deletion was successful (return success true if it was)
         if(deleteRequest.affectedRows > 0){
+            //Send an email to the user who has been denied letting them know what happened
+            const user = await User.getUserByID(userID);
+            const trip = await Trip.getTripById(tripID);
+            await emailServices.sendRequestDeniedEmail(user.email, trip.title);
             return {success: true};
         }else{
             return {success: false};
@@ -357,7 +447,14 @@ static async denyPassengerRequest(tripID, userID){
 
 static async deletePassengerFromTrip(tripID, userID){
     console.log("tripModel... deletePassengerFromTrip... running");
+    let conn;
     try{
+        //Get a connection from the pool
+        conn = await db.pool.getConnection();
+
+        //Start a transaction
+        await conn.beginTransaction();
+
         //Delete the passenger request from the database
         let sql = "DELETE FROM tripPassengers WHERE tripID = ? AND userID = ?";
         let params = [tripID, userID];
@@ -368,45 +465,69 @@ static async deletePassengerFromTrip(tripID, userID){
         params = [tripID];
         const updateSeats = await db.query(sql,params);
 
+        //Commit the transaction if all queries succeeded
+        await conn.commit();
+
         //Check if the deletion was successful (return success true if it was)
         if(deleteRequest.affectedRows > 0){
+            //Send an email to the user who has been denied letting them know what happened
+            const user = await User.getUserByID(userID);
+            const trip = await Trip.getTripById(tripID);
+            await emailServices.sendPassengerDeletedEmail(user.email, trip.title);
             return {success: true};
         }else{
             return {success: false};
         }
     }catch (error){
+        if(conn){
+            await conn.rollback(); //Rollback the transaction on error
+        }
         console.log("Error in tripModel... denyPassengerRequest");
         throw error;
+    }finally{
+        if(conn){
+            conn.release(); //Release the connection back to the pool
+        }
     }
 
 }
 
 static async deleteTrip (tripID){
     console.log("tripModel... deleteTrip... running");
+    let conn;
     try{
-        //Delete the trip from the database
-        const sql = 'DELETE FROM tripData where ID = ?';
-        const params = [tripID];
-        const deleteTrip = await db.query(sql, params);
+        //Get a connection from the pool
+        conn = await db.pool.getConnection();
 
-        if(deleteTrip.affectedRows > 0 ){   
-            //Move ahead with deleting all passengers associated with the trip
-            const passengers = await Trip.getTripPassengers(tripID)   //Get number of passengers associated with the trip
-            if(passengers.length > 0){
-                //Delete all passengers associated with the trip
-                const sql = 'DELETE FROM tripPassengers where tripID = ?';
-                const params = [tripID];
-                const deletePassengers = await db.query(sql, params);
-                if(deletePassengers.affectedRows > 0){
-                    return {success: true};
-                }
-            }else{
-                return {success: true}; //If there are no passengers, return success true
-            }
+        //Start a transaction
+        await conn.beginTransaction();
+
+        //Delete the passengers associated with the trip first
+        const deletePassengersSql = 'DELETE FROM tripPassengers WHERE tripID = ?';
+        const deletePassengersResult = await conn.query(deletePassengersSql, [tripID]);
+
+        //Delte the trip from the database
+        const deleteTripSql = 'DELETE FROM tripData WHERE id = ?';
+        const deleteTripResult = await conn.query(deleteTripSql, [tripID]);
+
+        //Commit the transaction if both deletions were successful
+        await conn.commit();
+
+        if(deleteTripResult.affectedRows > 0 ){
+            return {success: true}; 
+        }else{
+            return {success: false}; //If the trip was not deleted, return success false
         }
     }catch (error){
+        if(conn){
+            await conn.rollback(); //Rollback the transaction on error
+        }
         console.log("Error in tripModel... deleteTrip");
         throw error;
+    }finally{
+        if(conn){
+            conn.release(); //Release the connection back to the pool
+        }
     }
 }
 

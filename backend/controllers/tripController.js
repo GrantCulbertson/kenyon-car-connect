@@ -146,6 +146,7 @@ exports.acceptTripRequest = async (req, res) => {
     console.log("tripController... acceptTripRequest... running");
     const token = req.cookies.auth_token; // Get token from cookies
     const tripID = req.params.id; //Grab trip ID from route
+    const tripPosterID = req.query.tripPosterID; //Get trip poster ID from query param in URL
     if(!token){
         return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to accept a trip request
     }
@@ -160,7 +161,7 @@ exports.acceptTripRequest = async (req, res) => {
         }
 
         //Move ahead with accepting the trip request since user is verified
-        const requestStatus = await Trip.acceptTripRequest(tripID, userID); //Accept the trip request
+        const requestStatus = await Trip.acceptTripRequest(tripID, userID, tripPosterID); //Accept the trip request
         if(requestStatus.success){
             res.redirect('/Trips/yourTrips'); //Redirect to your trips page if trip is accepted successfully
         }else{
@@ -176,6 +177,7 @@ exports.acceptTripRequest = async (req, res) => {
 exports.deleteTrip = async (req, res) => {
     console.log("tripController... deleteTrip... running");
     const token = req.cookies.auth_token; // Get token from cookies 
+    const tripID = req.params.id; //Get trip ID from URL
     if(!token){
         return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to delete a trip
     }
@@ -187,7 +189,6 @@ exports.deleteTrip = async (req, res) => {
     }
 
     try{
-        const tripID = req.params.id; //Get trip ID from URL
         const requestStatus = await Trip.deleteTrip(tripID); //Delete the trip from the database
         if(requestStatus.success){
             res.redirect('/Trips/yourTrips'); //Redirect to your trips page if trip is deleted successfully

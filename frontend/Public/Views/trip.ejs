@@ -178,7 +178,7 @@
                                                     Driver
                                                 </div>
                                                 <div class="px-3 py-2 bg-light border trip-page-info-box">
-                                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#riderProfileModal<%= passenger.id %>">
+                                                    <button type="button" class="btn btn-link-passenger" data-toggle="modal" data-target="#riderProfileModal<%= passenger.id %>">
                                                         <b><%= passenger.firstName %> <%= passenger.lastName %></b>
                                                     </button>
                                                 </div>
@@ -191,7 +191,7 @@
                                                     Passenger
                                                 </div>
                                                 <div class="px-3 py-2 bg-light border trip-page-info-box">
-                                                    <button type="button" class="btn btn-link" data-toggle="modal" data-target="#riderProfileModal<%= passenger.id %>">
+                                                    <button type="button" class="btn btn-link-passenger" data-toggle="modal" data-target="#riderProfileModal<%= passenger.id %>">
                                                         <b><%= passenger.firstName %> <%= passenger.lastName %></b>
                                                     </button>
                                                     <!-- Remove Passenger Button (Only viewable for the trip poster) -->
@@ -207,9 +207,9 @@
 
                                         <!-- Modal for each passengers Rider Profile-->
                                             <div class="modal fade" id="riderProfileModal<%= passenger.id %>" tabindex="-1" role="dialog" aria-labelledby="riderProfileModalLabel<%= passenger.id %>" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
+                                                <div class="modal-dialog ride-profile" role="document">
+                                                    <div class="modal-content ride-profile">
+                                                        <div class="modal-header ride-profile">
                                                             <h5 class="modal-title" id="riderProfileModalLabel<%= passenger.id %>">
                                                                 <b>Ride Profile:</b> <%= passenger.firstName %> <%= passenger.lastName %>
                                                             </h5>
@@ -217,7 +217,7 @@
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
-                                                        <div class="modal-body">
+                                                        <div class="modal-body-ride-profile">
                                                             <!-- Ride Profile Information -->
                                                             <% if (passenger.rideProfile) { %>
                                                                 <p><b>Pronouns:</b> <%= passenger.rideProfile.pronouns %></p>
@@ -229,7 +229,7 @@
                                                                 <p>No ride profile information available for this passenger.</p>
                                                             <% } %>
                                                         </div>
-                                                        <div class="modal-footer">
+                                                        <div class="modal-footer ride-profile">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                         </div>
                                                     </div>

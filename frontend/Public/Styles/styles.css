@@ -33,6 +33,11 @@ h1 {
     transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
 }
 
+.btn-btn-secondary:hover{
+    background-color: #008699;
+    border-color: #008699;
+}
+
 .btn.btn-primary:hover{
     background-color: #008699; /* Change the background color on hover */
     border-color: #008699; /* Change the border color on hover */
@@ -365,6 +370,36 @@ h1 {
     box-sizing: border-box;
 }
 
+.passenger-trip-box {
+    background-color: #432C91 !important; /* Background color */
+    color: #FCF7FF !important; /* Text color */
+    font-family: 'Helvetica', sans-serif !important;
+    
+    /* Make the box take up a consistent width percentage */
+    width: 60%; /* Adjust percentage based on design preference */
+    max-width: 800px; /* Prevent it from getting too wide on large screens */
+    min-width: 300px; /* Ensure it doesn’t become too small */
+    
+    /* Ensure height adjusts based on content */
+    height: auto; 
+
+    /* Flexbox to keep text and button in a row */
+    display: flex;
+    align-items: center; /* Center align items vertically */
+    justify-content: space-between; /* Space items apart */
+    
+    /* Margin for responsiveness */
+    margin: 40px auto; /* Center the box horizontally */
+    margin-bottom: 0 !important;
+
+    /* Padding and border radius */
+    padding: 10px 20px;
+    border-radius: 0.5rem;
+    
+    /* Ensure box-sizing includes padding and border */
+    box-sizing: border-box;
+}
+
 /* Remove bottom border radius if there is a passenger box below */
 .poster-trip-box.no-bottom-radius {
     border-bottom-left-radius: 0;
@@ -454,6 +489,9 @@ h1 {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
+    max-width: 150px;
+    max-height: 50px;
+    width: 100%;
 }
 
 .btn.btn-info.manage-button:hover{
@@ -463,14 +501,48 @@ h1 {
     font-family: 'Roboto', sans-serif !important;
 }
 
+.btn.btn-info.view-trip-button{
+    background-color:#00523A;
+    border-color: #00523A;
+    color: #FCF7FF;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif !important;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
+    max-width: 150px;
+    max-height: 50px;
+    width: 100%;
+}
 
-/* STYLES FOR YOUR TRIPS PAGE */
-.badge.badge-primary.your-trips.rider{
-    background-color: #432C91;
+.btn.btn-info.view-trip-button:hover{
+    background-color: #008699; /* Change the background color on hover */
+    border-color: #008699; /* Change the border color on hover */
+    color: #FCF7FF;
+    font-family: 'Roboto', sans-serif !important;
+}
+
+
+/* STYLES FOR YOUR TRIPS PAGE BADGES */
+.trip-badge {
+    display: flex;
+    flex-direction: column; /* Stack badges vertically */
+    align-items: center; /* Center badges horizontally */
+    gap: 1rem; /* Add spacing between badges */
+    max-width: 300px; /* Optional: Set a max width for the container */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+
+.badge.badge-primary.your-trips.passenger{
+    background-color: #00523A;
     border-radius: .5rem;
     font-size: 1.25rem;
     padding: .5rem 1rem;
     display: inline-block;
+    min-width: 200px; /* Set a minimum width */
+    max-width: 300px !important;
+    width: 100% !important;
 }
 
 .badge.badge-primary.your-trips.poster{
@@ -479,6 +551,9 @@ h1 {
     font-size: 1.25rem;
     padding: .5rem 1rem;
     display: inline-block;
+    min-width: 200px; /* Set a minimum width */
+    max-width: 300px !important;
+    width: 100% !important;
 }
 
 
@@ -538,6 +613,55 @@ h1 {
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     margin-right: 5%;
+}
+
+.btn.btn-link-passenger{
+    color: #432C91 !important;
+    font-family: 'Helvetica', sans-serif !important;
+    text-decoration: underline;
+}
+
+.btn.btn-link-passenger:hover{
+    color: #9989B4 !important;
+    font-family: 'Helvetica', sans-serif !important;
+}
+
+
+.modal-content.ride-profile{
+    background-color: #FCF7FF !important;
+}
+
+.modal-header.ride-profile{
+    background-color:#FCF7FF; 
+    color:#432C91;
+}
+
+.modal-body-ride-profile{
+    text-align: center;
+}
+
+.modal-body-ride-profile b{
+    font-weight: bold !important;
+}
+
+.modal-body-ride-profile p{
+    color: #000000 !important;
+}
+
+.modal-footer.ride-profile .btn.btn-secondary{
+    background-color: #432C91; /* Change the background color */
+    border-color: #432C91; /* Change the border color */
+    color: #FCF7FF; /* Change the text color */
+    font-size: 1rem; /* Adjust the font size */
+    padding: 0.5rem 1rem; /* Adjust the padding */
+    border-radius: 0.5rem; /* Adjust the border radius */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Add transition for smooth effect */
+}
+
+.modal-footer.ride-profile .btn.btn-secondary:hover{
+    background-color: #9989B4; /* Change the background color */
+    border-color: #9989B4; /* Change the border color */
+    color: #432C91;
 }
 
 

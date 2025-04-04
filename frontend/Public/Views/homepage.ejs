@@ -132,7 +132,7 @@
                                 <% if(trip.posterID === user.id){ %>
                                     <button class="btn btn-primary trip-feed ms-2" onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage your trip</button>
                                 <% }else{ %>
-                                    <form action="/Trips/acceptTripRequest/<%= trip.id %>" method="POST" class = "d-flex w-100">
+                                    <form action="/Trips/acceptTripRequest/<%= trip.id %>?tripPosterID=<%= trip.posterID %>" method="POST" class = "d-flex w-100">
                                         <button type="submit" class="btn btn-primary trip-feed ms-2">Accept Request</button>
                                     </form>
                                 <% } %>

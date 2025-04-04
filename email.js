@@ -48,25 +48,20 @@ async function sendVerificationEmail(userEmail, verificationCode) {
 
 
 //Function to send an email that someone has requested to join your ride:
-async function sendRideRequestEmail(userEmail, tripName, acceptUrl, rejectUrl) {
+async function sendRideRequestEmail(userEmail, tripName) {
   try {
       const transporter = createTransporter();      
       const mailOptions = {
           from: process.env.FROM_EMAIL,
           to: userEmail,
           subject: "KCC - Someone wants to join your ride!",
-          text: `Someone has requested to join your ride. Trip: "${tripName}". Accept: ${acceptUrl} Reject: ${rejectUrl}`,
+          text: `Someone has requested to join your ride. Trip: "${tripName}".`,
           html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                   <h2>Ride Request</h2>
                   <p>Someone has requested to join your ride:</p>
                   <p>${tripName}</p>
-                  <p>Click below to accept or reject the request:</p>
-                  <p>
-                      <a href="${acceptUrl}" style="padding:10px 20px; background-color:green; color:white; text-decoration:none;">Accept</a>
-                      &nbsp;&nbsp;
-                      <a href="${rejectUrl}" style="padding:10px 20px; background-color:red; color:white; text-decoration:none;">Reject</a>
-                  </p>
+                  <p>Please go to the your trips page on the site to handle their request.</p>
                   <p>Thanks,</p>
                   <p>Kenyon Car-Connect</p>
               </div>
@@ -82,5 +77,94 @@ async function sendRideRequestEmail(userEmail, tripName, acceptUrl, rejectUrl) {
   }
 }
 
+//Function to send an email letting a user know that their request to join a ride has been accepted:
+async function sendRequestAcceptedEmail(userEmail, tripName) {
+  try {
+      const transporter = createTransporter();      
+      const mailOptions = {
+          from: process.env.FROM_EMAIL,
+          to: userEmail,
+          subject: "KCC - Your request to join a ride has been accepted!",
+          text: `Your request to join the ride "${tripName}" has been accepted!`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2>Ride Request Accepted</h2>
+                  <p>Your request to join the ride:</p>
+                  <p>"${tripName}"</p>
+                  <p>Has been accepted!</p>
+                  <p>Congrats!</p>
+                  <p>Kenyon Car-Connect</p>
+              </div>
+          `
+      };
 
-module.exports = {sendVerificationEmail, sendRideRequestEmail};
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.messageId);
+      return true;
+  } catch (error) {
+      console.error('Error sending ride accepted email:', error);
+      return false;
+  }
+}
+
+//Function to send an email letting a user know that their request to join a ride has been denied:
+async function sendRequestDeniedEmail(userEmail, tripName) {
+  try {
+      const transporter = createTransporter();      
+      const mailOptions = {
+          from: process.env.FROM_EMAIL,
+          to: userEmail,
+          subject: "KCC - Your request to join a ride has been denied!",
+          text: `Your request to join the ride "${tripName}" has been denied!`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2>Ride Request Denied</h2>
+                  <p>Your request to join the ride:</p>
+                  <p>"${tripName}"</p>
+                  <p>Has been denied.</p>
+                  <p>Sorry,</p>
+                  <p>Kenyon Car-Connect</p>
+              </div>
+          `
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.messageId);
+      return true;
+  } catch (error) {
+      console.error('Error sending ride denied email:', error);
+      return false;
+  }
+}
+
+//Function to send an email letting them know they have been removed from a trip:
+async function sendPassengerDeletedEmail(userEmail, tripName) {
+  try {
+      const transporter = createTransporter();      
+      const mailOptions = {
+          from: process.env.FROM_EMAIL,
+          to: userEmail,
+          subject: "KCC - You have been removed from a ride!",
+          text: `You have been removed from the ride "${tripName}".`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2>Removed from Ride</h2>
+                  <p>You have been removed from the ride:</p>
+                  <p>"${tripName}"</p>
+                  <p>Sorry,</p>
+                  <p>Kenyon Car-Connect</p>
+              </div>
+          `
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.messageId);
+      return true;
+  } catch (error) {
+      console.error('Error sending ride denied email:', error);
+      return false;
+  }
+}
+
+
+module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail};

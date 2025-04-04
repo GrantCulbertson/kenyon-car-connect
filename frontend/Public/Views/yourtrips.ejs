@@ -80,16 +80,28 @@
         <!-- Iterate through trips passed to page-->
         <% trips.forEach(trip => { %>
             <% if(trip.posterID == user.id) { %>
+                <% if (trip.tripType === "Providing a ride"){ %>
                 <!-- What is shown if the user is providing a ride -->
                     <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
                         <div id = "trip-badge">
-                            <span class="badge badge-primary your-trips poster d-block">Poster</span>
+                            <span class="badge badge-primary your-trips poster d-block">Driver</span>
                         </div>
                         <div id = "trip-box-text">
                             <p> <%= trip.title %> </p>
                         </div>
                         <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
                     </div>
+                <% } else { %>
+                    <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
+                        <div id = "trip-badge">
+                            <span class="badge badge-primary your-trips poster d-block">Request</span>
+                        </div>
+                        <div id = "trip-box-text">
+                            <p> <%= trip.title %> </p>
+                        </div>
+                        <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
+                    </div>
+                <% } %>
                     <!-- Show passengers requesting to join trip if they are providing a ride-->
                     <% if (trip.tripType === "Providing a ride" && trip.passengersRequesting.length > 0) { %>
                         <div class="passengers-requesting-box px-3 py-2">
@@ -113,6 +125,16 @@
                             </ul>
                         </div>
                     <% } %>
+            <% }else{ %>
+                <div class = "passenger-trip-box px-3 py-2">
+                    <div id = "trip-badge">
+                        <span class="badge badge-primary your-trips passenger d-block">Passenger</span>
+                    </div>
+                    <div id = "trip-box-text">
+                        <p> <%= trip.title %> </p>
+                    </div>
+                    <button class = "btn btn-info view-trip-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">View Trip</button>
+                </div>
             <% } %>
         <% }); %>
     </div>
