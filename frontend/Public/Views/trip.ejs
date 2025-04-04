@@ -67,7 +67,7 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <!-- Left Column (Trip Information) -->
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <!-- Header for trip info page portion-->
             <h2 class="text-center">
                 <span class = "trip-info-title">Trip info for "<%= trip.title %>"</span>
@@ -80,23 +80,22 @@
                     <span class="badge badge-primary trip-card trip-request d-block">Trip Request</span>
                 <%}%>
             </h3>
-            <!-- Row to contain trip image and essential information-->
-            <div class = "row g-0 h-100">
-                <!-- Column containing Google Map-->
-                <div class="col-md-6 d-flex align-items-center justify-content-center h-100 mb-3">
+            <!-- Row holding map and trip info side by side -->
+            <div class="row align-items-center map-trip-info">
+                <!-- Map Column -->
+                <div class="col-12 col-md-6 p-0 d-flex trip-map-column">
                     <% if(trip.locationDetails) { %>
                         <img 
                             src="https://maps.googleapis.com/maps/api/staticmap?size=400x200&markers=color:green|label:A|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>&markers=color:red|label:B|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>&path=color:0x0000ff|weight:5|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>&key=<%=GoogleMapsAPIKey%>" 
                             alt="Trip route map"
-                            class="img-fluid rounded"
-                            style="width: 100%; height: auto; object-fit: cover; "
+                            class="img-fluid rounded w-100 google-map-image"
                         >
                     <% } else { %>
-                        <div class="alert alert-warning">Map data unavailable</div>
+                        <div class="alert alert-warning w-100 text-center">Map data unavailable</div>
                     <% } %>
                 </div>
                 <!-- Column containing ride info-->
-                <div class="col-md-6 d-flex flex-column align-items-start justify-content-center h-100 mb-3">
+                <div class="col-12 col-md-6 d-flex flex-column" style="min-height: 300px;">
                     <span class = "trip-feed-card-field">
                         <p class="trip-field"><b>Trip Length:</b> <%= trip.length %> </p>
                     </span>
@@ -118,15 +117,19 @@
                 </div>
             </div>
             <!-- Bottom area with trip comments and buttons -->
-            <span class = "trip-feed-card-field">
-                <p class="trip-field"><b>Comment:</b> <%= trip.comments %> </p>
-            </span>
-            <div class = "buttonContainer d-flex justify-content-center">
-                <% if(user.id === trip.posterID){ %>
-                    <!-- <button class="btn btn-primary trip-info ms-2">Edit Trip</button> -->
-                    <button class="btn btn-primary trip-info-delete ms-2" data-toggle = "modal" data-target = "#deleteTripModal">Delete Trip</button>
-                <% }else if(trip.tripType === "Providing a ride"){ %>
-                    <button class="btn btn-primary trip-info ms-2">Join Trip</button>
+            <div class="mt-auto">
+                <span class = "trip-feed-card-field">
+                    <p class="trip-field"><b>Comment:</b> <%= trip.comments %> </p>
+                </span>
+            </div>
+            <!-- Delete / Join Trip Buttons-->
+            <div class="d-flex justify-content-center mt-2">
+                <% if (user.id === trip.posterID) { %>
+                  <button class="btn btn-primary trip-info-delete" data-toggle="modal" data-target="#deleteTripModal">
+                    Delete Trip
+                  </button>
+                <% } else if (trip.tripType === "Providing a ride") { %>
+                  <button class="btn btn-primary">Join Trip</button>
                 <% } %>
             </div>
         </div>

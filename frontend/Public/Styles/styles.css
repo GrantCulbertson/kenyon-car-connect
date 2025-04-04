@@ -43,9 +43,21 @@ h1 {
     border-color: #008699; /* Change the border color on hover */
 }
 
+.btn.btn-danger{
+    padding: 0.5rem 1rem; /* Adjust the padding */
+    border-radius: 0.5rem; /* Adjust the border radius */
+}
+
 /* Card Styling for the whole application */
 .card{
     background-color:#FCF7FF !important;
+}
+
+/* Styling for the google maps images */
+.google-map-image{
+    object-fit: cover;
+    height: 100%;
+    border-radius: .5rem;
 }
 
 /* --------------- Styles for the Navbar ------------------ */
@@ -558,10 +570,7 @@ h1 {
 
 
 /* ----------------- Styling for trip page ----------------------- */
-.btn.btn-primary.trip-info{
-    width: 75%;
-}
-
+/* Button styling */
 .btn.btn-primary.trip-info-delete{
     background-color: #FF0000;
     border-color: #FF0000;
@@ -574,6 +583,18 @@ h1 {
     background-color: #ff5a5a;
 }
 
+.btn.btn-link-passenger{
+    color: #432C91 !important;
+    font-family: 'Helvetica', sans-serif !important;
+    text-decoration: underline;
+}
+
+.btn.btn-link-passenger:hover{
+    color: #9989B4 !important;
+    font-family: 'Helvetica', sans-serif !important;
+}
+
+/* Card styling */
 .card .card-body .card-title-passengers{
     color: #432C91 !important;
     font-weight: bold !important;
@@ -615,18 +636,7 @@ h1 {
     margin-right: 5%;
 }
 
-.btn.btn-link-passenger{
-    color: #432C91 !important;
-    font-family: 'Helvetica', sans-serif !important;
-    text-decoration: underline;
-}
-
-.btn.btn-link-passenger:hover{
-    color: #9989B4 !important;
-    font-family: 'Helvetica', sans-serif !important;
-}
-
-
+/* Modal Styling */
 .modal-content.ride-profile{
     background-color: #FCF7FF !important;
 }
@@ -662,6 +672,17 @@ h1 {
     background-color: #9989B4; /* Change the background color */
     border-color: #9989B4; /* Change the border color */
     color: #432C91;
+}
+
+/* Box that holds the map on trip page */
+.row.map-trip-info{
+    min-height: 300px;
+    margin-top: 15%;
+}
+
+/* Badge styling */
+.trip-info-badge{
+    margin-top: 20px;
 }
 
 
