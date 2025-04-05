@@ -166,5 +166,35 @@ async function sendPassengerDeletedEmail(userEmail, tripName) {
   }
 }
 
+//Function to send an email letting passengers know that the trip they were in was canceled
+async function sendTripDeletedEmail(userEmail, tripName){
+  try {
+      const transporter = createTransporter();      
+      const mailOptions = {
+          from: process.env.FROM_EMAIL,
+          to: userEmail,
+          subject: "KCC - A ride you were in has been canceled!",
+          text: `The ride "${tripName}" has been canceled.`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2>Ride Canceled</h2>
+                  <p>The ride:</p>
+                  <p>"${tripName}"</p>
+                  <p>Has been canceled by its driver.</p>
+                  <p>Sorry,</p>
+                  <p>Kenyon Car-Connect</p>
+              </div>
+          `
+      };
 
-module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail};
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.messageId);
+      return true;
+  } catch (error) {
+      console.error('Error sending ride denied email:', error);
+      return false;
+  }
+}
+
+
+module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail};

@@ -330,6 +330,7 @@ static async acceptTripRequest(tripID, userID, tripPosterID){
 //Function for a passenger to request to join a trip
 static async passengerRequestToJoinTrip(tripID, userID, user){
     console.log("tripModel... passengerRequestToJoinTrip... running");
+    console.log(tripID, userID, user);
     try{
         // Check if the user is already requesting or has joined the trip
         const checkSql = "SELECT * FROM tripPassengers WHERE tripID = ? AND userID = ?";
@@ -350,10 +351,7 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
         if(insert.affectedRows){
             //Send an email to the poster of the trip that someone has requested to join it
             const trip = await Trip.getTripById(tripID);
-            const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
-            if(posterEmail){
-                const sendEmail = await emailServices.sendRideRequestEmail(posterEmail, trip.title)
-            }
+            const sendEmail = await emailServices.sendRideRequestEmail(user.email, trip.title)
             //Return true if passenger requested successfully
             console.log("User", userID, "successfully requested to join trip: ", tripID);
             return { success: true};
@@ -502,11 +500,17 @@ static async deleteTrip (tripID){
         //Start a transaction
         await conn.beginTransaction();
 
+        //Get all passengers associated with the trip before deleting them to send emails later
+        const passengers = await Trip.getTripPassengers(tripID);
+
+        //Get trip information before it is deleted (also needed for email later)
+        const trip = await Trip.getTripById(tripID);
+
         //Delete the passengers associated with the trip first
         const deletePassengersSql = 'DELETE FROM tripPassengers WHERE tripID = ?';
         const deletePassengersResult = await conn.query(deletePassengersSql, [tripID]);
 
-        //Delte the trip from the database
+        //Delete the trip from the database
         const deleteTripSql = 'DELETE FROM tripData WHERE id = ?';
         const deleteTripResult = await conn.query(deleteTripSql, [tripID]);
 
@@ -514,6 +518,10 @@ static async deleteTrip (tripID){
         await conn.commit();
 
         if(deleteTripResult.affectedRows > 0 ){
+            //Send an email to all users who were passengers on the trip letting them know that it has been deleted
+            for(const passenger of passengers){
+                await emailServices.sendTripDeletedEmail(passenger.email, trip.title);
+            }
             return {success: true}; 
         }else{
             return {success: false}; //If the trip was not deleted, return success false

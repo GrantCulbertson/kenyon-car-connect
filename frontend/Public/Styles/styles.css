@@ -57,8 +57,10 @@ h1 {
 .google-map-image{
     object-fit: cover;
     height: 100%;
-    border-radius: .5rem;
+    border-radius: 20px;
 }
+
+
 
 /* --------------- Styles for the Navbar ------------------ */
 .navbar.navbar-light.bg-light {
@@ -583,6 +585,10 @@ h1 {
     background-color: #ff5a5a;
 }
 
+.btn.btn-primary.trip-info-join{
+    width: 75% !important;
+}
+
 .btn.btn-link-passenger{
     color: #432C91 !important;
     font-family: 'Helvetica', sans-serif !important;
@@ -595,7 +601,17 @@ h1 {
 }
 
 /* Card styling */
-.card .card-body .card-title-passengers{
+.card.trip-information{
+    margin-bottom: 25px;
+    background-color: #FCF7FF;
+
+    border: 1px solid #432C91 !important; /* Add a border */
+    border-radius: .5rem;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.card.trip-information .card-body .card-title-passengers{
     color: #432C91 !important;
     font-weight: bold !important;
     margin-top: 30px;
@@ -605,6 +621,7 @@ h1 {
     background-color:#9989B4 !important;
     color: #ffffff !important; /* White text */
     font-family: 'Helvetica', sans-serif !important;
+    font-weight: bold;
     border-radius: 5px 0 0 5px; /* Smooth transition to the left */
     border-top-left-radius: .5rem;
     border-bottom-left-radius: .5rem;
@@ -616,6 +633,9 @@ h1 {
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     margin-left: 5%;
+
+    border: 1px solid #432C91 !important; /* Add a border */
+    border-right: none !important;
 }
 
 .trip-page-info-box {
@@ -634,7 +654,39 @@ h1 {
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
     margin-right: 5%;
+
+    border: 1px solid #432C91 !important; /* Add a border */
+    border-left: none !important;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the passenger name */
 }
+
+/* Wrapper for box with passenger info */
+.passenger-box-wrapper {
+    width: 275px !important;          /* Match the driver box width */
+    max-width: 275px !important;      /* Ensure it never grows wider */
+    box-sizing: border-box;/* Include padding/border in the total width */
+    overflow: hidden;      /* Hide any content that might overflow */
+}
+
+.passenger-name {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+.trip-page-info-box button {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
 
 /* Modal Styling */
 .modal-content.ride-profile{
@@ -674,16 +726,120 @@ h1 {
     color: #432C91;
 }
 
-/* Box that holds the map on trip page */
+/* Box that holds the map & trip info on trip page */
 .row.map-trip-info{
     min-height: 300px;
-    margin-top: 15%;
+    margin-top: 25px;
+    justify-content: center;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 0px;
+
+    background-color: #FCF7FF;
+    border-radius: .5rem .5rem 0rem 0rem;
+    border: 1px solid #432C91; /* Add a border */
+    border-bottom: none;
 }
+
+/* Container for google image to give rounded corners */
+.google-image-container-trip-page {
+    max-width: 100%; 
+    height: 100%; 
+    border-radius: .5rem; 
+    overflow: hidden;
+    background-color: #432C91;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    min-height: 200px;
+    border: .25px solid #432C91; /* Add a border */
+
+    overflow:none;
+
+}
+
+/* DIV that holds trip comments */
+.trip-info-comments-div{
+    margin-left: 20px;
+    margin-top: 0px;
+    margin-right: 20px;
+    background-color: #FCF7FF;
+    border-radius: 0rem 0rem .5rem .5rem;
+    border: 1px solid #432C91; /* Add a border */
+    border-top: none;
+
+    text-align: center;
+}
+
+.trip-info-comments-div p{
+    margin-top: 15px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.trip-info-column{
+    margin-top: 20px;
+}
+/*Styling for trip info text */
+.trip-info-column .trip-info-card-field{
+    color: #000000 !important;
+    font-weight: italic !important;
+    text-align: left !important;
+}
+
+.trip-info-button-div{
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+/*Column that holds just the map */
+.trip-map-column{
+    justify-content: center;
+    align-items: center;
+}
+
 
 /* Badge styling */
 .trip-info-badge{
     margin-top: 20px;
 }
+
+/*Button for removing a passenger */
+.btn.btn-sm.remove-passenger{
+    background-color: #FF0000;
+    border-color: #FF0000;
+    border-radius: .5rem;
+    color:#FCF7FF;
+    margin-left: 5px;
+    padding: 1px !important;
+    margin-left: 10px !important;
+    width: 40%;
+}
+
+.btn.btn-sm.remove-passenger:hover{
+    background-color: #ff5a5a;
+}
+
+/* Special formatting for phone screen */
+@media (max-width: 576px) {
+    /* Ensure both driver and passenger boxes stay at 100% width */
+    .trip-page-label-box,
+    .trip-page-info-box,
+    .passenger-box-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    
+    /* Override the remove button on small screens */
+    .btn.btn-sm.remove-passenger {
+      width: auto !important;  /* Let its content define the width */
+      margin-left: 0 !important;
+      padding: 0.2rem 0.3rem !important;
+    }
+  }
+
+
 
 
 
