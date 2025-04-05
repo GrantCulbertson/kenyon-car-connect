@@ -255,9 +255,12 @@ h1 {
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-.verify-text {
-    margin-right: 15px; /* Adjust as needed */
-    color:#000000
+.verify-text{
+    display: block;
+    color:#000000;
+    text-align:center;
+    margin-top: 10px;
+    max-width: 500px;
 }
 
 /* Styling for link to email verification */
@@ -317,13 +320,12 @@ h1 {
     margin-bottom: 50px;
 }
 
-.btn.btn-primary[data-target="#updateRideProfileModal"] {
+.btn.btn-primary.profile-ride-profile{
     margin-top: 50px; /* adjust margin above button */
     background-color:#432C91 !important;
-    
 }
 
-.btn.btn-primary[data-target="#updateRideProfileModal"]:hover{
+.btn.btn-primary.profile-ride-profile:hover{
     margin-top: 50px; /* adjust margin above button */
     background-color:#9989B4 !important;
     color: #432C91;
@@ -699,15 +701,24 @@ h1 {
 }
 
 .modal-body-ride-profile{
-    text-align: center;
+    text-align: left;
 }
 
 .modal-body-ride-profile b{
     font-weight: bold !important;
 }
-
 .modal-body-ride-profile p{
     color: #000000 !important;
+    margin-left: 10px;
+}
+.modal-body-ride-profile p+p{
+    color: #000000 !important;
+    margin-top: 30px;
+}
+
+.modal-body-ride-profile p+p{
+    color: #000000 !important;
+    margin-top: 30px;
 }
 
 .modal-footer.ride-profile .btn.btn-secondary{

@@ -84,13 +84,11 @@
             </div>
             <!-- Tell user they should verify their email if it is not verified already-->
             <% if(user.verificationStatus == "No"){ %>
-                <div class>
-                        <span class = "verify-text">
-                            <i>Your email is not verified yet. You will need to verify it to be able to request & post rides.
-                                <a href ="/User/VerifyEmailPage">Click here to verify.</a>
-                            </i>
-                        </span>
-                </div>
+                <span class = "verify-text">
+                    <i>Your email is not verified yet. You will need to verify it to be able to request & post rides.
+                        <a href ="/User/VerifyEmailPage">Click here to verify.</a>
+                    </i>
+                </span>
             <% } %>
             <!-- -->
             <br>
@@ -129,7 +127,6 @@
                     <%= user.firstName %>
                 </div>
             </div>
-            <br>
             <!-- User Last Name-->
             <div class="d-flex align-items-center">
                 <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -139,7 +136,6 @@
                     <%= user.lastName %>
                 </div>
             </div>
-            <br>
             <!-- Button to update profile information -->
             <div class = "d-flex justify-content-center">
                 <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateProfileModal">Update Profile Info</button>
@@ -169,7 +165,6 @@
                             <%= car.model %>
                         </div>
                     </div>
-                    <br>
                     <!-- Car Year -->
                     <div class="d-flex align-items-center">
                         <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -179,7 +174,6 @@
                             <%= car.year %>
                         </div>
                     </div>
-                    <br>
                     <!-- Car Color -->
                     <div class="d-flex align-items-center">
                         <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -189,7 +183,6 @@
                             <%= car.color %>
                         </div>
                     </div>
-                    <br>
                     <!-- Car License Plate -->
                     <div class="d-flex align-items-center">
                         <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -199,7 +192,6 @@
                             <%= car.licensePlate %>
                         </div>
                     </div>
-                    <br>
                     <!-- Car Seats Available -->
                     <div class="d-flex align-items-center">
                         <div class="px-3 py-2 bg-secondary text-white label-box border">
@@ -209,7 +201,6 @@
                             <%= car.seatsInCar %>
                         </div>
                     </div>
-                    <br>
                     <!-- Button to update car information -->
                     <div class = "d-flex justify-content-center">
                         <button class="btn btn-primary" data-toggle = "modal" data-target = "#updateCarModal">Update Car Info</button>
@@ -444,7 +435,7 @@
                             <p class="card-text"><b>Bio:</b> <%= profile.bio %></p>
                         </span>
                         <!-- Button for User to Add Ride Profile Information-->
-                        <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#updateRideProfileModal">Update Ride Profile</button>
+                        <button class="btn btn-primary ms-2 profile-ride-profile" data-toggle = "modal" data-target = "#updateRideProfileModal">Update Ride Profile</button>
                     </div>
                 </div>
              </div>
@@ -458,10 +449,10 @@
                                     <p>This is how other users will see you on the site</p>
                                 </span>
                             <span class = "ride-profile-card-field">
-                                <p class="card-text">Looks like you don't have a ride profile yet, please click the button below to create one.</p>
+                                <p class="card-text" style = "text-align: center">Looks like you don't have a ride profile yet, please click the button below to create one.</p>
                             </span>
                             <!-- Button for User to Add Ride Profile Information-->
-                            <button class="btn btn-primary ms-2" data-toggle = "modal" data-target = "#addRideProfileModal">Create Ride Profile</button>
+                            <button class="btn btn-primary ms-2 profile-ride-profile" data-toggle = "modal" data-target = "#addRideProfileModal">Create Ride Profile</button>
                         </div>
                     </div>
                  </div>
