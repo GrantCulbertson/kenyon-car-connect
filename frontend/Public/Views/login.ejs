@@ -15,20 +15,20 @@
 
 
 <!-- Sign up form Information -->
- <div class = "container-md justify-content-center">
+ <div class = "container-md justify-content-center login-form-container">
     <form action="/User/LoginUser" method="POST">
-        <div class="mb-3">
+        <div class="mb-3 form-group">
             <label for="email" class="form-label">Kenyon Student Email</label>
             <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@kenyon\.edu$" required>
             <div class="invalid-feedback">
             Please enter a valid Kenyon College email address.
             </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 form-group">
           <label for="password" class="form-label">Password</label>
           <input type="text" name="password" id="password" class="form-control" required>
-          </div>
-        <div class = "mt-5 text-center">
+        </div>
+        <div class = "mt-5 text-center form-group">
         <button type="submit" class="btn btn-primary btn-block">Submit</button>
         </div>
         <% if (loginFailed) { %> <!-- If user fails to login, the page will show that the login failed-->

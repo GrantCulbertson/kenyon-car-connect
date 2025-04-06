@@ -134,6 +134,23 @@ h1 {
     position: absolute;
 }
 
+/* --------------- Styling for the signup page ---------------------- */
+.signup-header {
+    color: #000000;
+}
+
+.signup-form-container .form-group{
+    margin-bottom: 1.5rem !important;
+}
+
+
+/*----------------- Styling for the login page ---------------------- */
+.login-form-container .form-group{
+    margin-bottom: 1.5rem !important;
+}
+
+
+
 /* -------------- Styles for homepage ---------------- */
 
 /* Styling for the homepage header */
@@ -237,6 +254,9 @@ h1 {
     align-items: center;
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
+    border: 1px solid #432C91 !important; /* Add a border */
+    border-left: none !important;
 }
 
 .label-box {
@@ -253,6 +273,9 @@ h1 {
     align-items: center;
     justify-content: center;
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+
+    border: 1px solid #432C91 !important; /* Add a border */
+    border-right: none !important;
 }
 
 .verify-text{
@@ -284,6 +307,11 @@ h1 {
     margin-top: 10px;
     margin-bottom: 50px;
     height: 100%;
+
+    border: 1px solid #432C91 !important; /* Add a border */
+    border-radius: .5rem;
+    overflow: hidden;
+    box-shadow: none;
 }
 
 .card .card-body .card-title{
