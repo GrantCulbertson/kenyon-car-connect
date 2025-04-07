@@ -142,7 +142,7 @@
             </div>
         <% if(userHasCar){ %>
             <!-- Car Information -->
-            <div class="container mt-4">
+            <div class="container mt-4 car-info-container">
                 <!-- Header for Car Information-->
                 <span class = "profile-header"><h2> Your Car </h2></span>
                 <div class="d-flex flex-column">
@@ -271,23 +271,23 @@
                                 </div>                                         
                                 <div class="form-group">
                                     <label for="model" class="form-label">Car Model</label>
-                                    <input type="text" name="model" id="model" class="form-control" value = "<%= car.model %>" placeholder = "Car Model" required>
+                                    <input type="text" name="model" id="model" class="form-control" value = "<%= car.model %>" placeholder = "Car Model" maxLength = "50" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="year" class="form-label">Car Year</label>
-                                    <input type="number" name="year" id="year" class="form-control" value = "<%= car.year %>" placeholder = "Car Year" required>
+                                    <input type="number" name="year" id="year" class="form-control" value = "<%= car.year %>" placeholder = "Car Year" maxLength = "4" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="color" class="form-label">Car Color</label>
-                                    <input type="text" name="color" id="color" class="form-control" value = "<%= car.color %>" placeholder = "Car Color" required>
+                                    <input type="text" name="color" id="color" class="form-control" value = "<%= car.color %>" placeholder = "Car Color" maxLength = "50" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="licensePlate" class="form-label">Car License Plate</label>
-                                    <input type="text" name="licensePlate" id="licensePlate" class="form-control" value = "<%= car.licensePlate %>" placeholder = "License Plate" required>
+                                    <input type="text" name="licensePlate" id="licensePlate" class="form-control" value = "<%= car.licensePlate %>" maxLength = "8" placeholder = "License Plate" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
-                                    <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" value = "<%= car.seatsInCar %>" placeholder = "Seats in Car" required>
+                                    <input type="number" name="seatsInCar" id="seatsInCar" class="form-control" value = "<%= car.seatsInCar %>" placeholder = "Seats in Car" maxLength = "2" required>
                                 </div>
                                 <div class = "mt-5 text-center">
                                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -379,23 +379,23 @@
                                     </div>                        
                                     <div class="form-group">
                                         <label for="model" class="form-label">Car Model</label>
-                                        <input type="text" name="model" id="model" placeholder = "Camry, Jetta, etc." class="form-control" required>
+                                        <input type="text" name="model" id="model" placeholder = "Camry, Jetta, etc." class="form-control" maxLength = "50" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="year" class="form-label">Car Year</label>
-                                        <input type="number" name="year" id="year" placeholder ="2012, 2020, etc." class="form-control" required>
+                                        <input type="number" name="year" id="year" placeholder ="2012, 2020, etc." class="form-control" maxLength = "4" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="color" class="form-label">Car Color</label>
-                                        <input type="text" name="color" id="color" placeholder = "Blue, Green, etc." class="form-control" required>
+                                        <input type="text" name="color" id="color" placeholder = "Blue, Green, etc." class="form-control" maxLength = "50" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="licensePlate" class="form-label">Car License Plate</label>
-                                        <input type="text" name="licensePlate" id="licensePlate" placeholder = "JDOE903" class="form-control" required>
+                                        <input type="text" name="licensePlate" id="licensePlate" placeholder = "JDOE903" class="form-control" maxLength = "8" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="seatsInCar" class="form-label">How many seats are available in your car for passengers?</label>
-                                        <input type="number" name="seatsInCar" id="seatsInCar" placeholder = "1, 2, 3, etc." class="form-control" required>
+                                        <input type="number" name="seatsInCar" id="seatsInCar" placeholder = "1, 2, 3, etc." class="form-control" maxLength = "2" required>
                                     </div>
                                     <div class = "mt-5 text-center">
                                     <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -441,7 +441,7 @@
              </div>
              <!-- Card that is shown if the user has no added their rider profile-->
              <%}else{%>
-                <div class = "card">
+                <div class = "card ride-profile">
                     <div class = "card text-center">
                         <div class = "card-body">
                                 <h2 class="card-title">Ride Profile</h2>
@@ -481,20 +481,20 @@
                     </div>
                     <div class="form-group">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" id="password" value = "<%= userPassword %>" placeholder = "Password" class="form-control" required>
+                        <input type="password" name="password" id="password" value = "<%= userPassword %>" placeholder = "Password" class="form-control" maxLength = "30" required>
                     </div>
                     <div class="form-group" id="retypePasswordContainer" style="display: none;">
                         <label for="retypePassword" class="form-label">Re-type Password</label>
-                        <input type="password" name="retypePassword" id="retypePassword" class="form-control">
+                        <input type="password" name="retypePassword" id="retypePassword" maxLength = "30" class="form-control">
                         <small id="passwordMatchMessage" class="text-danger" style="display: none;">Passwords do not match</small>
                     </div>
                     <div class="form-group">
                         <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" name="firstName" id="firstName" value = "<%= user.firstName %>" placeholder = "First Name" class="form-control" required>
+                        <input type="text" name="firstName" id="firstName" value = "<%= user.firstName %>" placeholder = "First Name" class="form-control" maxLength = "50" required>
                     </div>
                     <div class="form-group">
                         <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" name="lastName" id="lastName" value = "<%= user.lastName %>" placeholder = "Last Name" class="form-control" required>
+                        <input type="text" name="lastName" id="lastName" value = "<%= user.lastName %>" placeholder = "Last Name" class="form-control" maxLength = "50" required>
                     </div>
                     <div class = "mt-5 text-center">
                         <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -527,11 +527,11 @@
                     </div>
                     <div class="form-group">
                         <label for="pronouns" class="form-label">Pronouns</label>
-                        <input type="text" name="pronouns" id="pronouns" value = "<%= profile.pronouns%>" placeholder = "He/Him , She/her, etc." class="form-control" required>
+                        <input type="text" name="pronouns" id="pronouns" value = "<%= profile.pronouns%>" placeholder = "He/Him , She/her, etc." class="form-control" maxLength = "50" required>
                     </div>
                     <div class="form-group">
                         <label for="preferredMusic" class="form-label">Preferred Music Genre/Artist</label>
-                        <input type="text" name="preferredMusic" id="preferredMusic" value = "<%= profile.preferredMusic %>" placeholder = "Rap, Country, etc." class="form-control" required>
+                        <input type="text" name="preferredMusic" id="preferredMusic" value = "<%= profile.preferredMusic %>" placeholder = "Rap, Country, etc." class="form-control" maxLength = "50" required>
                     </div>
                     <div class="form-group">
                         <label for="conversationPreference" class="form-label">What is your comfortable level of conversation on a car ride?</label>
@@ -545,7 +545,7 @@
                     </div>
                     <div class="form-group">
                         <label for="bio" class="form-label">Bio</label>
-                        <input type="text" name="bio" id="bio" value = "<%= profile.bio %>" placeholder = "I am an english major and love Tim Hortons..." class="form-control" required>
+                        <input type="text" name="bio" id="bio" value = "<%= profile.bio %>" placeholder = "I am an english major and love Tim Hortons..." class="form-control" maxLength = "200" required>
                         <small id="bioHelp" class="form-text text-muted">Write a little about yourself, this is how someone will get to know you before accepting you to a ride.</small>
                     </div>
                     <div class = "mt-5 text-center">

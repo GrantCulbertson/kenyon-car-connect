@@ -239,6 +239,11 @@ h1 {
 
 
 /* --------------- Styles for profile page ---------------- */
+.container.mt-4.car-info-container{
+    padding-left: 0 !important; /* Remove left padding */
+    padding-right: 0 !important; /* Remove right padding */
+}
+
 .username-box {
     background-color: #FCF7FF !important; /* Light gray background */
     color: #000000 !important; /* Dark gray text */
@@ -263,6 +268,7 @@ h1 {
     background-color:#9989B4 !important;
     color: #ffffff !important; /* White text */
     font-family: 'Helvetica', sans-serif !important;
+    font-weight: bold;
     border-radius: 5px 0 0 5px; /* Smooth transition to the left */
     border-top-left-radius: .5rem;
     border-bottom-left-radius: .5rem;

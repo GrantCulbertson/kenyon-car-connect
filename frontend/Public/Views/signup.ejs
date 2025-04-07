@@ -20,10 +20,12 @@
         <div class="form-group">
             <label for="name" class="form-label">First Name</label>
             <input type="text" name="firstName" id="firstName" class="form-control" required>
+            <small id="firstNameCounter" class="form-text text-muted">50 characters remaining</small>
         </div>
         <div class="form-group">
             <label for="name" class="form-label">Last Name</label>
             <input type="text" name="lastName" id="lastName" class="form-control" required>
+            <small id="lastNameCounter" class="form-text text-muted">50 characters remaining</small>
             </div>
         <div class="form-group">
             <label for="email" class="form-label">Kenyon Student Email</label>
@@ -31,6 +33,7 @@
             <div class="invalid-feedback">
             Please enter a valid Kenyon College email address.
             </div>
+            <small id="emailCounter" class="form-text text-muted">50 characters remaining</small>
         </div>
         <div class="form-group">
             <label for="password" class="form-label">Set Password</label>
@@ -38,26 +41,21 @@
             <div class="invalid-feedback">
                 Password must contain at least one uppercase letter, one lowercase letter, and one number.
             </div>
+            <small id="passwordCounter" class="form-text text-muted">30 characters remaining</small>
         </div>
         <div class="form-group" id="retypePasswordContainer" style="display: none;">
             <label for="retypePassword" class="form-label">Re-type Password</label>
             <input type="password" name="retypePassword" id="retypePassword" class="form-control">
             <small id="passwordMatchMessage" class="text-danger" style="display: none;">Passwords do not match</small>
+            <small id="retypePasswordCounter" class="form-text text-muted">30 characters remaining</small>
         </div>
         <div class="form-group">
             <label for="age" class="form-label">Age</label>
-            <input type="number" name="age" id="age" class="form-control" min="18" required>
+            <input type="number" name="age" id="age" class="form-control" min="18" max = "99" required>
             <div class="invalid-feedback">
             You must 18 or older to sign up.
             </div>
         </div>
-        <!-- <div class="form-group">
-            <label for="has_car" class="form-label">Do you have a car on campus?</label>
-                <select name="has_car" id="has_car" class="form-control" required>
-                <option value="no">No</option>
-                <option value="yes">Yes</option>
-                </select>
-        </div> -->
         <div class = "mt-5 text-center">
         <button type="submit" class="btn btn-primary btn-block">Submit</button>
         </div>
@@ -70,6 +68,83 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- Awesome scripts for making this page dynamic-->
+<script>
+// Functions to restrict # of characters that can be input
+    document.addEventListener("DOMContentLoaded", function() {
+        const maxNameFieldLength = 50; // Maximum length for name fields
+        const maxEmailFieldLength = 100; //Maximum length for email field
+        const maxPasswordFieldLength = 30; //Maximum length for password field
+
+        //Set Max length for fields
+            //Name Fields
+            document.getElementById("firstName").setAttribute("maxLength", maxNameFieldLength);
+            document.getElementById("lastName").setAttribute("maxLength", maxNameFieldLength);
+
+            //Email Field
+            document.getElementById("email").setAttribute("maxLength", maxEmailFieldLength);
+
+            //Password Field
+            document.getElementById("password").setAttribute("maxLength", maxPasswordFieldLength);
+            document.getElementById("retypePassword").setAttribute("maxLength", maxPasswordFieldLength);
+
+        //Function to update the character count
+            function updateCharacterCount(input, counter, maxLength) {
+                    const remaining = maxLength - input.value.length;
+                    counter.textContent = `${remaining} characters remaining`;
+                }
+        
+        //Add event listeners to update character count
+                //Name Fields
+                const firstNameInput = document.getElementById("firstName");
+                const firstNameCounter = document.getElementById("firstNameCounter");
+                const lastNameInput = document.getElementById("lastName");
+                const lastNameCounter = document.getElementById("lastNameCounter");
+
+                firstNameInput.addEventListener("input", function() {
+                    updateCharacterCount(firstNameInput, firstNameCounter, maxNameFieldLength);
+                });
+
+                lastNameInput.addEventListener("input", function(){
+                    updateCharacterCount(lastNameInput, lastNameCounter, maxNameFieldLength);
+                });
+
+                updateCharacterCount(firstNameInput, firstNameCounter, maxNameFieldLength);
+                updateCharacterCount(lastNameInput, lastNameCounter, maxNameFieldLength);
+
+                //Email Field
+                const emailInput = document.getElementById("email");
+                const emailCounter = document.getElementById("emailCounter");
+
+                emailInput.addEventListener("input", function() {
+                    updateCharacterCount(emailInput, emailCounter, maxEmailFieldLength);
+                });
+
+                updateCharacterCount(emailInput, emailCounter, maxEmailFieldLength);
+
+                //Password field
+                const passwordInput = document.getElementById("password");
+                const passwordCounter = document.getElementById("passwordCounter");
+                const retypePasswordInput = document.getElementById("retypePassword");
+                const retypePasswordCounter = document.getElementById("retypePasswordCounter");
+
+                passwordInput.addEventListener("input", function() {
+                    updateCharacterCount(passwordInput, passwordCounter, maxPasswordFieldLength);
+                });
+
+                retypePasswordInput.addEventListener("input", function() {
+                    updateCharacterCount(retypePasswordInput, retypePasswordCounter, maxPasswordFieldLength);
+                })
+
+                updateCharacterCount(passwordInput, passwordCounter, maxPasswordFieldLength);
+                updateCharacterCount(retypePasswordInput, retypePasswordCounter, maxPasswordFieldLength);
+        
+    });
+</script>
+
+
+
+
+
 <script>
     // Custom validation for email
     document.getElementById('email').addEventListener('input', function() {
