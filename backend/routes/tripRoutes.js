@@ -38,6 +38,9 @@ router.post("/deleteTrip/:id", tripController.deleteTrip);
 //Route for a drive to accept a trip request from the feed;
 router.post("/acceptTripRequest/:id", tripController.acceptTripRequest);
 
+//Route for a passenger to leave a trip
+router.post("/leaveTrip/:id", tripController.leaveTrip);
+
 
 
 

@@ -88,7 +88,7 @@
                     <div class="google-image-container-trip-page">
                       <img 
                         src="https://maps.googleapis.com/maps/api/staticmap?size=300x300
-                             &zoom=12
+                             &zoom=<%=trip.zoomLevel%>
                              &markers=color:purple|label:A|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>
                              &markers=color:purple|label:B|<%= trip.locationDetails.destinationLat %>,<%= trip.locationDetails.destinationLng %>
                              &path=color:0x0000ff|weight:5|<%= trip.locationDetails.originLat %>,<%= trip.locationDetails.originLng %>
@@ -137,9 +137,18 @@
                       Cancel Trip
                     </button>
                   <% } else if (trip.tripType === "Providing a ride") { %>
+                    <% const isPassenger = trip.passengers.some(passenger => passenger.id === user.id); %>
+                    <!-- Leave Trip Button -->
+                    <% if (isPassenger) {%>
+                        <button class="btn btn-primary trip-info-delete" data-toggle="modal" data-target="#leaveTripModal">
+                            Leave Trip
+                        </button>
+                    <% } else{ %>
+                    <!-- Join Trip Button -->
                     <form action="/Trips/passengerRequestToJoinTrip/<%= trip.id %>" method="POST" class="d-flex w-100 justify-content-center">
                         <button type = "Submit" class="btn btn-primary trip-info-join">Join Trip</button>
                     </form>
+                    <% } %>
                   <% } %>
             </div>
         </div>
@@ -327,6 +336,29 @@
     </div>
 </div>
 
+<!-- Modal for leaving a trip -->
+ <div class="modal fade" id="leaveTripModal" tabindex="-1" role="dialog" aria-labelledby="leaveTripModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTripModalLabel">Leave Trip</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to leave this trip? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form action="/Trips/leaveTrip/<%= trip.id %>" method="POST">
+                    <button type="submit" class="btn btn-danger">Leave Trip</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -410,6 +442,19 @@
             icon: 'error',
             title: 'Request Failed',
             text: 'There was an error removing the passenger from your ride. Please try again.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+        //Popup for if leave the trip does not work
+        if (urlParams.get('error') === 'leaveTrip') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'Sorry, there was an error with you leaving the ride. Please try again.',
             timer: 3000,
             showConfirmButton: false
         });

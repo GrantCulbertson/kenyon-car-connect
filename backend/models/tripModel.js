@@ -237,10 +237,12 @@ static async getTripPassengers(tripID){
     console.log("tripModel... getTripPassengers running for trip: ", tripID);
     try{
         const sql = `
-            SELECT u.id, u.firstName, u.lastName, u.email
+            SELECT u.id, u.firstName, u.lastName, u.email, tp.passengerStatus
             FROM tripPassengers tp
             JOIN userData u ON tp.userID = u.id
-            WHERE tp.tripID = ? AND tp.passengerStatus = 'Accepted' OR tp.passengerStatus = 'Driver' ORDER BY tp.passengerStatus DESC`;
+            WHERE tp.tripID = ? AND (tp.passengerStatus = 'Accepted' OR tp.passengerStatus = 'Driver')
+            ORDER BY FIELD(tp.passengerStatus, 'Driver', 'Accepted') ASC, u.lastName ASC, u.firstName ASC
+            `;
         const passengers = await db.query(sql, [tripID]);
         return passengers; //Return the list of passengers;
     }catch (error){
@@ -264,6 +266,50 @@ static async checkForPassengerRequest(tripID, userID){
     }catch (error){
         console.log("Error in tripModel... checkForPassengerRequest");
         throw error;
+    }
+}
+
+//Function for a user to leave a trip
+static async leaveTrip(tripID, userID){
+    console.log("tripModel... leaveTrip... running");
+    let conn;
+    try{
+        //Get connection & initiate transaction
+        conn = await db.pool.getConnection(); //Get a connection from the pool
+        await conn.beginTransaction(); //Start a transaction
+
+        //Delete the passenger from the database
+        const sql = "DELETE FROM tripPassengers WHERE tripID = ? AND userID = ?";
+        const params = [tripID, userID];
+        const deletePassenger = await conn.query(sql, params);
+
+        //Update the number of open seats for the trip
+        const sql2 = "UPDATE tripData SET openSeats = (openSeats + 1) WHERE id = ?";
+        const params2 = [tripID];
+        const updateSeats = await conn.query(sql2, params2);
+
+        //Commit the transaction if all queries succeeded
+        await conn.commit();
+
+        //Check if the deletion was successful & return user to corresponding page
+        if(deletePassenger.affectedRows > 0 && updateSeats.affectedRows > 0){
+            //Send an email to the driver that the passenger has left the trip
+            const trip = await Trip.getTripById(tripID);
+            const driverEmail = await Trip.getEmailByPosterID(trip.posterID);
+            await emailServices.sendPassengerLeftEmail(driverEmail, trip.title);
+            return {success: true};
+        }else{
+            return {success: false};
+        }
+    }catch (error){
+        if(conn){
+            await conn.rollback(); //Rollback the transaction on error
+        }
+        throw error;
+    }finally{
+        if(conn){
+            conn.release(); //Release the connection back to the pool
+        }
     }
 }
 
@@ -328,9 +374,8 @@ static async acceptTripRequest(tripID, userID, tripPosterID){
 
 
 //Function for a passenger to request to join a trip
-static async passengerRequestToJoinTrip(tripID, userID, user){
+static async passengerRequestToJoinTrip(tripID, userID){
     console.log("tripModel... passengerRequestToJoinTrip... running");
-    console.log(tripID, userID, user);
     try{
         // Check if the user is already requesting or has joined the trip
         const checkSql = "SELECT * FROM tripPassengers WHERE tripID = ? AND userID = ?";
@@ -351,7 +396,8 @@ static async passengerRequestToJoinTrip(tripID, userID, user){
         if(insert.affectedRows){
             //Send an email to the poster of the trip that someone has requested to join it
             const trip = await Trip.getTripById(tripID);
-            const sendEmail = await emailServices.sendRideRequestEmail(user.email, trip.title)
+            const posterEmail = await Trip.getEmailByPosterID(trip.posterID);
+            await emailServices.sendRideRequestEmail(posterEmail, trip.title)
             //Return true if passenger requested successfully
             console.log("User", userID, "successfully requested to join trip: ", tripID);
             return { success: true};
@@ -613,6 +659,42 @@ static doubleDuration(duration) {
     }
 
     return doubledDuration.trim();
+}
+
+//Function to calculate the zoom level for the google maps API call (thank to chatGPT for this one)
+static async calculateZoomLevel(lat1, lng1, lat2, lng2, mapWidth, mapHeight) {
+    const EARTH_RADIUS = 6378137; // Earth's radius in meters
+
+    // Convert degrees to radians
+    const toRadians = (deg) => (deg * Math.PI) / 180;
+
+    // Calculate the distance between the two points
+    const dLat = toRadians(lat2 - lat1);
+    const dLng = toRadians(lng2 - lng1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRadians(lat1)) *
+            Math.cos(toRadians(lat2)) *
+            Math.sin(dLng / 2) *
+            Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = EARTH_RADIUS * c;
+
+    // Calculate the zoom level
+    const WORLD_DIM = { width: 256, height: 256 }; // Base tile size
+    const ZOOM_MAX = 21;
+
+    const latFraction = (lat2 - lat1) / 360;
+    const lngFraction = Math.abs(lng2 - lng1) / 360;
+
+    const latZoom = Math.floor(
+        Math.log(mapHeight / WORLD_DIM.height / latFraction) / Math.LN2
+    );
+    const lngZoom = Math.floor(
+        Math.log(mapWidth / WORLD_DIM.width / lngFraction) / Math.LN2
+    );
+
+    return Math.min(latZoom, lngZoom, ZOOM_MAX);
 }
 
 

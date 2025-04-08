@@ -45,6 +45,7 @@ exports.viewTripPage = async (req,res) => {
                 trip.passengers = (await Trip.getTripPassengers(trip.id)) || [];
                 //Get ride profiles associated with trip passengers
                 for (const passenger of trip.passengers){
+                    console.log(passenger);
                     const rideProfile = await RideProfile.getRideProfileByUserID(passenger.id);
                     if(rideProfile){
                         passenger.rideProfile = rideProfile;
@@ -52,6 +53,7 @@ exports.viewTripPage = async (req,res) => {
                         passenger.rideProfile = null;
                     }
                 }
+
                 //Get car information associated with the trip (if there is a car)
                 const car = await Car.getCarByUserID(trip.posterID);
                 if(car){
@@ -59,6 +61,10 @@ exports.viewTripPage = async (req,res) => {
                 }else{
                     trip.car = null;
                 }
+
+                //Get zoom level needed for map on page
+                const zoomLevel = await Trip.calculateZoomLevel(trip.leavingFromLat, trip.leavingFromLng, trip.destinationLat, trip.destinationLng, 300,300); //Get zoom level for map
+                trip.zoomLevel = zoomLevel; //Add zoom level to trip object
                 return res.render("trip", {trip, GoogleMapsAPIKey: process.env.GOOGLE_MAPS_API_KEY});
             }else{
                 res.status(404).send('Oops... trip not found');
@@ -142,6 +148,7 @@ exports.createTrip = async (req, res) => {
     }
 };
 
+//Function to accept a request to join a trip from the your trips page
 exports.acceptTripRequest = async (req, res) => {
     console.log("tripController... acceptTripRequest... running");
     const token = req.cookies.auth_token; // Get token from cookies
@@ -174,6 +181,7 @@ exports.acceptTripRequest = async (req, res) => {
 
 }
 
+//Function for a driver to delete their trip
 exports.deleteTrip = async (req, res) => {
     console.log("tripController... deleteTrip... running");
     const token = req.cookies.auth_token; // Get token from cookies 
@@ -311,6 +319,7 @@ exports.denyPassengerRequest = async (req, res) => {
 
 };
 
+//Function to remove a passenger from a trip
 exports.deletePassengerFromTrip = async (req, res) => {
     console.log("tripController... deletePassengerFromTrip... running");
     const token = req.cookies.auth_token;
@@ -339,6 +348,36 @@ exports.deletePassengerFromTrip = async (req, res) => {
     }catch (error){
         console.log("error in tripController... deletePassengerFromTrip...", error);
         res.redirect('/Trips/viewTrip/' + tripID + '?error=serverError')
+    }
+}
+
+//Function for a passenger to leave a trip
+exports.leaveTrip = async (req, res) => {
+    console.log("tripController... leaveTrip... running");
+    const token = req.cookies.auth_token; //Get token from cookies
+
+    //Return to homepage if user is not logged in
+    if(!token){
+        return res.redirect("/") //Shouldn't be able to leave a trip if they aren't logged in
+    }
+
+    //Move ahead with letting the user leave the trip
+    try{
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
+        const userID = decoded.id;
+        const tripID = req.params.id; //Get the trip ID from the route url
+
+        const requestStatus = await Trip.leaveTrip(tripID, userID); //Leave the trip
+        if(requestStatus.success){
+            //Redirect to your trips page if passenger is removed successfully
+            res.redirect('/Trips/yourTrips');
+        }else{
+            //Redirect to trip page with failure if request was not successful
+            res.redirect('/Trips/viewTrip/' + tripID + '?error=leaveTrip');
+        }
+    }catch(error){
+        console.log("Error in tripController... leaveTrip...", error);
+        res.redirect("/?error=serverError") //If error, redirect to homepage with error message
     }
 }
 

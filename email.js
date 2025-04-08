@@ -196,5 +196,34 @@ async function sendTripDeletedEmail(userEmail, tripName){
   }
 }
 
+//Function to send an email to the trip driver letting them know that a passenger has left their trip:
+async function sendPassengerLeftEmail(userEmail, tripName){
+  try {
+      const transporter = createTransporter();      
+      const mailOptions = {
+          from: process.env.FROM_EMAIL,
+          to: userEmail,
+          subject: "KCC - A passenger has left your ride!",
+          text: `A passenger has left your ride "${tripName}".`,
+          html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h2>Passenger Left Ride</h2>
+                  <p>A passenger has left your ride:</p>
+                  <p>"${tripName}"</p>
+                  <p>Sorry,</p>
+                  <p>Kenyon Car-Connect</p>
+              </div>
+          `
+      };
 
-module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail};
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.messageId);
+      return true;
+  } catch (error) {
+      console.error('Error sending ride denied email:', error);
+      return false;
+  }
+}
+
+
+module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail, sendPassengerLeftEmail};
