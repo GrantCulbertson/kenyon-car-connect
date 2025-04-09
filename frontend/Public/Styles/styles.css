@@ -886,6 +886,29 @@ h1 {
 
 
 
+  /* ---------------- Styles for the email verification page ---------------- */
+.btn.btn-primary.verify-email{
+    width: 75% !important;
+    margin-left: 3%;
+    margin-right: 2%;
+    margin-top: 5%;
+}
+
+.btn.btn-primary.skip-for-now{
+    background-color: #432C91;
+    color:#FCF7FF;
+    border-color: #432C91;
+    width: 75% !important;
+    margin-right: 3%;
+    margin-left: 2%;
+    margin-top: 5%;
+}
+
+.btn.btn-primary.skip-for-now:hover{
+    background-color: #9989B4;
+    color:#FCF7FF;
+}
+
 
 
 

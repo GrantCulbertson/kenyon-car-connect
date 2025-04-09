@@ -97,9 +97,6 @@ app.get('/', async (req, res) => {
     //Get zoom level for map of each trip
     trips.forEach(trip => {
       trip.zoomLevel = Trip.calculateZoomLevel((trip.leavingFromLat, trip.leavingFromLng, trip.destinationLat, trip.destinationLng, 300,300)); // Default zoom level
-      if (trip.startLatitude && trip.startLongitude) {
-        trip.zoomLevel = 12; // Zoom in closer to the starting point
-      }
     });
 
     //Render the homepage with the trips data

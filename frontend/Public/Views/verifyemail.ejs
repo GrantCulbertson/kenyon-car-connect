@@ -11,21 +11,22 @@
 <% if(lastPage.includes('/UserSignupPage')){ %> <!-- Show this page if coming directly from signup-->
     <div class="container-md mt-5 justify-content-center text-center">
         <h1>Welcome, <%= user.firstName %>!</h1>
-        <h2>One last thing...</h2>
-        <p>Please input the verification code just sent to your school email</p>
-        <p>Keep in mind that to do anything on this website you will need a verified email</p>
+        <p>One last thing... please input the verification code just sent to your school email</p>
+        <p><i>Keep in mind that to do anything on this website you will need a verified email</i></p>
     </div>
 
     <!-- Sign up form Information -->
-    <div class="container-md justify-content-center">
-        <form action="/User/VerifyEmail" method="POST">
-            <div class="mb-3 mt-5">
-                <label for="inputCode" class="form-label">Input Verification Code</label>
-                <input type="text" name="inputCode" id="inputCode" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        <a href="/" class="btn btn-primary ms-2" role="button">Skip for now</a>
+    <div class="container-md justify-content-center verify-email-button-container">
+      <form action="/User/VerifyEmail" method="POST" class="d-inline">
+          <div class="mb-3 mt-5">
+              <label for="inputCode" class="form-label">Input Verification Code</label>
+              <input type="text" name="inputCode" id="inputCode" class="form-control" required>
+          </div>
+          <div class="d-flex justify-content-center mt-3">
+              <a href="<%= lastPage %>" class="btn btn-primary skip-for-now" role="button">Skip for now</a>
+              <button type="submit" class="btn btn-primary verify-email">Submit</button>
+          </div>
+      </form>
     </div>
 <% }else{ %>
 
@@ -37,15 +38,17 @@
 </div>
 
 <!-- Sign up form Information -->
-<div class="container-md justify-content-center">
-  <form action="/User/VerifyEmail" method="POST">
+<div class="container-md justify-content-center verify-email-button-container">
+  <form action="/User/VerifyEmail" method="POST" class="d-inline">
       <div class="mb-3 mt-5">
           <label for="inputCode" class="form-label">Input Verification Code</label>
           <input type="text" name="inputCode" id="inputCode" class="form-control" required>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="d-flex justify-content-center mt-3">
+          <a href="<%= lastPage %>" class="btn btn-primary skip-for-now" role="button">Skip for now</a>
+          <button type="submit" class="btn btn-primary verify-email">Submit</button>
+      </div>
   </form>
-  <a href="<%=lastPage%>" class="btn btn-primary ms-2" role="button">Skip for now</a>
 </div>
 
 <% } %>
