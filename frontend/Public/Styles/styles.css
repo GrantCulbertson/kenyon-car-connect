@@ -222,7 +222,32 @@ a.btn-info.nav-link {
     margin-top: auto;
 }
 
-/* Styling for the trip feed */
+/* Styling for badges at top of trip cards */
+.badge.badge-primary.trip-card.trip-provided{
+    background-color: #9989B4;
+    border-radius: .5rem;
+    width: 100%;
+    padding: .5rem 1rem;
+    margin-top: 2%;
+}
+
+.badge.badge-primary.trip-card.trip-request{
+    background-color: #9989B4;
+    border-radius: .5rem;
+    width: 100%;
+    padding: .5rem 1rem;
+    margin-top: 2%;
+}
+
+/* Styling for trip title at top of trip card */
+.trip-info-title{
+    color: #432C91 !important;
+    font-weight: bold;
+}
+
+
+
+/* Styling for the trip feed OLDDD */
 .trip-feed-container{
     margin-top: 2.5rem;
     display: flex;
@@ -244,17 +269,6 @@ a.btn-info.nav-link {
     font-weight: italic !important;
     margin-top: 25px;
     text-align: left !important;
-}
-
-/* Styling for badges at top of trip cards */
-.badge.badge-primary.trip-card.trip-provided{
-    background-color: #432C91;
-    border-radius: .5rem;
-}
-
-.badge.badge-primary.trip-card.trip-request{
-    background-color: #9989B4;
-    border-radius: .5rem;
 }
 
 
