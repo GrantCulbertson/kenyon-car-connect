@@ -87,6 +87,7 @@ exports.yourTripsPage = async (req, res) => {
             const userID = decoded.id; //Get the user id from the decoded token
             const trips = await Trip.getTripsByUserID(userID); //Get all trips associated with the user
             if(trips){
+
                 //Iterate through trips and add passengers requesting to join
                 for(const trip of trips){
                     if(trip.posterID === userID && trip.tripType === "Providing a ride"){
@@ -95,6 +96,20 @@ exports.yourTripsPage = async (req, res) => {
                         trip.passengersRequesting = [];
                     }
                 }
+
+                //Add ride profiles to passengers:
+                for (const trip of trips) {
+                    for (const passenger of trip.passengersRequesting) {
+                        const rideProfile = await RideProfile.getRideProfileByUserID(passenger.id);
+                        if (rideProfile) {
+                            passenger.rideProfile = rideProfile; // Correct reference
+                        } else {
+                            passenger.rideProfile = null;
+                        }
+                    }
+                }
+
+                //Render the your trips page and pass the trips associated with the user
                 res.render("yourtrips", {trips}); //Render the your trips page and pass the trips associated with the user
             }else{
                 res.render("yourtrips", {trips: []}); //Render the page with no trips if nothing is found for the user

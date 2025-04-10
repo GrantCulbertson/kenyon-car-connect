@@ -399,6 +399,8 @@ h1 {
     width: 60%; /* Adjust percentage based on design preference */
     max-width: 800px; /* Prevent it from getting too wide on large screens */
     min-width: 300px; /* Ensure it doesn’t become too small */
+    overflow: hidden;
+    display: flex;
     
     /* Ensure height adjusts based on content */
     height: auto; 
@@ -407,6 +409,7 @@ h1 {
     display: flex;
     align-items: center; /* Center align items vertically */
     justify-content: space-between; /* Space items apart */
+    flex-wrap: nowrap;
     
     /* Margin for responsiveness */
     margin: 40px auto; /* Center the box horizontally */
@@ -508,9 +511,23 @@ h1 {
     margin-left: 0.5rem;
 }
 
+.passenger-request-box{
+    background-color: #FCF7FF;
+    border: 1px solid #432C91;
+    border-radius: .5rem;
+    overflow: hidden;
+
+    margin-top: 5px;
+}
+
+.passenger-request-box:not(:first-child){
+    margin-top: 20px;
+}
+
 /* Ensure the text section takes up available space without pushing the button down */
 #trip-box-text {
     flex-grow: 1; /* Allow text to take up remaining space */
+    flex: 1;
     font-family: 'Roboto', sans-serif !important;
     text-align: center; /* Centers text horizontally */
     display: flex;
@@ -605,6 +622,77 @@ h1 {
     max-width: 300px !important;
     width: 100% !important;
 }
+
+
+/* styles for your trips page buttons */
+.accept-decline-button-box{
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    align-items: center; /* Center the buttons vertically */
+    gap: 1rem;
+}
+
+
+/* Responsive styling for medium screens */
+@media (max-width: 768px) {
+    .poster-trip-box {
+      flex-wrap: wrap;  /* allow the children to wrap to new rows */
+    }
+  
+    /* Force the badge to take up the full width on its row */
+    #trip-badge {
+      flex: 0 0 100%;
+      text-align: center;  /* Center the badge if desired */
+      margin-bottom: 10px; /* Space it from the next row */
+    }
+  
+    /* Optionally, adjust the title and button if needed.
+       For instance, if you want them to remain on one row: */
+    #trip-box-text,
+    .manage-button {
+      flex: 1;  /* Allow them to share space */
+    }
+  }
+  
+
+
+/* Responsive styling for small screens */
+@media (max-width: 576px) {
+    .poster-trip-box {
+      flex-direction: column;  /* Stack children vertically */
+      align-items: center;       /* Center align items */
+      text-align: center;        /* Center text if needed */
+    }
+
+    .accept-decline-button-box{
+        flex-direction: column;  
+        align-items: center;    
+        text-align: center;  
+    }
+  
+    /* Optional: add spacing between the elements */
+    #trip-badge,
+    #trip-box-text,
+    .manage-button {
+      margin-bottom: 10px;
+    }
+  
+    /* Optional: Ensure the button takes up full width on smaller screens */
+    .manage-button {
+      width: 100%;
+      max-width: 250px; /* Adjust this width as needed */
+    }
+
+    .btn.btn-primary.accept-passenger{
+        margin-right: 0px;
+    }
+    
+    .btn.btn-danger.decline-passenger{
+        margin-right: 0px;
+    }
+
+  }
+
 
 
 /* ----------------- Styling for trip page ----------------------- */

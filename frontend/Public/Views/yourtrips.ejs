@@ -108,25 +108,63 @@
                             <h6>Passengers Requesting to Join</h6>
                             <ul class="list-unstyled">
                                 <% trip.passengersRequesting.forEach(passenger => { %>
-                                    <li class="d-flex justify-content-between align-items-center mb-2">
-                                        <span>
-                                            <b><%= passenger.firstName %> <%= passenger.lastName %></b>
-                                        </span>
+                                <!-- Create Passenger Boxes for under trip-->
+                                    <div class="passenger-request-box">
+                                      <div class="d-flex align-items-center justify-content-between p-2">
+                                        <!-- Left side: Clickable passenger name -->
                                         <div>
-                                            <form action="/Trips/acceptPassengerRequest/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
-                                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
-                                            </form>
-                                            <form action="/Trips/denyPassengerRequest/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
-                                                <button type="submit" class="btn btn-danger btn-sm">Deny</button>
-                                            </form>
+                                          <button type="button" class="btn btn-link-passenger p-0" data-toggle="modal" data-target="#riderProfileModal<%= passenger.id %>">
+                                            <b><%= passenger.firstName %> <%= passenger.lastName %></b>
+                                          </button>
                                         </div>
-                                    </li>
-                                <% }); %>
+                                        <!-- Right side: Accept & Deny buttons -->
+                                        <div class = "accept-decline-button-box">
+                                          <form action="/Trips/acceptPassengerRequest/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-primary accept-passenger">Accept</button>
+                                          </form>
+                                          <form action="/Trips/denyPassengerRequest/<%= passenger.id %>?tripID=<%= trip.id %>" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-danger decline-passenger">Decline</button>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>
+                                
+                                <!-- Create Modals for passenger ride profiles -->
+                                    <div class="modal fade" id="riderProfileModal<%= passenger.id %>" tabindex="-1" role="dialog" aria-labelledby="riderProfileModalLabel<%= passenger.id %>" aria-hidden="true">
+                                        <div class="modal-dialog ride-profile" role="document">
+                                            <div class="modal-content ride-profile">
+                                                <div class="modal-header ride-profile">
+                                                    <h5 class="modal-title" id="riderProfileModalLabel<%= passenger.id %>">
+                                                        <b>Ride Profile:</b> <%= passenger.firstName %> <%= passenger.lastName %>
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body-ride-profile">
+                                                    <!-- Ride Profile Information -->
+                                                    <% if (passenger.rideProfile) { %>
+                                                        <p><b>Pronouns:</b> <%= passenger.rideProfile.pronouns %></p>
+                                                        <p><b>Email:</b> <%= passenger.email %></p>
+                                                        <p><b>Preferred Conversation Level:</b> <%= passenger.rideProfile.conversationPreference %></p>
+                                                        <p><b>Preferred Music:</b> <%= passenger.rideProfile.preferredMusic %></p>
+                                                        <p><b>Bio:</b> <%= passenger.rideProfile.bio %></p>
+                                                    <% } else { %>
+                                                        <p>No ride profile information available for this passenger.</p>
+                                                    <% } %>
+                                                </div>
+                                                <div class="modal-footer ride-profile">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>                                  
                             </ul>
                         </div>
                     <% } %>
             <% }else{ %>
-                <div class = "passenger-trip-box px-3 py-2">
+                <div class = "poster-trip-box px-3 py-2">
                     <div id = "trip-badge">
                         <span class="badge badge-primary your-trips passenger d-block">Passenger</span>
                     </div>
