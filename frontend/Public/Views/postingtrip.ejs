@@ -89,7 +89,7 @@
 
 <!-- Trip Posting Form -->
 <div class = "container-md justify-content-center">
-    <form action="/Trips/createTrip" method="POST">
+    <form action="/Trips/createTrip" method="POST" class = "trip-posting-form">
         <!-- Hidden field to store user's car status -->
         <input type="hidden" id="userHasCar" value="<%= user.has_car %>">
         <!-- Selction of ride type -->

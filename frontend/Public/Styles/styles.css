@@ -363,7 +363,8 @@ a.btn-info.nav-link {
     border-bottom-right-radius: .5rem;
     width: 275px; /* Set a fixed width for the label and username boxes */
     height: 38px; /* Set a fixed height for the label and username boxes */
-    display: flex;
+    display: inline-block;
+    text-align: center;
     margin-top: 20px;
     align-items: center;
     justify-content: center;
@@ -371,6 +372,10 @@ a.btn-info.nav-link {
 
     border: 1px solid #432C91 !important; /* Add a border */
     border-left: none !important;
+
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    overflow: hidden; /* Hide overflowing text */
+    text-overflow: ellipsis !important; /* Add ellipsis (...) for overflowing text */
 }
 
 .label-box {
@@ -383,6 +388,8 @@ a.btn-info.nav-link {
     border-bottom-left-radius: .5rem;
     width: 250px; /* Set a fixed width for the label and username boxes */
     height: 38px; /* Set a fixed height for the label and username boxes */
+    width: 300px;
+    text-align: right;
     display: flex;
     margin-top: 20px;
     align-items: center;
@@ -1134,6 +1141,11 @@ a.btn-info.nav-link {
     background-color: #9989B4;
     color:#FCF7FF;
 }
+
+
+
+/* --------------------- Styling for POST A TRIP page ------------------------ */
+
 
 
 

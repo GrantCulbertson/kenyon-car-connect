@@ -42,25 +42,36 @@ cron.schedule('0 0 * * *', async () => {
 
 //Task to send reminder emails to users with upcoming trips (runs at midnight)
 cron.schedule('0 0 * * *', async () => {
-    console.log('Running scheduled job to clean up old trips...');
+    console.log('Running scheduled job email users with trip reminders...');
     try {
-        const sql = 'SELECT id FROM tripData WHERE tripStatus = "Open" AND date == CURDATE()';
+        //Define SQL query to get all trips which are open and have a departure time today
+        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" AND date = CURDATE()';
         const result = await db.query(sql);
-        const trips = result.map(row => new Trip(row.id));
+        const trips = result.map(trip => new Trip(trip));
 
         //Iterate through trips and send reminder emails
+        let emailCount = 0;
+        
         for (const trip of trips){
             trip.passengers = await Trip.getTripPassengers(trip.id);
             for (const passenger of trip.passengers){
+
                 //Get user details
                 const user = await User.getUserByID(passenger.userID);
+
+                if (!user){
+                    console.error('User not found for passenger:', passenger.userID);
+                    continue;
+                }
+                
                 //Send email letting them know they have a trip coming up today
-                await emailServices.sendReminderEmail(user.email, trip.title, trip.date, trip.time);
+                await emailServices.sendReminderEmail(user.email, trip.title, trip.time);
+                emailCount++;
 
             }
         }
 
-        console.log('Old trips cleaned up:', result.affectedRows);
+        console.log('Reminder emails sent:', emailCount);
     } catch (err) {
         console.error('Error running scheduled job:', err);
     }

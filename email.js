@@ -225,5 +225,36 @@ async function sendPassengerLeftEmail(userEmail, tripName){
   }
 }
 
+//Function to send an email to a trip passenger letting them know they are part of a trip that leaves today
+async function sendReminderEmail(userEmail, tripName, tripTime){
+    try{
+        const transporter = createTransporter();      
+        const mailOptions = {
+            from: process.env.FROM_EMAIL,
+            to: userEmail,
+            subject: "KCC - A ride you are in is leaving today!",
+            text: `The ride "${tripName}" is leaving today at ${tripTime}.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2>Ride Reminder</h2>
+                    <p>The ride:</p>
+                    <p>"${tripName}"</p>
+                    <p>Is leaving today at ${tripTime}.</p>
+                    <p>Thanks,</p>
+                    <p>Kenyon Car-Connect</p>
+                </div>
+            `
+        };
 
-module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail, sendPassengerLeftEmail};
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.messageId);
+        return true;
+    }catch (error){
+        console.error('Error sending reminder email:' , error);
+        return false;
+    }
+
+}
+
+
+module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail, sendPassengerLeftEmail, sendReminderEmail};
