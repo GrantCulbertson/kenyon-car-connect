@@ -15,21 +15,48 @@ cron.schedule('*/5 * * * *', async () => {
     console.log('Running scheduled job to update trip statuses...');
     try {
 
-        //Update trip status to in progress
+        //Establish transaction
+        const conn = await db.pool.getConnection();
+        await conn.beginTransaction();
+
+        //Get all trips that will be updated to be in progress
         const sql = `
+        SELECT * FROM tripData
+        WHERE date = CURDATE() AND time <= NOW() AND tripStatus <> 'In Progress' AND tripType = 'Providing a ride'
+      `;
+        const result = await db.query(sql);
+        const trips = result.map(trip => new Trip(trip));
+
+        //Update trip status to in progress
+        const sql2 = `
           UPDATE tripData
           SET tripStatus = 'In Progress'
           WHERE date = CURDATE() AND time <= NOW() AND tripStatus <> 'In Progress' AND tripType = 'Providing a ride'
         `;
-        const result = await db.query(sql);
-        console.log('Trip statuses updated:', result.affectedRows);
+        const result2 = await db.query(sql2);
+        console.log('Trip statuses updated:', result2.affectedRows);
 
         //Delete requests to join these trips
-        const sql2 = "DELETE FROM tripPassengers"
+        let deleteCount = 0;
+        for(const trip of trips){
+            const sql3 = "DELETE FROM tripRequests WHERE tripID = ? AND passengerStatus = 'Requesting'";
+            const result3 = await db.query(sql3, [trip.id]);
+            deleteCount += result3.affectedRows;
+        }
+        console.log('Trip requests deleted:', deleteCount);
 
+        //Commit transaction if successful
+        await conn.commit();
 
     } catch (err) {
+        if(conn){
+            await conn.rollback();
+        }
         console.error('Error updating trip statuses:', err);
+    }finally{
+        if(conn){
+            conn.release();
+        }
     }
 });
 
