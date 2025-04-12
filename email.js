@@ -256,5 +256,35 @@ async function sendReminderEmail(userEmail, tripName, tripTime){
 
 }
 
+//Function to send an email to trip requester letting them know that their request has been closed:
+async function sendRequestClosedEmail(userEmail, tripName){
+    try{
+        const transporter = createTransporter();      
+        const mailOptions = {
+            from: process.env.FROM_EMAIL,
+            to: userEmail,
+            subject: "KCC - Your ride request has been closed!",
+            text: `Your request to join the ride "${tripName}" has been closed.`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2>Trip Request Closed</h2>
+                    <p>Your trip request:</p>
+                    <p>"${tripName}"</p>
+                    <p>Has been closed as its departure time has passed.</p>
+                    <p>Sorry,</p>
+                    <p>Kenyon Car-Connect</p>
+                </div>
+            `
+        };
 
-module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail, sendPassengerLeftEmail, sendReminderEmail};
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.messageId);
+        return true;
+    }catch(error){
+        console.error('Error sending request closed email:', error);
+        return false;
+    }
+}
+
+
+module.exports = {sendVerificationEmail, sendRideRequestEmail, sendRequestAcceptedEmail, sendRequestDeniedEmail, sendPassengerDeletedEmail, sendTripDeletedEmail, sendPassengerLeftEmail, sendReminderEmail, sendRequestClosedEmail};

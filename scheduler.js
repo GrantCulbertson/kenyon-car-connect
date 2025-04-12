@@ -10,17 +10,72 @@ const User = require('./backend/models/userModel').User;
 //--------------------------- TASKS BELOW -----------------------------------//
 console.log("Running scheduled tasks...");
 
-//Task to update trips to in progress when departure time passes
+//Task to update trips to in progress when departure time passes (runs every 5 minutes)
 cron.schedule('*/5 * * * *', async () => {
     console.log('Running scheduled job to update trip statuses...');
     try {
+
+        //Update trip status to in progress
         const sql = `
           UPDATE tripData
           SET tripStatus = 'In Progress'
-          WHERE time <= NOW() AND tripStatus <> 'In Progress'
+          WHERE date = CURDATE() AND time <= NOW() AND tripStatus <> 'In Progress' AND tripType = 'Providing a ride'
         `;
         const result = await db.query(sql);
         console.log('Trip statuses updated:', result.affectedRows);
+
+        //Delete requests to join these trips
+        const sql2 = "DELETE FROM tripPassengers"
+
+
+    } catch (err) {
+        console.error('Error updating trip statuses:', err);
+    }
+});
+
+//Task to close trip requests that have their departure time passed (runs every 5 minutes)
+cron.schedule('*/5 * * * *', async () => {
+    console.log('Running scheduled job to update trip request statuses...');
+    try {
+        //Get all trips that will be closed
+        const sql = `
+          SELECT * FROM tripData
+          WHERE date = CURDATE() AND time <= NOW() AND tripStatus = 'Open' AND tripType = 'Requesting a ride'
+        `;
+        const result = await db.query(sql);
+        const trips = result.map(trip => new Trip(trip));
+
+        //Update trip status
+        const sql2 = `
+          UPDATE tripData
+          SET tripStatus = 'Closed'
+          WHERE date = CURDATE() AND time <= NOW() AND tripType = 'Requesting a ride'
+        `;
+        const result2 = await db.query(sql);
+        console.log('Trip requests closed:', result2.affectedRows);
+
+        //Iterate through trips and send emails to passengers
+        let emailCount = 0;
+        for (const trip of trips){
+            trip.passengers = await Trip.getTripPassengers(trip.id);
+            for (const passenger of trip.passengers){
+
+                //Get user details
+                const user = await User.getUserByID(passenger.userID);
+
+                if (!user){
+                    console.error('User not found for passenger:', passenger.userID);
+                    continue;
+                }
+
+                //Send email letting them know they have a trip coming up today
+                await emailServices.sendRequestClosedEmail(user.email, trip.title);
+                emailCount++;
+            }
+        }
+
+        //Send email to poster letting them know their request has been closed
+        console.log('Trip request closed emails sent:', emailCount);
     } catch (err) {
         console.error('Error updating trip statuses:', err);
     }
@@ -63,7 +118,7 @@ cron.schedule('0 0 * * *', async () => {
                     console.error('User not found for passenger:', passenger.userID);
                     continue;
                 }
-                
+
                 //Send email letting them know they have a trip coming up today
                 await emailServices.sendReminderEmail(user.email, trip.title, trip.time);
                 emailCount++;

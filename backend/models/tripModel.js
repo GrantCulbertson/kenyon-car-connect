@@ -61,7 +61,7 @@ static async createTrip(tripData, posterID, rideType, car){
                 roundtrip = "No";
             }
             if(tripData.leavingFrom === "Other"){ //Pass the address of the leaving destination if it is not campus
-                origin = tripData.leavingFromDestination[0];
+                origin = tripData.leavingFromDestination;
                 locationDetails = JSON.stringify({"originLat": tripData.leavingFromLat, "originLng": tripData.leavingFromLng, "destinationLat": tripData.lat, "destinationLng": tripData.lng}); //Create JSON with location details for origin & destination
             }
             if(tripData.leavingFrom === "Campus"){
