@@ -223,20 +223,28 @@ a.btn-info.nav-link {
 }
 
 /* Styling for badges at top of trip cards */
-.badge.badge-primary.trip-card.trip-provided{
+.badge.badge-primary.trip-feed.trip-provided,
+.badge.badge-primary.trip-feed.trip-request{
     background-color: #9989B4;
     border-radius: .5rem;
     width: 100%;
+    max-width: 400px;
     padding: .5rem 1rem;
     margin-top: 2%;
+
+    display: inline-block;  /* or block if you want it to span the full container */
+    min-width: 150px;       /* use a value that suits your design */
+    text-align: center;     /* center the text within the badge */
+
+    font-size: 1.25rem;
 }
 
-.badge.badge-primary.trip-card.trip-request{
-    background-color: #9989B4;
-    border-radius: .5rem;
-    width: 100%;
-    padding: .5rem 1rem;
-    margin-top: 2%;
+.badge.badge-primary.trip-feed.trip-provided{
+    background-color: #432C91 !important;
+}
+
+.badge-title-container h3{
+    margin-top: 20px !important;;
 }
 
 /* Styling for trip title at top of trip card */
@@ -245,9 +253,50 @@ a.btn-info.nav-link {
     font-weight: bold;
 }
 
+.row.trip-feed-trip{
+    min-height: 300px;
+    width: 100% !important;
+    max-width: 4000px;
+    justify-content: center;
+    margin-bottom: 0px;
+    margin: 0 auto;     /* centers the container */
 
+    background-color: #FCF7FF;
+    border-radius: .5rem .5rem 0rem 0rem;
+    border: 1px solid #432C91; /* Add a border */
+    border-bottom: none;
+}
 
-/* Styling for the trip feed OLDDD */
+.trip-box-wrapper {
+    width: 100%;
+    max-width: 500px; /* The desired uniform width on large screens */
+    margin: 0 auto;
+    /* Do not set a min-width by default so that on small screens it can be fluid */
+  }
+  
+  /* On viewports wider than 750px, force a minimum width */
+  @media (min-width: 750px) {
+    .trip-box-wrapper {
+      min-width: 650px;
+    }
+  }
+  
+
+.trip-feed-comments-div{
+    margin: 0 !important;  /* Or use margin-top:0; margin-bottom: ... if you need vertical spacing */
+    background-color: #FCF7FF;
+    border-radius: 0rem 0rem .5rem .5rem;
+    border: 1px solid #432C91;
+    border-top: none;
+    text-align: center;
+}
+
+.trip-feed-comments-div p{
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
+/* Container which holds each trip */
 .trip-feed-container{
     margin-top: 2.5rem;
     display: flex;
@@ -255,61 +304,44 @@ a.btn-info.nav-link {
     align-items: center;
 }
 
-.trip-feed-container .card.trip-card{
-    border-radius: 1rem !important;
-    max-width: 750px !important;
+.trip-feed-container + .trip-feed-container{
+    margin-top: 50px; /* Add space between each trip */
 }
 
-.trip-feed-container .card.trip-card + .card.trip-card{
-    margin-top: 3rem;
-}
-
-.card.trip-card .card-body .trip-feed-card-field p{
-    color: #000000 !important;
-    font-weight: italic !important;
-    margin-top: 25px;
-    text-align: left !important;
-}
-
-
-
-
-/* Styling for buttons on cards in trip feed */
-.buttonContainer{
-    width: 100% !important; /* Ensure the container spans the full width of the card */
-    margin-top: 1rem; /* Optional: Add spacing above the buttons */
-    margin-bottom: 1rem; /* Optional: Add spacing below the buttons */
-}
-
-.buttonContainer form {
-    width: 100%; /* Ensure the form spans the full width of the container */
-    display: flex; /* Use flexbox to align buttons side by side */
-    justify-content: space-between; /* Add spacing between buttons */
-}
-
-.buttonContainer .btn {
-    width: 100% !important;
-    flex: 1;
-    padding: 1rem 1.5rem;
-}
-
+/* Styling for trip feed buttons */
+.btn.btn-secondary.trip-feed.ms-2,
 .btn.btn-primary.trip-feed.ms-2{
-    background-color:#00523A !important;
+    background-color: #00523A !important;
     width: 100%;
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
-.btn.btn-primary.trip-feed.ms-2:hover{
-    background-color:#008699 !important;
-}
-
-/* Styling for buttons on cards in trip feed */
-.btn.btn-secondary.trip-feed.ms-2{
-    background-color:#00523A !important;
-    margin-left: 10% !important;
-}
-
+.btn.btn-primary.trip-feed.ms-2:hover,
 .btn.btn-secondary.trip-feed.ms-2:hover{
     background-color:#008699 !important;
+}
+
+.btn.accept-request,
+.btn.request-manage-trip{
+    width: 75%;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+
+/*Homepage fade in styling */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px); /* Start slightly below its final position */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0); /* Move to its final position */
 }
 
 
@@ -691,7 +723,7 @@ a.btn-info.nav-link {
 
 
 .badge.badge-primary.your-trips.passenger{
-    background-color: #432C91;
+    background-color: #432C91 !important;
     border-radius: .5rem;
     font-size: 1.25rem;
     padding: .5rem 1rem;
@@ -702,7 +734,7 @@ a.btn-info.nav-link {
 }
 
 .badge.badge-primary.your-trips.poster{
-    background-color: #9989B4;
+    background-color: #9989B4 !important;
     border-radius: .5rem;
     font-size: 1.25rem;
     padding: .5rem 1rem;
@@ -710,6 +742,20 @@ a.btn-info.nav-link {
     min-width: 200px; /* Set a minimum width */
     max-width: 300px !important;
     width: 75% !important;
+}
+
+.badge.badge-primary.trip-card.trip-provided{
+    background-color: #432C91;
+    border-radius: .5rem;
+    width: 100%;
+    padding: .5rem 1rem;
+}
+
+.badge.badge-primary.trip-card.trip-request{
+    background-color: #9989B4;
+    border-radius: .5rem;
+    width: 100%;
+    padding: .5rem 1rem;
 }
 
 

@@ -1,5 +1,6 @@
-// Load in necessary packages
+// Load in necessary packages & import models
 require('dotenv').config();
+require('./scheduler');
 const express = require('express');
 const cors = require('cors');
 const mariadb = require('mariadb');
@@ -69,13 +70,13 @@ db.pool.getConnection()
   })
   .catch(err => console.error("Database connection failed... not so nice :( ):", err));
 
+
+
 //Define route directories:
 const userRoutes = require('./backend/routes/userRoutes');
 const carRoutes = require('./backend/routes/carRoutes');
 const rideProfileRoutes = require('./backend/routes/rideProfileRoutes');
 const tripRoutes = require('./backend/routes/tripRoutes');
-
-
 
 
 //Routes:
@@ -89,15 +90,18 @@ app.use('/Trips',tripRoutes);
 //Import the Trip & User Model
 const {Trip} = require('./backend/models/tripModel');
 
+
 // Serving the homepage and trip feed
 app.get('/', async (req, res) => {
   try{
     const trips = await Trip.getAllTrips();
 
     //Get zoom level for map of each trip
+    if(trips){
     trips.forEach(trip => {
       trip.zoomLevel = Trip.calculateZoomLevel((trip.leavingFromLat, trip.leavingFromLng, trip.destinationLat, trip.destinationLng, 300,300)); // Default zoom level
     });
+    }
 
     //Render the homepage with the trips data
     if(trips){

@@ -30,9 +30,6 @@ exports.viewTripPage = async (req,res) => {
     const tripId = req.params.id; //Grab trip ID from page URL
     const token = req.cookies.auth_token;
 
-    if(!token){
-        return res.redirect("/"); //Return to homepage if they have no cookies, they should not be able to access this page
-    }
 
     if (isNaN(tripId)){
         return res.status(400).send("Invalid trip ID"); // Validate trip ID (recommendation of GPT)
@@ -169,8 +166,9 @@ exports.acceptTripRequest = async (req, res) => {
     const token = req.cookies.auth_token; // Get token from cookies
     const tripID = req.params.id; //Grab trip ID from route
     const tripPosterID = req.query.tripPosterID; //Get trip poster ID from query param in URL
+
     if(!token){
-        return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to accept a trip request
+        return res.redirect("/?error=notLoggedIn"); //Return to homepage if user is not logged in, you must be logged in to accept a trip request
     }
 
     try{
@@ -230,7 +228,7 @@ exports.passengerRequestToJoinTrip = async (req,res) => {
     const token = req.cookies.auth_token;
     const tripID = req.params.id; //Grab trip ID from page URL
     if(!token){
-        return res.redirect("/") //Send to homepage if they have no cookies, should not be able to request to join a trip
+        return res.redirect("/?error=notLoggedIn") //Send to homepage if they have no cookies, should not be able to request to join a trip
     }
 
     //Return user to homepage with error if they are not verified

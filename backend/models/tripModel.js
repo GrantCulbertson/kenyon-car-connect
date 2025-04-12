@@ -124,7 +124,7 @@ static async getTripsByUserID(userID){
     try{
         const sql = `
         SELECT * FROM tripData
-        WHERE posterID = ?
+        WHERE posterID = ? AND tripStatus = "Open" OR tripStatus = "In Progress"
         UNION
         SELECT td.* FROM tripData td
         JOIN tripPassengers tp ON td.id = tp.tripID

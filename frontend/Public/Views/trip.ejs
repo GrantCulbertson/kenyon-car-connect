@@ -79,8 +79,38 @@
       </div>
     </div>
 </nav>
+<!-- Navbar for users who are not logged in -->
+<% } else { %>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class = "container-fluid">
+            <!-- Navbar Branding -->
+            <div class = "navbar-header">
+                <a class="navbar-brand" href="/">Kenyon Car Connect</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="nav navbar-nav ml-auto">
+                        <!-- Profile Button Information -->
+                        <li class = "nav-item">
+                            <a href="/User/UserSignupPage" class="btn btn-info me-3 nav-link" role="button">
+                                <i class="fa-solid fa-user"></i> Sign Up
+                            </a>
+                        </li>
+                        <!-- Logout Button Information -->
+                        <li class = "nav-item">
+                            <a href="/User/UserLoginPage" class="btn btn-info me-3 nav-link" role="button">
+                                <i class="fa-solid fa-right-from-bracket"></i> Login
+                            </a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+    </nav>
+<% } %>
 
-<!--- TRIP INFO PORTION OF PAGE -->
+<!-------------------- TRIP INFO PORTION OF PAGE ----------------------->
 <!-- Two-Column Layout -->
 <div class="container-fluid mt-4">
     <div class="row">
@@ -150,24 +180,31 @@
             </div>
             <div class="d-flex justify-content-center trip-info-button-div">
                 <!-- Delete trip buttons -->
-                  <% if (user.id === trip.posterID) { %>
-                    <button class="btn btn-primary trip-info-delete" data-toggle="modal" data-target="#deleteTripModal">
-                      Cancel Trip
-                    </button>
-                  <% } else if (trip.tripType === "Providing a ride") { %>
-                    <% const isPassenger = trip.passengers.some(passenger => passenger.id === user.id); %>
-                    <!-- Leave Trip Button -->
-                    <% if (isPassenger) {%>
-                        <button class="btn btn-primary trip-info-delete" data-toggle="modal" data-target="#leaveTripModal">
-                            Leave Trip
+                <% if (isUser) { %>
+                    <% if (user.id === trip.posterID) { %>
+                        <button class="btn btn-primary trip-info-delete" data-toggle="modal" data-target="#deleteTripModal">
+                        Cancel Trip
                         </button>
-                    <% } else{ %>
-                    <!-- Join Trip Button -->
-                    <form action="/Trips/passengerRequestToJoinTrip/<%= trip.id %>" method="POST" class="d-flex w-100 justify-content-center">
-                        <button type = "Submit" class="btn btn-primary trip-info-join">Join Trip</button>
-                    </form>
+                    <% } else if (trip.tripType === "Providing a ride") { %>
+                        <% const isPassenger = trip.passengers.some(passenger => passenger.id === user.id); %>
+                        <!-- Leave Trip Button -->
+                        <% if (isPassenger) {%>
+                            <button class="btn btn-primary trip-info-delete" data-toggle="modal" data-target="#leaveTripModal">
+                                Leave Trip
+                            </button>
+                        <% } else{ %>
+                        <!-- Join Trip Button -->
+                        <form action="/Trips/passengerRequestToJoinTrip/<%= trip.id %>" method="POST" class="d-flex w-100 justify-content-center">
+                            <button type = "Submit" class="btn btn-primary trip-info-join">Request to Join</button>
+                        </form>
+                        <% } %>
                     <% } %>
-                  <% } %>
+                <!-- What is shown if user is not logged in -->
+                <% } else { %>
+                    <form action="/Trips/passengerRequestToJoinTrip/<%= trip.id %>" method="POST" class="d-flex w-100 justify-content-center">
+                        <button type = "Submit" class="btn btn-primary trip-info-join">Request to Join</button>
+                    </form>
+                <% } %>
             </div>
         </div>
         <!-- Right Column (Car Information) -->
@@ -243,8 +280,10 @@
                                                         </button>
                                                     </span>
                                                     <!-- Remove Passenger Button (Only viewable for the trip poster) -->
-                                                    <% if(user.id === trip.posterID){ %>
-                                                        <button data-toggle="modal" data-target="#removePassenger<%= passenger.id %>" class="btn btn-sm remove-passenger">Remove</button>
+                                                    <% if (isUser) { %>
+                                                        <% if(user.id === trip.posterID){ %>
+                                                            <button data-toggle="modal" data-target="#removePassenger<%= passenger.id %>" class="btn btn-sm remove-passenger">Remove</button>
+                                                        <% } %>
                                                     <% } %>
                                                 </div>
                                             </div>
@@ -376,47 +415,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-<% }else{%>
-<!-- Page that is shown if the user not logged in (they should not be able to access this page anyways)-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class = "container-fluid">
-        <!-- Navbar Branding -->
-        <div class = "navbar-header">
-            <a class="navbar-brand" href="/">Kenyon Car Connect</a>
-        </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="nav navbar-nav ml-auto">
-                    <!-- Profile Button Information -->
-                    <li class = "nav-item">
-                        <a href="/User/UserSignupPage" class="btn btn-info me-3" role="button">
-                            <i class="fa-solid fa-user"></i> Sign Up
-                        </a>
-                    </li>
-                    <!-- Logout Button Information -->
-                    <li class = "nav-item">
-                        <a href="/User/UserLoginPage" class="btn btn-info" role="button">
-                            <i class="fa-solid fa-right-from-bracket"></i> Login
-                        </a>
-                    </li>
-                </ul>
-        </div>
-    </div>
-</nav>
-
-
-<div class = "d-flex align-items-center">
-    <div class="container mt-4 text-center">
-        <h1 id = "LoggedOutWelcomeMessage" class = "fade-text">You must be logged in to view trip information.</h1>
-    </div>
-</div>
-<% } %>
 
 
 <!-- Scripts for page necessities -->
