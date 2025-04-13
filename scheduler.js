@@ -24,7 +24,7 @@ cron.schedule('*/5 * * * *', async () => {
         SELECT * FROM tripData
         WHERE date = CURDATE() AND time <= NOW() AND tripStatus <> 'In Progress' AND tripType = 'Providing a ride'
       `;
-        const result = await db.query(sql);
+        const result = await conn.query(sql);
         const trips = result.map(trip => new Trip(trip));
 
         //Update trip status to in progress
@@ -33,14 +33,14 @@ cron.schedule('*/5 * * * *', async () => {
           SET tripStatus = 'In Progress'
           WHERE date = CURDATE() AND time <= NOW() AND tripStatus <> 'In Progress' AND tripType = 'Providing a ride'
         `;
-        const result2 = await db.query(sql2);
+        const result2 = await conn.query(sql2);
         console.log('Trip statuses updated:', result2.affectedRows);
 
         //Delete requests to join these trips
         let deleteCount = 0;
         for(const trip of trips){
             const sql3 = "DELETE FROM tripRequests WHERE tripID = ? AND passengerStatus = 'Requesting'";
-            const result3 = await db.query(sql3, [trip.id]);
+            const result3 = await conn.query(sql3, [trip.id]);
             deleteCount += result3.affectedRows;
         }
         console.log('Trip requests deleted:', deleteCount);
@@ -64,12 +64,17 @@ cron.schedule('*/5 * * * *', async () => {
 cron.schedule('*/5 * * * *', async () => {
     console.log('Running scheduled job to update trip request statuses...');
     try {
+
+        //Establish transaction
+        const conn = await db.pool.getConnection();
+        await conn.beginTransaction();
+
         //Get all trips that will be closed
         const sql = `
           SELECT * FROM tripData
           WHERE date = CURDATE() AND time <= NOW() AND tripStatus = 'Open' AND tripType = 'Requesting a ride'
         `;
-        const result = await db.query(sql);
+        const result = await conn.query(sql);
         const trips = result.map(trip => new Trip(trip));
 
         //Update trip status
@@ -78,8 +83,11 @@ cron.schedule('*/5 * * * *', async () => {
           SET tripStatus = 'Closed'
           WHERE date = CURDATE() AND time <= NOW() AND tripType = 'Requesting a ride'
         `;
-        const result2 = await db.query(sql);
+        const result2 = await conn.query(sql);
         console.log('Trip requests closed:', result2.affectedRows);
+
+        //Commit Transaction if successful
+        await conn.commit();
 
         //Iterate through trips and send emails to passengers
         let emailCount = 0;
@@ -104,7 +112,14 @@ cron.schedule('*/5 * * * *', async () => {
         //Send email to poster letting them know their request has been closed
         console.log('Trip request closed emails sent:', emailCount);
     } catch (err) {
+        if(conn){
+            await conn.rollback();
+        }
         console.error('Error updating trip statuses:', err);
+    }finally{
+        if(conn){
+            conn.release();
+        }
     }
 });
 

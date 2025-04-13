@@ -1145,7 +1145,10 @@ a.btn-info.nav-link {
 
 
 /* --------------------- Styling for POST A TRIP page ------------------------ */
-
+.trip-posting-form .form-group,
+.trip-posting-form .form-check{
+    margin-bottom: 2rem !important;
+}
 
 
 

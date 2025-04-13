@@ -99,29 +99,33 @@
             <% if(trip.posterID == user.id) { %>
                 <% if (trip.tripType === "Providing a ride"){ %>
                 <!-- What is shown if the user is providing a ride -->
-                    <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
-                        <div id = "trip-badge">
-                            <span class="badge badge-primary your-trips poster d-block">Driver</span>
-                        </div>
-                        <div id = "trip-box-text">
-                            <p> <b><%= trip.title %></b> </p>
-                        </div>
-                        <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
-                    </div>
+                <div class = "fade-in">
+                      <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
+                          <div id = "trip-badge">
+                              <span class="badge badge-primary your-trips poster d-block">Driver</span>
+                          </div>
+                          <div id = "trip-box-text">
+                              <p> <b><%= trip.title %></b> </p>
+                          </div>
+                          <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
+                      </div>
+                </div>
                 <% } else { %>
-                    <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
-                        <div id = "trip-badge">
-                            <span class="badge badge-primary your-trips poster d-block">Request</span>
-                        </div>
-                        <div id = "trip-box-text">
-                            <p> <b><%= trip.title %></b> </p>
-                        </div>
-                        <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
-                    </div>
+                <div class = "fade-in">
+                      <div class = "poster-trip-box px-3 py-2 <% if (trip.passengersRequesting.length > 0) { %> no-bottom-radius <% } %>">
+                          <div id = "trip-badge">
+                              <span class="badge badge-primary your-trips poster d-block">Request</span>
+                          </div>
+                          <div id = "trip-box-text">
+                              <p> <b><%= trip.title %></b> </p>
+                          </div>
+                          <button class = "btn btn-info manage-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">Manage Trip</button>
+                      </div>
+                </div>
                 <% } %>
                     <!-- Show passengers requesting to join trip if they are providing a ride-->
                     <% if (trip.tripType === "Providing a ride" && trip.passengersRequesting.length > 0) { %>
-                        <div class="passengers-requesting-box px-3 py-2">
+                        <div class="passengers-requesting-box px-3 py-2 fade-in">
                             <h6>Passengers Requesting to Join</h6>
                             <ul class="list-unstyled">
                                 <% trip.passengersRequesting.forEach(passenger => { %>
@@ -181,21 +185,23 @@
                         </div>
                     <% } %>
             <% }else{ %>
-                <div class = "poster-trip-box requesting px-3 py-2">
-                    <div id = "trip-badge">
-                        <span class="badge badge-primary your-trips passenger d-block">Passenger</span>
-                    </div>
-                    <div id = "trip-box-text">
-                        <p> <b><%= trip.title %></b> </p>
-                    </div>
-                    <button class = "btn btn-info view-trip-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">View Trip</button>
-                </div>
+              <div class = "fade-in">
+                  <div class = "poster-trip-box requesting px-3 py-2">
+                      <div id = "trip-badge">
+                          <span class="badge badge-primary your-trips passenger d-block">Passenger</span>
+                      </div>
+                      <div id = "trip-box-text">
+                          <p> <b><%= trip.title %></b> </p>
+                      </div>
+                      <button class = "btn btn-info view-trip-button " onclick="location.href='/Trips/viewTrip/<%= trip.id %>'">View Trip</button>
+                  </div>
+              </div>
             <% } %>
         <% }); %>
     </div>
     <!-- What is shown if you have no trips associated with your ID-->
     <% } else { %>
-        <div class="container-md mt-5 justify-content-center text-center">
+        <div class="container-md mt-5 justify-content-center text-center fade-in">
             <span id = "noTrips">
                 <h2>Nothing to see here... you have no trips posted.</h2>
             </span>
@@ -212,6 +218,28 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<!-- Script for elements to fade in -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                  entry.target.classList.add("visible"); // Fade in when entering the viewport
+              } else {
+                  entry.target.classList.remove("visible"); // Fade out when leaving the viewport
+              }
+          });
+      });
+
+      // Select all elements with the "fade-in" class
+      const fadeInElements = document.querySelectorAll(".fade-in");
+      fadeInElements.forEach((el) => observer.observe(el));
+  });
+</script>
+
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);

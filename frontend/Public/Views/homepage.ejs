@@ -114,9 +114,9 @@
     <div class = "d-flex align-items-center">
         <div class="container mt-4 text-center">
         <% if(isUser){ %>
-            <h1 id = "welcomeMessage" class = "fade-text">Welcome back <%= user.firstName %>!</h1>
+            <h1 id = "welcomeMessage" class = "fade-text fade-in">Welcome back <%= user.firstName %>!</h1>
         <% } else { %>
-            <h1 id = "welcomeMessage" class = "fade-text">Welcome to Kenyon Car Connect!</h1>
+            <h1 id = "welcomeMessage" class = "fade-text fade-in">Welcome to Kenyon Car Connect!</h1>
         <% } %>
         <!-- Trip Feed Cards-->
         <%if(trips.length > 0){ %>
@@ -296,7 +296,7 @@
     </div>
     <% }else{ %> 
         <div class="container-md mt-5 justify-content-center text-center">
-            <span id = "noTrips">
+            <span id = "noTrips" class = "fade-in">
                 <h2>Nothing to see here, there are currently no open rides or requests.</h2>
             </span>
         </div>
