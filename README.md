@@ -1,12 +1,8 @@
-Certainly! Here's the updated README file with the additional information about Node.js, Express, and the MariaDB database requirement:
-
----
-
 # Kenyon Car Connect
 
 ## Overview
 
-Kenyon Car Connect is a web-based platform designed to streamline carpooling and ride-sharing for students and staff at Kenyon College. The platform allows users to connect with one another, organize rides, and reduce their carbon footprint by sharing transportation.
+Kenyon Car Connect is a web-based platform designed to streamline carpooling and ride-sharing for students at Kenyon College (or anywhere else). The platform allows users to connect with one another, organize rides, and reduce their carbon footprint by sharing transportation.
 
 This project is built using **Node.js** and **Express** for the backend. It also requires a **MariaDB** database running on an **Apache2** server for data persistence and management. The application leverages [EJS](https://ejs.co/) for templating, JavaScript for interactivity, and CSS for styling.
 
@@ -16,7 +12,6 @@ This project is built using **Node.js** and **Express** for the backend. It also
 
 - **User Registration and Login**: Secure user authentication to manage rides and profiles.
 - **Ride Listings**: Create, view, and join available carpool rides.
-- **Search Functionality**: Find rides based on destination, date, or time.
 - **Responsive Design**: Works seamlessly on desktops, tablets, and mobile devices.
 - **Environmentally Friendly**: Encourages carpooling to reduce carbon emissions.
 
@@ -28,34 +23,39 @@ The project uses a modular structure to organize code for scalability and mainta
 
 ### 1. **Views (EJS Files)**:
    - Responsible for rendering dynamic HTML content.
-   - Located in the `views` directory.
+   - Located in the `frontend/public/views` directory.
    - Includes templates for pages such as:
      - `index.ejs`: Landing page.
      - `rides.ejs`: Display of ride listings.
      - `profile.ejs`: User profile management.
 
 ### 2. **Public (Static Assets)**:
-   - Contains static files like CSS, JavaScript, and images.
+   - Contains static files for CSS.
    - Organized as follows:
-     - `public/css`: Styling files.
-     - `public/js`: Frontend scripts for interactivity.
-     - `public/images`: Images used throughout the site.
+     - `frontend/public/css`: Styling file for application.
 
 ### 3. **Routes**:
    - Defines the backend logic for handling HTTP requests.
-   - Located in the `routes` directory.
+   - Located in the `backend/routes` directory.
    - Includes routes for:
-     - `/`: Home and landing page.
-     - `/rides`: Ride-related actions.
-     - `/users`: User-related actions.
+     - `/tripRoutes`: Trip-related actions & pages.
+     - `/rideProfileRoutes`: Ride-profile-related actions.
+     - `/userRoutes`: User-related actions & pages.
+     - `/carRoutes`: Car-related actions & pages.
+
 
 ### 4. **Controllers**:
    - Contains business logic for handling user actions.
    - Bridges the gap between routes and views.
+   - Includes controllers for:
+     - `/tripContoller`: Trip-related functions.
+     - `/rideProfileController`: Ride-profile-related functions.
+     - `/userController`: User-related functions.
+     - `/carController`: Car-related functions.
 
 ### 5. **Models**:
    - Defines the data structure and database interaction logic.
-   - Typically includes schemas for users, rides, etc.
+   - Includes class structure & schema for:
 
 ### 6. **Config**:
    - Stores configuration files, such as database connection settings.
