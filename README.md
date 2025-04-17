@@ -61,7 +61,7 @@ The project uses a modular structure to organize code for scalability and mainta
    - Stores configuration files, such as database connection settings.
 
 ### 7. **Makefile**:
-   - Used for defining build and deployment tasks.
+   - Used for defining build and deploying the website.
 
 ---
 
@@ -69,7 +69,7 @@ The project uses a modular structure to organize code for scalability and mainta
 
 To run the project, ensure the following prerequisites are met:
 
-1. **Node.js** and **npm** installed.
+1. **Node.js + Express.js** and **npm** installed.
 2. **MariaDB** database set up and running.
 3. **Apache2** server configured for the MariaDB database.
 
@@ -92,11 +92,12 @@ Follow these steps to set up and run the project locally:
 
 3. Configure the database:
    - Set up a MariaDB database using Apache2.
-   - Update the database connection settings in the `config` directory.
+   - Run `kenyon_car_connect.sql` on your MariaDB instance to generate the data-tables for this program.
+   - Update the database connection settings in `db.js`.
 
 4. Start the application:
    ```bash
-   npm start
+   make
    ```
 
 5. Visit the application in your browser at `http://localhost:5000`.
@@ -106,7 +107,3 @@ Follow these steps to set up and run the project locally:
 ## Contact
 
 For questions or feedback, please contact me at [My GitHub profile](https://github.com/GrantCulbertson).
-
----
-
-Let me know if you'd like any further adjustments!
