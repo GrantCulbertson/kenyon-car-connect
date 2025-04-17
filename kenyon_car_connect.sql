@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 15, 2025 at 02:39 AM
+-- Generation Time: Apr 17, 2025 at 06:16 PM
 -- Server version: 10.11.8-MariaDB-0ubuntu0.24.04.1
 -- PHP Version: 8.2.27
 
@@ -105,7 +105,6 @@ CREATE TABLE `userData` (
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `age` int(255) DEFAULT NULL,
-  `gender` varchar(255) DEFAULT NULL,
   `has_car` varchar(255) DEFAULT 'no',
   `emailValidationCode` int(255) DEFAULT NULL,
   `verificationStatus` varchar(255) NOT NULL DEFAULT 'No'
