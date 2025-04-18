@@ -60,7 +60,7 @@ async function sendRideRequestEmail(userEmail, tripName) {
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                   <h2>Ride Request</h2>
                   <p>Someone has requested to join your ride:</p>
-                  <p>${tripName}</p>
+                  <p>"${tripName}"</p>
                   <p>Please go to the your trips page on the site to handle their request.</p>
                   <p>Thanks,</p>
                   <p>Kenyon Car-Connect</p>

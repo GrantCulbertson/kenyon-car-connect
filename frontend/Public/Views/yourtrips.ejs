@@ -149,40 +149,9 @@
                                         </div>
                                       </div>
                                     </div>
-                                
-                                <!-- Create Modals for passenger ride profiles -->
-                                    <div class="modal fade" id="riderProfileModal<%= passenger.id %>" tabindex="-1" role="dialog" aria-labelledby="riderProfileModalLabel<%= passenger.id %>" aria-hidden="true">
-                                        <div class="modal-dialog ride-profile" role="document">
-                                            <div class="modal-content ride-profile">
-                                                <div class="modal-header ride-profile">
-                                                    <h5 class="modal-title" id="riderProfileModalLabel<%= passenger.id %>">
-                                                        <b>Ride Profile:</b> <%= passenger.firstName %> <%= passenger.lastName %>
-                                                    </h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body-ride-profile">
-                                                    <!-- Ride Profile Information -->
-                                                    <% if (passenger.rideProfile) { %>
-                                                        <p><b>Pronouns:</b> <%= passenger.rideProfile.pronouns %></p>
-                                                        <p><b>Email:</b> <%= passenger.email %></p>
-                                                        <p><b>Preferred Conversation Level:</b> <%= passenger.rideProfile.conversationPreference %></p>
-                                                        <p><b>Preferred Music:</b> <%= passenger.rideProfile.preferredMusic %></p>
-                                                        <p><b>Bio:</b> <%= passenger.rideProfile.bio %></p>
-                                                    <% } else { %>
-                                                        <p>No ride profile information available for this passenger.</p>
-                                                    <% } %>
-                                                </div>
-                                                <div class="modal-footer ride-profile">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <% }); %>                                  
-                            </ul>
-                        </div>
+                                <% }); %> 
+                              </ul>
+                          </div>                                 
                     <% } %>
             <% }else{ %>
               <div class = "fade-in">
@@ -210,6 +179,49 @@
 
 
 <% } %>
+
+
+
+<!---- CREATE MODALS FOR PASSENGER RIDE PROFILES -->
+<% if(trips.length > 0){ %>
+  <% trips.forEach(trip => { %>
+    <% if (trip.tripType === "Providing a ride" && trip.passengersRequesting.length > 0) { %>
+      <% trip.passengersRequesting.forEach(passenger => { %>
+                                <!-- Create Modals for passenger ride profiles -->
+                                <div class="modal fade" id="riderProfileModal<%= passenger.id %>" tabindex="-1" role="dialog" aria-labelledby="riderProfileModalLabel<%= passenger.id %>" aria-hidden="true">
+                                  <div class="modal-dialog ride-profile" role="document">
+                                      <div class="modal-content ride-profile">
+                                          <div class="modal-header ride-profile">
+                                              <h5 class="modal-title" id="riderProfileModalLabel<%= passenger.id %>">
+                                                  <b>Ride Profile:</b> <%= passenger.firstName %> <%= passenger.lastName %>
+                                              </h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                              </button>
+                                          </div>
+                                          <div class="modal-body-ride-profile">
+                                              <!-- Ride Profile Information -->
+                                              <% if (passenger.rideProfile) { %>
+                                                  <p><b>Pronouns:</b> <%= passenger.rideProfile.pronouns %></p>
+                                                  <p><b>Email:</b> <%= passenger.email %></p>
+                                                  <p><b>Preferred Conversation Level:</b> <%= passenger.rideProfile.conversationPreference %></p>
+                                                  <p><b>Preferred Music:</b> <%= passenger.rideProfile.preferredMusic %></p>
+                                                  <p><b>Bio:</b> <%= passenger.rideProfile.bio %></p>
+                                              <% } else { %>
+                                                  <p>No ride profile information available for this passenger.</p>
+                                              <% } %>
+                                          </div>
+                                          <div class="modal-footer ride-profile">
+                                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+<% }); } }); } %> 
+
+
+
+
 
 
 

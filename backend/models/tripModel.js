@@ -128,7 +128,7 @@ static async getTripsByUserID(userID){
         UNION
         SELECT td.* FROM tripData td
         JOIN tripPassengers tp ON td.id = tp.tripID
-        WHERE tp.userID = ? AND (td.tripStatus = "Open" OR td.tripStatus = "In Progress")`;
+        WHERE tp.userID = ? AND (tp.passengerStatus = "Accepted" OR tp.passengerStatus = "Driver") AND (td.tripStatus = "Open" OR td.tripStatus = "In Progress")`;
         const params = [userID, userID];
         const trips = await db.query(sql, params);
         if(trips.length > 0){
