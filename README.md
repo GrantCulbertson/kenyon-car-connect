@@ -63,7 +63,7 @@ The project uses a modular structure to organize code for scalability and mainta
 
 ### 6. **Env**:
    - Stores configuration files, such as database connection settings, and API keys.
-   - Please look at `example env file` to see how it should be setup.
+   - Please look at `/setup files/example env file.txt` to see how it should be setup.
 
 ### 6.5 **Thid party APIs** ###
    - Make sure you update the API keys in the env file...
@@ -103,7 +103,7 @@ Follow these steps to set up and run the project locally:
 
 3. Configure the database:
    - Set up a MariaDB database using Apache2.
-   - Run `kenyon_car_connect.sql` on your MariaDB instance to generate the data-tables for this program.
+   - Run `/setup files/kenyon_car_connect.sql` on your MariaDB instance to generate the data-tables for this program.
    - Update the database connection settings in `db.js`.
 
 4. Update the ENV file:
