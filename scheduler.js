@@ -13,10 +13,11 @@ console.log("Running scheduled tasks...");
 //Task to update trips to in progress when departure time passes (runs every 5 minutes)
 cron.schedule('*/5 * * * *', async () => {
     console.log('Running scheduled job to update trip statuses...');
+    let conn;
     try {
 
         //Establish transaction
-        const conn = await db.pool.getConnection();
+        conn = await db.pool.getConnection();
         await conn.beginTransaction();
 
         //Get all trips that will be updated to be in progress
@@ -63,10 +64,11 @@ cron.schedule('*/5 * * * *', async () => {
 //Task to close trip requests that have their departure time passed (runs every 5 minutes)
 cron.schedule('*/5 * * * *', async () => {
     console.log('Running scheduled job to update trip request statuses...');
+    let conn;
     try {
 
         //Establish transaction
-        const conn = await db.pool.getConnection();
+        conn = await db.pool.getConnection();
         await conn.beginTransaction();
 
         //Get all trips that will be closed
@@ -150,22 +152,35 @@ cron.schedule('0 0 * * *', async () => {
         let emailCount = 0;
         
         for (const trip of trips){
+            //Obtain the trip passengers
             trip.passengers = await Trip.getTripPassengers(trip.id);
+
+            //Collect the emails of the trip passengers
+            const passengerEmails = [];
             for (const passenger of trip.passengers){
 
                 //Get user details
-                const user = await User.getUserByID(passenger.userID);
+                const user = await User.getUserByID(passenger.userID);  
 
-                if (!user){
-                    console.error('User not found for passenger:', passenger.userID);
-                    continue;
+                if(user){
+                    passengerEmails.push(user.email);
+                } else {
+                    console.error("Scheduler.js... reminder email... user not found: ", passenger.userID);
                 }
-
-                //Send email letting them know they have a trip coming up today
-                await emailServices.sendReminderEmail(user.email, trip.title, trip.time);
-                emailCount++;
-
             }
+
+            //Skip sending email if no passengers are found
+            if(passengerEmails.length === 0){
+                console.log("Scheduler.js... reminder email... no passengers found for trip: ", trip.id);
+                continue
+            }
+
+            //Combine all emails into a single string
+            const emailRecipients = passengerEmails.join(',');
+
+            //Send an email to the trip passengers
+            await emailServices.sendReminderEmail(emailRecipients, trip.title)
+            emailCount++;
         }
 
         console.log('Reminder emails sent:', emailCount);
