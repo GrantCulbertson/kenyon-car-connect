@@ -1,0 +1,16 @@
+#What you need to connect to the database
+PORT=5000
+DB_HOST=localhost
+DB_USER= car_connect_user
+DB_PASSWORD= password
+DB_DATABASE= kenyon_car_connect
+JWT_SECRET= randomJWTsecret
+
+##If you are using brevo for email (ignore if you are not, and set something else up as you wish)
+BREVO_SMTP_KEY= key here
+BREVO_API_KEY= api key here
+BREVO_USER=8515dc002@smtp-brevo.com
+FROM_EMAIL= ExampleEmail@gmail.com
+
+#For google map functionality on the webpages you will need a google cloud account with API access enabled.
+GOOGLE_MAPS_API_KEY = api key
