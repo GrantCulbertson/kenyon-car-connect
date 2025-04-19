@@ -56,9 +56,19 @@ The project uses a modular structure to organize code for scalability and mainta
 ### 5. **Models**:
    - Defines the data structure and database interaction logic.
    - Includes class structure & schema for:
+     - `/tripModel`: Trip-class & tripData functions.
+     - `/rideProfileController`: Ride-profile-class & rideProfileData functions.
+     - `/userController`: User-class & userData functions.
+     - `/carController`: Car-class & carData functions.
 
-### 6. **Config**:
-   - Stores configuration files, such as database connection settings.
+### 6. **Env**:
+   - Stores configuration files, such as database connection settings, and API keys.
+   - Please look at `example env file` to see how it should be setup.
+
+## 6.5 **Thid party APIs** ##
+   - Make sure you update the API keys in the env file...
+   - For email services I used [brevo](https://www.brevo.com/) as it has a good free tier.
+   - For the google maps on the webpages you will need a [google cloud](https://cloud.google.com/?hl=en) account with an enabled API that has credentials for Places, Maps Javascript, Geocoding, Places, Routes, Distance Matrix, and Maps Static.
 
 ### 7. **Makefile**:
    - Used for defining build and deploying the website.
@@ -72,6 +82,7 @@ To run the project, ensure the following prerequisites are met:
 1. **Node.js + Express.js** and **npm** installed.
 2. **MariaDB** database set up and running.
 3. **Apache2** server configured for the MariaDB database.
+4. **ENV** make sure the ENV file is configured properly... update the API keys to use yours.
 
 ---
 
@@ -95,12 +106,17 @@ Follow these steps to set up and run the project locally:
    - Run `kenyon_car_connect.sql` on your MariaDB instance to generate the data-tables for this program.
    - Update the database connection settings in `db.js`.
 
-4. Start the application:
+4. Update the ENV file:
+   - Update API keys as needed (google & brevo).
+   - Set JWT secret password to whatever you like.
+   - Configure database username & password to be used in db.js to access your database.
+
+6. Start the application:
    ```bash
    make
    ```
 
-5. Visit the application in your browser at `http://localhost:5000`.
+7. Visit the application in your browser at `http://localhost:5000`.
 
 ---
 
