@@ -65,7 +65,7 @@ The project uses a modular structure to organize code for scalability and mainta
    - Stores configuration files, such as database connection settings, and API keys.
    - Please look at `example env file` to see how it should be setup.
 
-## 6.5 **Thid party APIs** ##
+### 6.5 **Thid party APIs** ###
    - Make sure you update the API keys in the env file...
    - For email services I used [brevo](https://www.brevo.com/) as it has a good free tier.
    - For the google maps on the webpages you will need a [google cloud](https://cloud.google.com/?hl=en) account with an enabled API that has credentials for Places, Maps Javascript, Geocoding, Places, Routes, Distance Matrix, and Maps Static.
