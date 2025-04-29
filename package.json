@@ -19,6 +19,9 @@
     "nodemailer": "^6.10.0",
     "pm2": "^6.0.5"
   },
+  "engines": {
+    "node": "18.20.6"
+  },
   "author": "",
   "license": "ISC"
 }
