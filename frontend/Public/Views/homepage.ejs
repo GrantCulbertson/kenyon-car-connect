@@ -355,6 +355,19 @@
         const newUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, newUrl);
     }
+
+//Error message shown if user does not have a car
+    if (urlParams.get('error') === 'noCar') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'You need a car to be able to perform this action. Please add one on your profile if applicable.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
        
 </script>
 

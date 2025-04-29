@@ -180,6 +180,13 @@ exports.acceptTripRequest = async (req, res) => {
             return res.redirect("/?error=notVerified"); //Redirect to homepage if user is not verified
         }
 
+        //Make sure that the user has a car to be able to accept the trip
+        const car = await Car.getCarByUserID(userID);
+        console.log(car);
+        if(!car){
+            return res.redirect("/?error=noCar");
+        }
+
         //Move ahead with accepting the trip request since user is verified
         const requestStatus = await Trip.acceptTripRequest(tripID, userID, tripPosterID); //Accept the trip request
         if(requestStatus.success){

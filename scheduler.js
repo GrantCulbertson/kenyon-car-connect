@@ -40,7 +40,7 @@ cron.schedule('*/5 * * * *', async () => {
         //Delete requests to join these trips
         let deleteCount = 0;
         for(const trip of trips){
-            const sql3 = "DELETE FROM tripRequests WHERE tripID = ? AND passengerStatus = 'Requesting'";
+            const sql3 = "DELETE FROM tripPassengers WHERE tripID = ? AND passengerStatus = 'Requesting'";
             const result3 = await conn.query(sql3, [trip.id]);
             deleteCount += result3.affectedRows;
         }
