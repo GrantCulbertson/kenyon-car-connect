@@ -1,5 +1,5 @@
 # [Kenyon Car Connect]
-see the website live at [kenyoncarconnect.com](kenyoncarconnect.com)
+see the website live at [kenyoncarconnect.com](https://kenyoncarconnect.com/)
 
 ## Overview
 
