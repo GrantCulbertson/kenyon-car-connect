@@ -55,6 +55,14 @@ app.use(async (req, res, next) => {
   next();
 });
 
+//Middleware to make sure users are always on an https connections
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
+
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'frontend/Public/Views'));
@@ -84,7 +92,6 @@ app.use('/User', userRoutes);
 app.use('/Car', carRoutes);
 app.use('/rideProfile', rideProfileRoutes);
 app.use('/Trips',tripRoutes);
-
 
 
 //Import the Trip & User Model
