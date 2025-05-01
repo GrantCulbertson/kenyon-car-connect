@@ -1,4 +1,4 @@
-# [Kenyon Car Connect]
+# Kenyon Car Connect
 see the website live at [kenyoncarconnect.com](https://kenyoncarconnect.com/)
 
 ## Overview
