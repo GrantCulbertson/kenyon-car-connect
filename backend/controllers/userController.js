@@ -45,7 +45,7 @@ exports.verifyEmailPage = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token
 
     if (!token) {
-        return res.redirect("/"); // Return to homepage if no token (user has no cookies and should not be here)
+        return res.redirect("/?error=notLoggedIn"); // Return to homepage if no token (user has no cookies and should not be here)
     }
 
     if (decoded.verificationStatus === "Yes"){
@@ -180,7 +180,7 @@ exports.updateProfile = async (req, res) => {
     const token = req.cookies.auth_token; //Get cookies from user
     const {firstName, lastName, password} = req.body; //Get user input from form
     if(!token){ //Return user to homepage if they have no cookies, they should not be performing this function.
-        return res.redirect("/");
+        return res.redirect("/?error=notLoggedIn");
     }
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode token

@@ -125,7 +125,7 @@ exports.createTrip = async (req, res) => {
     console.log("tripController... createTrip... running");
     const token = req.cookies.auth_token; // Get token from cookies
     if(!token){
-        return res.redirect("/"); //Send user back to homepage if they don't have cookies, although they shouldn't be able to do this anyways if they don't have cookies
+        return res.redirect("/?error=notLoggedIn");; //Send user back to homepage if they don't have cookies, although they shouldn't be able to do this anyways if they don't have cookies
     }else{ //If they have cookies proceed with adding the trip to the database
         try{
             const decoded = jwt.verify(token, process.env.JWT_SECRET); //Decode the token
@@ -207,7 +207,7 @@ exports.deleteTrip = async (req, res) => {
     const token = req.cookies.auth_token; // Get token from cookies 
     const tripID = req.params.id; //Get trip ID from URL
     if(!token){
-        return res.redirect("/"); //Return to homepage if user is not logged in, you must be logged in to delete a trip
+        return res.redirect("/?error=notLoggedIn");; //Return to homepage if user is not logged in, you must be logged in to delete a trip
     }
 
     //Return user to homepage with error if they are not verified
@@ -275,7 +275,7 @@ exports.acceptPassengerRequest = async (req, res) => {
     console.log("tripController... acceptPassengerRequest... running");
     const token = req.cookies.auth_token;
     if(!token){
-        res.redirect("/") //Shouldn't be able to accept passengers if they aren't logged in
+        return res.redirect("/?error=notLoggedIn"); //Shouldn't be able to accept passengers if they aren't logged in
     }
 
     //Return user to homepage with error if they are not verified
@@ -311,7 +311,7 @@ exports.denyPassengerRequest = async (req, res) => {
     console.log("tripController... denyPassengerRequest... running");
     const token = req.cookies.auth_token;
     if(!token){
-        res.redirect("/") //Shouldn't be able to accept if they aren't logged in
+        return res.redirect("/?error=notLoggedIn"); //Shouldn't be able to accept if they aren't logged in
     }
 
     //Return user to homepage with error if they are not verified
@@ -346,7 +346,7 @@ exports.deletePassengerFromTrip = async (req, res) => {
     const passengerID = req.params.id; //Get passed passengerID from URL
     const tripID = req.query.tripID; //Get passed tripID from query param in URL
     if(!token){
-        res.redirect("/") //Shouldn't be able to deny a passenger if you aren't logged in
+        return res.redirect("/?error=notLoggedIn"); //Shouldn't be able to deny a passenger if you aren't logged in
     }
 
     //Return user to homepage with error if they are not verified
@@ -378,7 +378,7 @@ exports.leaveTrip = async (req, res) => {
 
     //Return to homepage if user is not logged in
     if(!token){
-        return res.redirect("/") //Shouldn't be able to leave a trip if they aren't logged in
+        return res.redirect("/?error=notLoggedIn"); //Shouldn't be able to leave a trip if they aren't logged in
     }
 
     //Move ahead with letting the user leave the trip

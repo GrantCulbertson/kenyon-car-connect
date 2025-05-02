@@ -10,7 +10,7 @@ exports.addRideProfile = async (req , res) =>{
     const {name, pronouns, preferredMusic, conversationPreference, bio} = req.body;
     const token = req.cookies.auth_token; // Get token from cookies
     if (!token) {
-        return res.redirect("/"); //Return user to homepage if no token is found (User should not be able to perform this function)
+        return res.redirect("/?error=notLoggedIn"); //Return user to homepage if no token is found (User should not be able to perform this function)
     }
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token to get user information

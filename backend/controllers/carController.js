@@ -13,7 +13,7 @@ exports.addCar = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); //decode token to get user information
     const userID = decoded.id;
     if (!token) {
-        return res.redirect("/"); //Return user to homepage if no token is found (User should not be able to perform this function)
+        return res.redirect("/?error=notLoggedIn"); //Return user to homepage if no token is found (User should not be able to perform this function)
     }
     try{
         const car = await Car.addCarToDatabase({userID, make, model, year, color, licensePlate, seatsInCar});
