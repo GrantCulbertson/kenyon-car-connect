@@ -162,12 +162,12 @@ cron.schedule('*/1 * * * *', async () => {
                 console.log("Scheduler.js... reminder email... passenger: ", passenger);
 
                 //Get user details
-                const user = await User.getUserByID(passenger.userID);  
+                const user = await User.getUserByID(passenger.id);  
 
                 if(user){
                     passengerEmails.push(user.email);
                 } else {
-                    console.error("Scheduler.js... reminder email... user not found: ", passenger.userID);
+                    console.error("Scheduler.js... reminder email... user not found: ", passenger.id);
                 }
             }
 
