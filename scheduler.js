@@ -147,6 +147,7 @@ cron.schedule('0 0 * * *', async () => {
         const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" AND date = CURDATE()';
         const result = await db.query(sql);
         const trips = result.map(trip => new Trip(trip));
+        console.log('Trips found for today:', trips.length);
 
         //Iterate through trips and send reminder emails
         let emailCount = 0;
