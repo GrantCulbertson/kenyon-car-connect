@@ -140,7 +140,7 @@ cron.schedule('0 0 * * *', async () => {
 });
 
 //Task to send reminder emails to users with upcoming trips (runs at midnight)
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('0 0 * * *', async () => {
     console.log('Running scheduled job email users with trip reminders...');
     try {
         //Define SQL query to get all trips which are open and have a departure time today

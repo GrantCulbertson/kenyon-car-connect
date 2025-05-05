@@ -240,6 +240,7 @@ async function sendReminderEmail(userEmail, tripName, tripTime){
                     <p>The ride:</p>
                     <p>"${tripName}"</p>
                     <p>Is leaving today at ${tripTime}.</p>
+                    <p> Please use this email chain to organize with your driver and other passengers. </p>
                     <p>Thanks,</p>
                     <p>Kenyon Car-Connect</p>
                 </div>
