@@ -305,7 +305,7 @@ a.btn-info.nav-link {
 }
 
 .trip-feed-container + .trip-feed-container{
-    margin-top: 15px; /* Add space between each trip */
+    margin-top: 15px !important; /* Add space between each trip */
 }
 
 /* Styling for trip feed buttons */
