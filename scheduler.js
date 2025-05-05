@@ -159,6 +159,7 @@ cron.schedule('*/1 * * * *', async () => {
             //Collect the emails of the trip passengers
             const passengerEmails = [];
             for (const passenger of trip.passengers){
+                console.log("Scheduler.js... reminder email... passenger: ", passenger);
 
                 //Get user details
                 const user = await User.getUserByID(passenger.userID);  
