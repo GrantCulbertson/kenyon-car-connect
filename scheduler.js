@@ -179,7 +179,7 @@ cron.schedule('0 0 * * *', async () => {
             const emailRecipients = passengerEmails.join(',');
 
             //Send an email to the trip passengers
-            await emailServices.sendReminderEmail(emailRecipients, trip.title)
+            await emailServices.sendReminderEmail(emailRecipients, trip.title, trip.time)
             emailCount++;
         }
 
