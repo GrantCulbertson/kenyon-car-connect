@@ -65,20 +65,38 @@ app.use((req, res, next) => {
 
 //Middleware to block malicious bots
 app.use((req, res, next) => {
-  const badPaths = [
-    '/wordpress/wp-admin/setup-config.php',
-    '/wp-admin/',
+  const blockedPaths = [
+    '/wp-includes/',
+    '/wordpress/',
     '/wp-login.php',
-    '/xmlrpc.php'
+    '/wp-admin/',
+    '/xmlrpc.php',
+    '/wlwmanifest.xml'
   ];
 
-  if (badPaths.some(path => req.url.toLowerCase().startsWith(path))) {
-    console.warn(`Blocked bot attempt on: ${req.url}`);
+  // Normalize and lowercase the incoming URL path
+  const normalizedPath = req.url.toLowerCase().replace(/^\/+/, '/');
+
+  // Match if the URL contains any known bad pattern
+  if (blockedPaths.some(path => normalizedPath.includes(path))) {
+    console.warn(`Blocked bot scan attempt: ${req.method} ${req.url} from IP: ${req.ip}`);
     return res.status(403).send('Forbidden');
   }
 
   next();
 });
+
+app.use((req, res, next) => {
+  const pattern = /^\/{0,2}(wp.*|wordpress|.*\/wp-.*)/i;
+
+  if (pattern.test(req.path)) {
+    console.warn(`Blocked WordPress bot request: ${req.method} ${req.path}`);
+    return res.status(403).send('Forbidden');
+  }
+
+  next();
+});
+
 
 
 // Setup view engine & set it to ejs
