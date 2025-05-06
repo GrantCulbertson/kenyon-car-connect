@@ -181,16 +181,22 @@ static async getEmailByPosterID(posterID){
 //Function to pull all trips from database (used for trip feed)
 static async getAllTrips(){
     console.log("tripModel... getAllTrips... running");
-    try{
-        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" ORDER BY date ASC, time ASC' ; //Only pull trips that are open, trips in progress aren't joinable.
+    try {
+        const sql = 'SELECT * FROM tripData WHERE tripStatus = "Open" ORDER BY date ASC, time ASC';
         const trips = await db.query(sql);
-        if(trips.length > 0){
-            const tripMap = trips.map(trip => new Trip(trip));
+        if (trips.length > 0) {
+            const tripMap = trips.map(trip => {
+                const formattedDate = trip.date.toISOString().split('T')[0]; // Make sure date is not being set back a day
+                return new Trip({
+                    ...trip,
+                    date: formattedDate,  // Overwrite the date field with ISO formatted date
+                });
+            });
             return tripMap;
-        }else{
+        } else {
             return false;
         }
-    }catch (error){
+    } catch (error) {
         console.log("Error in getAllTrips:", error);
         throw error;
     }
