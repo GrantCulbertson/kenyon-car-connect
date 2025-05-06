@@ -63,6 +63,24 @@ app.use((req, res, next) => {
   next();
 });
 
+//Middleware to block malicious bots
+app.use((req, res, next) => {
+  const badPaths = [
+    '/wordpress/wp-admin/setup-config.php',
+    '/wp-admin/',
+    '/wp-login.php',
+    '/xmlrpc.php'
+  ];
+
+  if (badPaths.some(path => req.url.toLowerCase().startsWith(path))) {
+    console.warn(`Blocked bot attempt on: ${req.url}`);
+    return res.status(403).send('Forbidden');
+  }
+
+  next();
+});
+
+
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'frontend/Public/Views'));
