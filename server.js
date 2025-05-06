@@ -56,7 +56,12 @@ app.use(async (req, res, next) => {
 });
 
 //Middleware to make sure users are always on an https connections
-
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect('https://' + req.headers.host + req.url);
+  }
+  next();
+});
 
 //Middleware to block malicious bots
 app.use((req, res, next) => {
