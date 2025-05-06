@@ -330,15 +330,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-<!-- Script to parse date and time in trip postings -->
+<!-- Script to parse time in trip postings -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Format the date for each trip
-        document.querySelectorAll('.trip-date').forEach(function(element) {
-            const date = new Date(element.textContent);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            element.textContent = date.toLocaleDateString('en-US', options);
-        });
 
         // Format the time for each trip
         document.querySelectorAll('.trip-time').forEach(function(element) {
@@ -350,6 +344,28 @@
             date.setSeconds(seconds.split('.')[0]); // Split to remove microseconds
             const options = { hour: 'numeric', minute: 'numeric', hour12: true };
             element.textContent = date.toLocaleTimeString('en-US', options);
+        });
+    });
+</script>
+
+<!-- Script to parse date in trip postings -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.trip-date').forEach(function(element) {
+            const originalDateText = element.textContent.trim();
+            
+            // Verify the current format in the console to confirm this step
+            console.log("Original date text:", originalDateText);
+            
+            // Only format if the content matches YYYY-MM-DD
+            if (/^\d{4}-\d{2}-\d{2}$/.test(originalDateText)) {
+                const [year, month, day] = originalDateText.split('-').map(Number);
+                const date = new Date(Date.UTC(year, month - 1, day));
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
+                element.textContent = date.toLocaleDateString('en-US', options);
+            } else {
+                console.warn('Skipping formatting, unexpected date format:', originalDateText);
+            }
         });
     });
 </script>

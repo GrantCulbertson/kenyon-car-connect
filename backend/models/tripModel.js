@@ -146,11 +146,19 @@ static async getTripsByUserID(userID){
 //Function to get a trip by tripID
 static async getTripById(tripId) {
     try {
-        console.log("tripMode... getTripById... running");
+        console.log("tripModel... getTripById... running");
         const sql = 'SELECT * FROM tripData WHERE id = ?';
         const trips = await db.query(sql, [tripId]);
         if (trips.length > 0) {
-            return new Trip(trips[0]);
+            const trip = trips[0];
+
+            // Format date explicitly as YYYY-MM-DD to avoid timezone issues
+            const formattedDate = trip.date.toISOString().split('T')[0];
+
+            return new Trip({
+                ...trip,
+                date: formattedDate,
+            });
         } else {
             return false;
         }
