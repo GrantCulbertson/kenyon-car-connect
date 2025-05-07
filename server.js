@@ -98,6 +98,19 @@ app.use((req, res, next) => {
 });
 
 
+//Middleware to rate limit requests
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100, // limit each IP to 100 requests per window
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+app.use(limiter);
+
+
+
 
 // Setup view engine & set it to ejs
 app.set('view engine', 'ejs');
