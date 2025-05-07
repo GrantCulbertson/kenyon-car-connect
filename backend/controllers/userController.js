@@ -99,6 +99,9 @@ exports.verifyEmail = async (req, res) => {
             res.cookie("auth_token", newToken, cookieOptions);
             console.log("User:", decoded.email, "has been verified!")
             return res.redirect("/");
+        }else{
+            //If user is not verified, redirect them to the verification page
+            return res.redirect("/User/VerifyEmailPage?error=notVerified");
         }
     }catch(error){
         console.log("Error in verifyEmail Controller:", error);

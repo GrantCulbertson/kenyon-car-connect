@@ -60,6 +60,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <!-- Awesome scripts for making this page dynamic-->
 <script>
@@ -90,6 +92,22 @@
         event.preventDefault();
       }
     });
+</script>
+
+<!-- Error in verifying email-->
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('error') === 'notVerified') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: 'Failed to verify email. Your code was incorrect. Please try again.',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
 </script>
 
 </body>
